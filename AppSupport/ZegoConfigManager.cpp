@@ -10,13 +10,13 @@ ZegoConfigManager *ZegoConfigManager::instance()
 
 unsigned int ZegoConfigManager::getAppID()
 {
-    // 替换为可用的appID
-    return 0;
+    // 填写appID
+    return ;
 }
 
 std::string ZegoConfigManager::getAppSign()
 {
-    // 替换为可用的appSign
+    // 填写appSign
     return "";
 }
 
