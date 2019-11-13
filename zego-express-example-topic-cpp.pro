@@ -65,7 +65,9 @@ release {
 }
 
 msvc {
-    LIBS += -L$$PWD/deps/ZegoExpress/lib/x64 -lZegoExpressEngine
+    QMAKE_CXXFLAGS += -execution-charset:utf-8
+    QMAKE_CXXFLAGS += -source-charset:utf-8
+    LIBS += -L$$PWD/deps/ZegoExpress/lib/x86 -lZegoExpressEngine
     LIBS +=  \
         -luser32 \
         -lgdi32 \
