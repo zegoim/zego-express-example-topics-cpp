@@ -2,6 +2,8 @@
 #include "ui_ZegoVideoCommunicationDemo.h"
 
 #include "AppSupport/ZegoConfigManager.h"
+#include "AppSupport/ZegoUtilHelper.h"
+
 #include "EventHandler/ZegoEventHandlerQt.h"
 
 ZegoVideoCommunicationDemo::ZegoVideoCommunicationDemo(QWidget *parent) :
@@ -10,7 +12,6 @@ ZegoVideoCommunicationDemo::ZegoVideoCommunicationDemo(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    // 创建engine
     auto appID = ZegoConfigManager::instance()->getAppID();
     auto appSign = ZegoConfigManager::instance()->getAppSign();
     auto isTest = ZegoConfigManager::instance()->isTestEnviroment();
@@ -21,7 +22,6 @@ ZegoVideoCommunicationDemo::ZegoVideoCommunicationDemo(QWidget *parent) :
 
 ZegoVideoCommunicationDemo::~ZegoVideoCommunicationDemo()
 {
-    // 销毁engine
     ZegoExpressEngine::destroyEngine(engine);
     engine = nullptr;
 
@@ -41,7 +41,7 @@ void ZegoVideoCommunicationDemo::onRoomUserUpdate(const std::string &roomID, Zeg
     for (const ZegoUser &user : userList) {
         userIDs.append(QString::fromStdString(user.userID));
     }
-    QString log = QString("onRoomUserUpdate: roomID=%1, updateType=%2, userIDs=%2").arg(roomID.c_str()).arg(updateTypeString).arg(userIDs.join(","));
+    QString log = QString("onRoomUserUpdate: roomID=%1, updateType=%2, userIDs=%3").arg(roomID.c_str()).arg(updateTypeString).arg(userIDs.join(","));
     printLogToView(log);
 }
 
@@ -78,7 +78,7 @@ void ZegoVideoCommunicationDemo::onRoomStreamUpdate(const std::string &roomID, Z
         });
     }
 
-    // 重新布局
+    // relayout the video widget
     QList<QWidget*> videoList = {
         ui->frame_video_1,
         ui->frame_video_2,
@@ -107,7 +107,6 @@ void ZegoVideoCommunicationDemo::onRoomStreamUpdate(const std::string &roomID, Z
 
 
     for (unsigned int i = 0; i< zegoStreamList.size(); i++) {
-        // 最多拉12条流
         if(i>=11){
             break;
         }
@@ -176,7 +175,7 @@ void ZegoVideoCommunicationDemo::bindEventHandler()
 void ZegoVideoCommunicationDemo::on_pushButton_login_clicked()
 {
     ZegoUser user;
-    user.userID = ZegoConfigManager::instance()->getRandomUserID();
+    user.userID = ZegoUtilHelper::getRandomString();
     user.userName = user.userID;
     engine->loginRoom(ui->lineEdit_roomID->text().toStdString(), user,  nullptr);
 

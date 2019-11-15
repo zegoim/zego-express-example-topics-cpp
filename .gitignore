@@ -11,3 +11,6 @@ x64/Debug/
 x64/Release/
 deploy/
 deps/
+ui_*
+moc_*
+ZZZZZ-打包用

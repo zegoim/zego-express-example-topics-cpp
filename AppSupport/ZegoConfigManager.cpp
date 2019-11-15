@@ -10,27 +10,17 @@ ZegoConfigManager *ZegoConfigManager::instance()
 
 unsigned int ZegoConfigManager::getAppID()
 {
-    // 填写appID
-    return ;
+    return ;    // input AppID here
 }
 
 std::string ZegoConfigManager::getAppSign()
 {
-    // 填写appSign
-    return "";
+    return "";  // input AppSign here
 }
 
 bool ZegoConfigManager::isTestEnviroment()
 {
     return true;
-}
-
-std::string ZegoConfigManager::getRandomUserID()
-{
-    QTime time = QTime::currentTime();
-    qsrand(uint(time.msec()+time.second()*1000));
-    int n = qrand() % 1000;
-    return std::to_string(n);
 }
 
 ZegoConfigManager::ZegoConfigManager()

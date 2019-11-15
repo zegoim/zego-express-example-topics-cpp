@@ -7,7 +7,6 @@
 
 int GenerateMiniDump(PEXCEPTION_POINTERS pExceptionPointers)
 {
-	// 定义函数指针
 	typedef BOOL(WINAPI * MiniDumpWriteDumpT)(
 		HANDLE,
 		DWORD,
@@ -17,7 +16,8 @@ int GenerateMiniDump(PEXCEPTION_POINTERS pExceptionPointers)
 		PMINIDUMP_USER_STREAM_INFORMATION,
 		PMINIDUMP_CALLBACK_INFORMATION
 		);
-	// 从 "DbgHelp.dll" 库中获取 "MiniDumpWriteDump" 函数
+
+
 	MiniDumpWriteDumpT pfnMiniDumpWriteDump = NULL;
 	HMODULE hDbgHelp = LoadLibrary(_T("DbgHelp.dll"));
 	if (NULL == hDbgHelp)
@@ -31,7 +31,8 @@ int GenerateMiniDump(PEXCEPTION_POINTERS pExceptionPointers)
 		FreeLibrary(hDbgHelp);
 		return EXCEPTION_CONTINUE_EXECUTION;
 	}
-	// 创建 dmp 文件件
+
+
 	TCHAR szFileName[MAX_PATH] = { 0 };
 	TCHAR szVersion[] = L"DumpFile";
 	SYSTEMTIME stLocalTime;
@@ -46,14 +47,16 @@ int GenerateMiniDump(PEXCEPTION_POINTERS pExceptionPointers)
 		FreeLibrary(hDbgHelp);
 		return EXCEPTION_CONTINUE_EXECUTION;
 	}
-	// 写入 dmp 文件
+
+
 	MINIDUMP_EXCEPTION_INFORMATION expParam;
 	expParam.ThreadId = GetCurrentThreadId();
 	expParam.ExceptionPointers = pExceptionPointers;
 	expParam.ClientPointers = FALSE;
 	pfnMiniDumpWriteDump(GetCurrentProcess(), GetCurrentProcessId(),
 		hDumpFile, MiniDumpWithDataSegs, (pExceptionPointers ? &expParam : NULL), NULL, NULL);
-	// 释放文件
+
+
 	CloseHandle(hDumpFile);
 	FreeLibrary(hDbgHelp);
 	return EXCEPTION_EXECUTE_HANDLER;
@@ -61,7 +64,6 @@ int GenerateMiniDump(PEXCEPTION_POINTERS pExceptionPointers)
 
 LONG WINAPI ExceptionFilter(LPEXCEPTION_POINTERS lpExceptionInfo)
 {
-	// 这里做一些异常的过滤或提示
 	if (IsDebuggerPresent()) {
 		return EXCEPTION_CONTINUE_SEARCH;
 	}

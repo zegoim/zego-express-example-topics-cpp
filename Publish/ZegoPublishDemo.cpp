@@ -14,7 +14,6 @@ ZegoPublishDemo::ZegoPublishDemo(QWidget *parent) :
     videoConfig = ZegoVideoConfig(ZEGO_RESOLUTION_540x960);
     */
 
-    // 创建engine
     auto appID = ZegoConfigManager::instance()->getAppID();
     auto appSign = ZegoConfigManager::instance()->getAppSign();
     auto isTest = ZegoConfigManager::instance()->isTestEnviroment();
@@ -22,7 +21,6 @@ ZegoPublishDemo::ZegoPublishDemo(QWidget *parent) :
     engine = ZegoExpressEngine::createEngine(appID, appSign, isTest, ZEGO_SCENARIO_GENERAL, nullptr);
     bindEventHandler();
 
-    // 初始化界面显示
     auto audioList = engine->getAudioDeviceList(ZEGO_AUDIO_DEVICE_TYPE_INPUT);
     for(auto device : audioList){
         ui->comboBox_microphone->addItem(QString::fromStdString(device.deviceID));
@@ -63,15 +61,10 @@ ZegoPublishDemo::ZegoPublishDemo(QWidget *parent) :
     ui->slider_captureVolume->setValue(100);
     ui->checkBox_enableCamera->setChecked(true);
     ui->checkBox_enableMicrophone->setChecked(true);
-
-    // 开始预览
-    ZegoCanvas canvas((void *)ui->frame_local_video->winId(), ZEGO_VIEW_MODE_ASPECT_FIT);
-    engine->startPreview(&canvas);
 }
 
 ZegoPublishDemo::~ZegoPublishDemo()
 {
-    // 销毁engine
     ZegoExpressEngine::destroyEngine(engine);
     engine = nullptr;
 
@@ -110,7 +103,7 @@ void ZegoPublishDemo::onRoomUserUpdate(const std::string& roomID, ZegoUpdateType
     for (const ZegoUser &user : userList) {
         userIDs.append(QString::fromStdString(user.userID));
     }
-    QString log = QString("onRoomUserUpdate: roomID=%1, updateType=%2, userIDs=%2").arg(roomID.c_str()).arg(updateTypeString).arg(userIDs.join(","));
+    QString log = QString("onRoomUserUpdate: roomID=%1, updateType=%2, userIDs=%3").arg(roomID.c_str()).arg(updateTypeString).arg(userIDs.join(","));
     printLogToView(log);
 }
 
@@ -184,8 +177,11 @@ void ZegoPublishDemo::on_pushButton_startPublish_clicked()
     user.userID = userID;
     user.userName = userID;
     engine->loginRoom(roomID, user,  nullptr);
-
     engine->startPublishing(streamID);
+
+
+    ZegoCanvas canvas((void *)ui->frame_local_video->winId(), ZEGO_VIEW_MODE_ASPECT_FIT);
+    engine->startPreview(&canvas);
 }
 
 void ZegoPublishDemo::on_pushButton_stopPublish_clicked()
