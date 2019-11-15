@@ -4,10 +4,6 @@
 #include <QWidget>
 #include <QListWidget>
 
-#include "Publish/ZegoPublishDemo.h"
-#include "Play/ZegoPlayDemo.h"
-#include "VideoCommunication/ZegoVideoCommunicationDemo.h"
-
 namespace Ui {
 class ZegoExpressDemo;
 }

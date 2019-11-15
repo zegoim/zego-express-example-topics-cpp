@@ -6,13 +6,10 @@
 class ZegoConfigManager
 {
 public:
-
     static ZegoConfigManager* instance();
     unsigned int getAppID();
     std::string getAppSign();
     bool isTestEnviroment();
-
-    std::string getRandomUserID();
 
 private:
     ZegoConfigManager();

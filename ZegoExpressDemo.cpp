@@ -6,7 +6,18 @@
 #include <iostream>
 #include <QTimer>
 
+#include "QuickStart/ZegoQuickStartDemo.h"
+#include "Publish/ZegoPublishDemo.h"
+#include "Play/ZegoPlayDemo.h"
+#include "VideoCommunication/ZegoVideoCommunicationDemo.h"
+
 #include "AppSupport/ZegoConfigManager.h"
+
+
+static QString ItemTextQuickStart("QuickStart");
+static QString ItemTextPublishStream("PublishStream");
+static QString ItemTextPlayStream("PlayStream");
+static QString ItemTextVideoCommunication("VideoCommunication");
 
 
 ZegoExpressDemo::ZegoExpressDemo(QWidget *parent) :
@@ -15,25 +26,24 @@ ZegoExpressDemo::ZegoExpressDemo(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    // show SDK version
+    ui->label_sdk_version->setText(QString::fromStdString(ZegoExpressEngine::getVersion()));
+
     // ================================================ Basic use case ==========================================
     QStringList basicUseCaseItems;
-    basicUseCaseItems.append("推流");
-    basicUseCaseItems.append("拉流");
+    basicUseCaseItems.append(ItemTextQuickStart);
+    basicUseCaseItems.append(ItemTextPublishStream);
+    basicUseCaseItems.append(ItemTextPlayStream);
     ui->listWidget_basic_menu->addItems(basicUseCaseItems);
 
     // ================================================Advance use case ==========================================
     QStringList advanceUseCaseItems;
-    advanceUseCaseItems.append("视频通话");
-    //advanceUseCaseItems.append("直播连麦");
-    ui->listWidget_advance_menu->addItems(advanceUseCaseItems);
 
+    advanceUseCaseItems.append(ItemTextVideoCommunication);
+    ui->listWidget_advance_menu->addItems(advanceUseCaseItems);
 
     connect(ui->listWidget_basic_menu, &QListWidget::itemClicked, this, &ZegoExpressDemo::onBasicUseCaseItemChanged);
     connect(ui->listWidget_advance_menu, &QListWidget::itemClicked, this, &ZegoExpressDemo::onAdvanceUseCaseItemChanged);
-
-    ui->label_sdk_version->setText(QString::fromStdString(ZegoExpressEngine::getVersion()));
-    ui->label_appID->setText(QString::number(ZegoConfigManager::instance()->getAppID()));
-    ui->checkBox_testEnv->setChecked(ZegoConfigManager::instance()->isTestEnviroment());
 }
 
 ZegoExpressDemo::~ZegoExpressDemo()
@@ -57,7 +67,7 @@ void ZegoExpressDemo::doChangeTopic(QString itemText)
         return;
     }
 
-    // 删掉老的窗口
+    // Destroy Old Topic
     if(currentTopicWidget!= nullptr){
         ui->stackedWidget_panel->removeWidget(currentTopicWidget);
         delete currentTopicWidget;
@@ -65,22 +75,28 @@ void ZegoExpressDemo::doChangeTopic(QString itemText)
     }
 
 
-    // 重建新窗口
+    // Create New Topic
     currentItemText = itemText;
-    if(currentItemText=="推流"){
+    if(currentItemText==ItemTextQuickStart){
+        currentTopicWidget = new ZegoQuickStartDemo;
+    }
+
+    if(currentItemText==ItemTextPublishStream){
         currentTopicWidget = new ZegoPublishDemo;
     }
 
-    if(currentItemText=="拉流"){
+    if(currentItemText==ItemTextPlayStream){
         currentTopicWidget = new ZegoPlayDemo;
     }
 
-    if(currentItemText=="视频通话"){
+    if(currentItemText==ItemTextVideoCommunication){
         currentTopicWidget = new ZegoVideoCommunicationDemo;
     }
 
-    ui->stackedWidget_panel->addWidget(currentTopicWidget);
-    ui->stackedWidget_panel->setCurrentWidget(currentTopicWidget);
+    if(currentTopicWidget != nullptr){
+        ui->stackedWidget_panel->addWidget(currentTopicWidget);
+        ui->stackedWidget_panel->setCurrentWidget(currentTopicWidget);
+    }
 }
 
 

@@ -25,27 +25,32 @@ DEFINES += QT_DEPRECATED_WARNINGS
 CONFIG += c++11
 
 SOURCES += \
-        main.cpp \
-        ZegoExpressDemo.cpp \
+    main.cpp \
+    ZegoExpressDemo.cpp \
     Play/ZegoPlayDemo.cpp \
     Publish/ZegoPublishDemo.cpp \
     VideoCommunication/ZegoVideoCommunicationDemo.cpp \
     AppSupport/ZegoConfigManager.cpp \
-    EventHandler/ZegoEventHandlerQt.cpp
+    EventHandler/ZegoEventHandlerQt.cpp \
+    QuickStart/ZegoQuickStartDemo.cpp \
+    AppSupport/ZegoUtilHelper.cpp
 
 HEADERS += \
-        ZegoExpressDemo.h \
+    ZegoExpressDemo.h \
     Play/ZegoPlayDemo.h \
     Publish/ZegoPublishDemo.h \
     VideoCommunication/ZegoVideoCommunicationDemo.h \
     AppSupport/ZegoConfigManager.h \
     AppSupport/ZegoCrashHelper.h \
-    EventHandler/ZegoEventHandlerQt.h
+    EventHandler/ZegoEventHandlerQt.h \
+    QuickStart/ZegoQuickStartDemo.h \
+    AppSupport/ZegoUtilHelper.h
 FORMS += \
-        zegoexpressdemo.ui \
+    zegoexpressdemo.ui \
     Play/ZegoPlayDemo.ui \
     Publish/ZegoPublishDemo.ui \
-    VideoCommunication/ZegoVideoCommunicationDemo.ui
+    VideoCommunication/ZegoVideoCommunicationDemo.ui \
+    QuickStart/ZegoQuickStartDemo.ui
 
 
 # Default rules for deployment.
@@ -65,7 +70,16 @@ release {
 }
 
 msvc {
-    LIBS += -L$$PWD/deps/ZegoExpress/lib/x64 -lZegoExpressEngine
+    QMAKE_CXXFLAGS += -execution-charset:utf-8
+    QMAKE_CXXFLAGS += -source-charset:utf-8
+	
+    contains(QT_ARCH, i386) {
+        LIBS += -L$$PWD/deps/ZegoExpress/lib/x86 -lZegoExpressEngine
+    } else {
+        LIBS += -L$$PWD/deps/ZegoExpress/lib/x64 -lZegoExpressEngine
+    }
+	
+
     LIBS +=  \
         -luser32 \
         -lgdi32 \

@@ -10,7 +10,6 @@ ZegoPlayDemo::ZegoPlayDemo(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    // 创建engine
     auto appID = ZegoConfigManager::instance()->getAppID();
     auto appSign = ZegoConfigManager::instance()->getAppSign();
     auto isTest = ZegoConfigManager::instance()->isTestEnviroment();
@@ -18,7 +17,6 @@ ZegoPlayDemo::ZegoPlayDemo(QWidget *parent) :
     engine = ZegoExpressEngine::createEngine(appID, appSign, isTest, ZEGO_SCENARIO_GENERAL, nullptr);
     bindEventHandler();
 
-    // 初始化界面显示
     auto audioList = engine->getAudioDeviceList(ZEGO_AUDIO_DEVICE_TYPE_OUTPUT);
     for(auto device : audioList){
         ui->comboBox_audioOutputDevice->addItem(QString::fromStdString(device.deviceID));
@@ -35,7 +33,6 @@ ZegoPlayDemo::ZegoPlayDemo(QWidget *parent) :
 
 ZegoPlayDemo::~ZegoPlayDemo()
 {
-    // 销毁engine
     ZegoExpressEngine::destroyEngine(engine);
     engine = nullptr;
 
@@ -123,7 +120,7 @@ void ZegoPlayDemo::onRoomUserUpdate(const std::string &roomID, ZegoUpdateType up
     for (const ZegoUser &user : userList) {
         userIDs.append(QString::fromStdString(user.userID));
     }
-    QString log = QString("onRoomUserUpdate: roomID=%1, updateType=%2, userIDs=%2").arg(roomID.c_str()).arg(updateTypeString).arg(userIDs.join(","));
+    QString log = QString("onRoomUserUpdate: roomID=%1, updateType=%2, userIDs=%3").arg(roomID.c_str()).arg(updateTypeString).arg(userIDs.join(","));
     printLogToView(log);
 }
 
@@ -197,7 +194,6 @@ void ZegoPlayDemo::on_pushButton_stopPlay_clicked()
     std::string streamID = ui->lineEdit_streamID->text().toStdString();
     engine->stopPlayingStream(streamID);
 
-    // 结束推流后，此前设置的流相关的参数属性，sdk都会丢弃。此处同步界面
     ui->slider_playVolume->setValue(100);
     ui->checkBox_mutePlayStreamAudio->setChecked(false);
     ui->checkBox_mutePlayStreamVideo->setChecked(false);
