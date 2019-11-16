@@ -70,9 +70,6 @@ release {
 }
 
 msvc {
-    QMAKE_CXXFLAGS += -execution-charset:utf-8
-    QMAKE_CXXFLAGS += -source-charset:utf-8
-	
     contains(QT_ARCH, i386) {
         LIBS += -L$$PWD/deps/ZegoExpress/lib/x86 -lZegoExpressEngine
     } else {

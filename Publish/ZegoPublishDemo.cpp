@@ -21,23 +21,32 @@ ZegoPublishDemo::ZegoPublishDemo(QWidget *parent) :
     engine = ZegoExpressEngine::createEngine(appID, appSign, isTest, ZEGO_SCENARIO_GENERAL, nullptr);
     bindEventHandler();
 
+    ui->comboBox_microphone->blockSignals(true);
     auto audioList = engine->getAudioDeviceList(ZEGO_AUDIO_DEVICE_TYPE_INPUT);
     for(auto device : audioList){
         ui->comboBox_microphone->addItem(QString::fromStdString(device.deviceID));
     }
+    ui->comboBox_microphone->blockSignals(false);
 
+    ui->comboBox_camera->blockSignals(true);
     auto cameraList = engine->getVideoDeviceList();
     for(auto device : cameraList){
         ui->comboBox_camera->addItem(QString::fromStdString(device.deviceID));
     }
+    ui->comboBox_camera->blockSignals(false);
 
+
+    ui->comboBox_viewmode->blockSignals(true);
     QStringList viewModeList = {
         "ZEGO_VIEW_MODE_ASPECT_FIT",
         "ZEGO_VIEW_MODE_ASPECT_FILL",
         "ZEGO_VIEW_MODE_SCALE_TO_FILL"
     };
     ui->comboBox_viewmode->addItems(viewModeList);
+    ui->comboBox_viewmode->blockSignals(false);
 
+
+    ui->comboBox_mirrormode->blockSignals(true);
     QStringList mirroModeList = {
         "ZEGO_VIDEO_MORROR_MODE_ONLY_PREVIEW_MIRROR",
         "ZEGO_VIDEO_MORROR_MODE_BOTH_MIRROR",
@@ -45,8 +54,10 @@ ZegoPublishDemo::ZegoPublishDemo(QWidget *parent) :
         "ZEGO_VIDEO_MORROR_MODE_ONLY_PUBLISHER_MIRROR"
     };
     ui->comboBox_mirrormode->addItems(mirroModeList);
+    ui->comboBox_mirrormode->blockSignals(false);
 
 
+    ui->comboBox_videoConfig->blockSignals(true);
     QStringList videoResolutionList = {
         "ZEGO_RESOLUTION_180x320",
         "ZEGO_RESOLUTION_270x480",
@@ -56,11 +67,20 @@ ZegoPublishDemo::ZegoPublishDemo(QWidget *parent) :
         "ZEGO_RESOLUTION_1080x1920"
     };
     ui->comboBox_videoConfig->addItems(videoResolutionList);
+    ui->comboBox_videoConfig->blockSignals(false);
 
 
+    ui->slider_captureVolume->blockSignals(true);
     ui->slider_captureVolume->setValue(100);
+    ui->slider_captureVolume->blockSignals(false);
+
+    ui->checkBox_enableCamera->blockSignals(true);
     ui->checkBox_enableCamera->setChecked(true);
+    ui->checkBox_enableCamera->blockSignals(false);
+
+    ui->checkBox_enableMicrophone->blockSignals(true);
     ui->checkBox_enableMicrophone->setChecked(true);
+    ui->checkBox_enableMicrophone->blockSignals(false);
 }
 
 ZegoPublishDemo::~ZegoPublishDemo()
