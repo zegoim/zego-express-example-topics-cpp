@@ -17,18 +17,25 @@ ZegoPlayDemo::ZegoPlayDemo(QWidget *parent) :
     engine = ZegoExpressEngine::createEngine(appID, appSign, isTest, ZEGO_SCENARIO_GENERAL, nullptr);
     bindEventHandler();
 
+    ui->comboBox_audioOutputDevice->blockSignals(true);
     auto audioList = engine->getAudioDeviceList(ZEGO_AUDIO_DEVICE_TYPE_OUTPUT);
     for(auto device : audioList){
         ui->comboBox_audioOutputDevice->addItem(QString::fromStdString(device.deviceID));
     }
+    ui->comboBox_audioOutputDevice->blockSignals(false);
 
+    ui->comboBox_viewmode->blockSignals(true);
     QStringList viewModeList = {
         "ZEGO_VIEW_MODE_ASPECT_FIT",
         "ZEGO_VIEW_MODE_ASPECT_FILL",
         "ZEGO_VIEW_MODE_SCALE_TO_FILL"
     };
     ui->comboBox_viewmode->addItems(viewModeList);
+    ui->comboBox_viewmode->blockSignals(false);
+
+    ui->slider_playVolume->blockSignals(true);
     ui->slider_playVolume->setValue(100);
+    ui->slider_playVolume->blockSignals(false);
 }
 
 ZegoPlayDemo::~ZegoPlayDemo()
