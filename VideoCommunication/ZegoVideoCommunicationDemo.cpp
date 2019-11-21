@@ -155,7 +155,6 @@ void ZegoVideoCommunicationDemo::onPlayerStateUpdate(const std::string &streamID
 void ZegoVideoCommunicationDemo::printLogToView(QString log)
 {
     ui->textEdit_log->append(log);
-    ui->textEdit_log->append("\n");
 }
 
 void ZegoVideoCommunicationDemo::bindEventHandler()

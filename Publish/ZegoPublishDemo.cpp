@@ -16,9 +16,9 @@ ZegoPublishDemo::ZegoPublishDemo(QWidget *parent) :
 
     auto appID = ZegoConfigManager::instance()->getAppID();
     auto appSign = ZegoConfigManager::instance()->getAppSign();
-    auto isTest = ZegoConfigManager::instance()->isTestEnviroment();
+    auto isTestEnv = ZegoConfigManager::instance()->isTestEnviroment();
 
-    engine = ZegoExpressEngine::createEngine(appID, appSign, isTest, ZEGO_SCENARIO_GENERAL, nullptr);
+    engine = ZegoExpressEngine::createEngine(appID, appSign, isTestEnv, ZEGO_SCENARIO_GENERAL, nullptr);
     bindEventHandler();
 
     ui->comboBox_microphone->blockSignals(true);
@@ -168,7 +168,6 @@ void ZegoPublishDemo::onPublisherVideoSizeChanged(int width, int height) {
 void ZegoPublishDemo::printLogToView(QString log)
 {
     ui->textEdit_log->append(log);
-    ui->textEdit_log->append("\n");
 }
 
 void ZegoPublishDemo::bindEventHandler()
@@ -227,7 +226,7 @@ void ZegoPublishDemo::on_comboBox_microphone_currentIndexChanged(const QString &
 void ZegoPublishDemo::on_comboBox_viewmode_currentIndexChanged(int index)
 {
      ZegoCanvas canvas((void *)ui->frame_local_video->winId(), ZegoViewMode(index));
-     engine->updatePreviewView(&canvas);
+     engine->startPreview(&canvas);
 }
 
 void ZegoPublishDemo::on_comboBox_mirrormode_currentIndexChanged(int index)

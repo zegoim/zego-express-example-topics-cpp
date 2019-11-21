@@ -1,21 +1,21 @@
-#ifndef ZEGOQUICKSTARTDEMO_H
-#define ZEGOQUICKSTARTDEMO_H
+#ifndef ZEGOAPIMONCKYDEMO_H
+#define ZEGOAPIMONCKYDEMO_H
 
 #include <QWidget>
 #include "ZegoExpressEngine.h"
 using namespace ZEGO::EXPRESS;
 
 namespace Ui {
-class ZegoQuickStartDemo;
+class ZegoApiMonckyDemo;
 }
 
-class ZegoQuickStartDemo : public QWidget
+class ZegoApiMonckyDemo : public QWidget
 {
     Q_OBJECT
 
 public:
-    explicit ZegoQuickStartDemo(QWidget *parent = nullptr);
-    ~ZegoQuickStartDemo();
+    explicit ZegoApiMonckyDemo(QWidget *parent = nullptr);
+    ~ZegoApiMonckyDemo();
 
 public slots:
     void onDebugError(int errorCode, const std::string& funcName, const std::string& info);
@@ -26,20 +26,22 @@ public slots:
     void onPlayerStateUpdate(const std::string& streamID, ZegoPlayerState state, int errCode);
 
 private slots:
-    void on_pushButton_createEngine_clicked();
-    void on_pushButton_loginRoom_clicked();
-    void on_pushButton_PublishStream_clicked();
-    void on_pushButton_PlayStream_clicked();
-    void on_pushButton_destroyEngine_clicked();
+    void on_pushButton_login_clicked();
+    void on_pushButton_logout_clicked();
+    void on_pushButton_start_publish_clicked();
+    void on_pushButton_stop_publish_clicked();
+    void on_pushButton_start_play_clicked();
+    void on_pushButton_stop_play_clicked();
+    void on_pushButton_start_mixer_task_clicked();
+    void on_pushButton_stop_mixer_task_clicked();
 
 private:
     void printLogToView(QString log);
     void bindEventHandler();
 
 private:
-    Ui::ZegoQuickStartDemo *ui;
-    std::shared_ptr<IZegoEventHandler> eventHandler = nullptr;
+    Ui::ZegoApiMonckyDemo *ui;
     ZEGO::EXPRESS::IZegoExpressEngine *engine = nullptr;
 };
 
-#endif // ZEGOQUICKSTARTDEMO_H
+#endif // ZEGOAPIMONCKYDEMO_H
