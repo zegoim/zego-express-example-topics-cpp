@@ -5,6 +5,9 @@
 #include "AppSupport/ZegoUtilHelper.h"
 #include "EventHandler/ZegoEventHandlerQt.h"
 
+#include <QDebug>
+#include <QThread>
+
 #define GuardEngineLoaded \
     if(engine==nullptr) { \
         QString log = QString("Engine Not loaded"); \
@@ -25,10 +28,20 @@ ZegoApiMonckyDemo::ZegoApiMonckyDemo(QWidget *parent) :
     ui->lineEdit_userID->setText(userID.c_str());
     ui->lineEdit_userName->setText(userID.c_str());
 
-    QString mixerTaskContent("{\"backgroundImageURL\":\"\",\"inputList\":[{\"contentType\":1,\"layout\":{\"bottom\":100,\"left\":0,\"right\":50,\"top\":0},\"streamID\":\"stream1\"},{\"contentType\":1,\"layout\":{\"bottom\":100,\"left\":50,\"right\":100,\"top\":0},\"streamID\":\"stream2\"}],\"outputList\":[{\"target\":\"stream3\"}],\"watermark\":{\"imageURL\":\"\",\"layout\":{\"bottom\":10,\"left\":0,\"right\":10,\"top\":0}}}");
     bool ok = true;
-    QJsonObject mixerTaskContentObject = ZegoUtilHelper::stringToJsonObject(mixerTaskContent, ok);
-    ui->textEdit_mixer_taskContent->setText(ZegoUtilHelper::jsonObjectToString(mixerTaskContentObject));
+    {
+    QString mixerTaskContent("{\"backgroundImageURL\":\"\",\"inputList\":[{\"contentType\":1,\"layout\":{\"bottom\":100,\"left\":0,\"right\":50,\"top\":0},\"streamID\":\"stream1\"},{\"contentType\":1,\"layout\":{\"bottom\":100,\"left\":50,\"right\":100,\"top\":0},\"streamID\":\"stream2\"}],\"outputList\":[{\"target\":\"stream3\"}],\"watermark\":{\"imageURL\":\"\",\"layout\":{\"bottom\":10,\"left\":0,\"right\":10,\"top\":0}}}");
+    ui->textEdit_mixer_taskContent->setText(ZegoUtilHelper::jsonObjectToString(ZegoUtilHelper::stringToJsonObject(mixerTaskContent, ok)));
+
+    ui->textEdit_im_panel->append("Welctom to Zego IM\n");
+
+    QString imBroadcastMessage("{\"roomID\":\"room1\",\"message\":\"message\"}");
+    ui->textEdit_sendBroadcastMessage->setText(ZegoUtilHelper::jsonObjectToString(ZegoUtilHelper::stringToJsonObject(imBroadcastMessage, ok)));
+
+    QString imCustomCommand("{\"roomID\":\"room1\",\"command\":\"command\",\"toUserList\":[{\"userID\":\"userID\",\"userName\":\"userName\"}]}");
+    ui->textEdit_sendCustomCommad->setText(ZegoUtilHelper::jsonObjectToString(ZegoUtilHelper::stringToJsonObject(imCustomCommand, ok)));
+    }
+
 
     QString log = QString("do createEngine");
     printLogToView(log);
@@ -95,11 +108,10 @@ void ZegoApiMonckyDemo::onRoomStateUpdate(const std::string &roomID, ZegoRoomSta
 
 void ZegoApiMonckyDemo::onPublisherStateUpdate(const std::string &streamID, ZegoPublisherState state, int errCode) {
     QStringList stateExplain = {
-        "ZEGO_PUBLISHER_STATE_NOPUBLISH",
-        "ZEGO_PUBLISHER_STATE_PUBLISHING",
-        "ZEGO_PUBLISHER_STATE_PUBLISHED"
+        "ZEGO_PUBLISHER_STATE_NO_PUBLISH",
+        "ZEGO_PUBLISHER_STATE_PUBLISH_REQUESTING",
+        "ZEGO_PUBLISHER_STATE_PUBLISHING"
     };
-
     QString log = QString("onPublisherStateUpdate: streamID=%1, state=%2, errorCode=%3").arg(streamID.c_str()).arg(stateExplain.value(state)).arg(errCode);
     printLogToView(log);
 }
@@ -113,6 +125,28 @@ void ZegoApiMonckyDemo::onPlayerStateUpdate(const std::string &streamID, ZegoPla
     };
 
     QString log = QString("onPlayerStateUpdate: streamID=%1, state=%2, errorCode=%3").arg(streamID.c_str()).arg(stateExplain.value(state)).arg(errCode);
+    printLogToView(log);
+}
+
+void ZegoApiMonckyDemo::onMixerRelayCDNStateUpdate(const std::string &taskID, const std::vector<ZegoStreamRelayCDNInfo> &infoList)
+{
+    Q_UNUSED(taskID)
+    Q_UNUSED(infoList);
+}
+
+void ZegoApiMonckyDemo::onIMRecvBroadcastMessage(const std::string &roomID, std::vector<ZegoMessageInfo> messageList)
+{
+    for (const ZegoMessageInfo& messageInfo : messageList) {
+        QString log = QString("onIMRecvBroadcastMessage: roomID=%1,fromUser=%2, message=%3").arg(roomID.c_str()).arg(messageInfo.fromUser.userID.c_str()).arg(messageInfo.message.c_str());
+        ui->textEdit_im_panel->append(log);
+        printLogToView(log);
+    }
+}
+
+void ZegoApiMonckyDemo::onIMRecvCustomCommand(const std::string &roomID, ZegoUser fromUser, const std::string &command)
+{
+    QString log = QString("onIMRecvCustomCommand: roomID=%1, fromUser=%2, command=%3").arg(roomID.c_str()).arg(fromUser.userID.c_str()).arg(command.c_str());
+    ui->textEdit_im_panel->append(log);
     printLogToView(log);
 }
 
@@ -135,9 +169,8 @@ void ZegoApiMonckyDemo::on_pushButton_logout_clicked()
     GuardEngineLoaded
     std::string roomID = ui->lineEdit_roomID->text().toStdString();
     engine->logoutRoom(roomID);
-    QString log = QString("do loginRoom");
+    QString log = QString("do logoutRoom");
     printLogToView(log);
-
 }
 
 void ZegoApiMonckyDemo::on_pushButton_start_publish_clicked()
@@ -265,7 +298,67 @@ void ZegoApiMonckyDemo::bindEventHandler()
     connect(eventHandler.get(), &ZegoEventHandlerQt::sigPublisherStateUpdate, this, &ZegoApiMonckyDemo::onPublisherStateUpdate);
     connect(eventHandler.get(), &ZegoEventHandlerQt::sigPlayerStateUpdate, this, &ZegoApiMonckyDemo::onPlayerStateUpdate);
 
-    engine->addEventHandler(eventHandler);
+    connect(eventHandler.get(), &ZegoEventHandlerQt::sigMixerRelayCDNStateUpdate, this, &ZegoApiMonckyDemo::onMixerRelayCDNStateUpdate);
+    connect(eventHandler.get(), &ZegoEventHandlerQt::sigIMRecvBroadcastMessage, this, &ZegoApiMonckyDemo::onIMRecvBroadcastMessage);
+    connect(eventHandler.get(), &ZegoEventHandlerQt::sigIMRecvCustomCommand, this, &ZegoApiMonckyDemo::onIMRecvCustomCommand);
 
+    engine->addEventHandler(eventHandler);
 }
 
+
+void ZegoApiMonckyDemo::on_pushButton_sendBroadcastMessage_clicked()
+{
+    GuardEngineLoaded
+
+    bool valiadJson = true;
+    QString BroadcastMessageStr = ui->textEdit_sendBroadcastMessage->toPlainText();
+    QJsonObject BroadcastMessage= ZegoUtilHelper::stringToJsonObject(BroadcastMessageStr, valiadJson);
+    if(!valiadJson){
+        printLogToView("please check BroadcastMessageContent");
+        return;
+    }
+
+    QString roomID = BroadcastMessage["roomID"].toString();
+    QString message = BroadcastMessage["message"].toString();
+    engine->sendBroadcastMassage(roomID.toStdString(), message.toStdString(),  [=](int errorCode){
+        if(errorCode==0){
+            ui->textEdit_im_panel->append(QString("send broadcast message: roomID=%1, message=%2").arg(roomID).arg(message));
+        }
+        QString log = QString("send broadcast message: roomID=%1, message=%2, errorCode=%3").arg(roomID).arg(message).arg(errorCode);
+        printLogToView(log);
+    });
+}
+
+void ZegoApiMonckyDemo::on_pushButton_sendCustomCommand_clicked()
+{
+    GuardEngineLoaded
+
+    bool valiadJson = true;
+    QString CustomCommandStr = ui->textEdit_sendCustomCommad->toPlainText();
+    QJsonObject CustomCommand= ZegoUtilHelper::stringToJsonObject(CustomCommandStr, valiadJson);
+    if(!valiadJson){
+        printLogToView("please check BroadcastMessageContent");
+        return;
+    }
+
+    QString roomID = CustomCommand["roomID"].toString();
+    QString command = CustomCommand["command"].toString();
+
+    std::vector<ZegoUser> toUserList;
+    QJsonArray toUserListArray = CustomCommand["toUserList"].toArray();
+    for(auto userValue: toUserListArray){
+        QJsonObject userObject = userValue.toObject();
+        QString userID = userObject["userID"].toString();
+        QString userName = userObject["userName"].toString();
+        ZegoUser user(userID.toStdString(), userName.toStdString());
+        toUserList.push_back(user);
+    }
+
+    engine->sendCustomCommad(roomID.toStdString(),toUserList, command.toStdString(),  [=](int errorCode){
+        if(errorCode==0){
+            ui->textEdit_im_panel->append(QString("send custom Command: roomID=%1, command=%2").arg(roomID).arg(command));
+        }
+        QString log = QString("send custom Command: roomID=%1, message=%2, errorCode=%3").arg(roomID).arg(command).arg(errorCode);
+        printLogToView(log);
+    });
+}

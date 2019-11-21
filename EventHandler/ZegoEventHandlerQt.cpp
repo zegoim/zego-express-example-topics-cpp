@@ -105,3 +105,18 @@ void ZegoEventHandlerQt::onRemoteMicStateUpdate(const std::string &streamID, Zeg
 {
     emit sigRemoteMicStateUpdate(streamID,  state);
 }
+
+void ZegoEventHandlerQt::onMixerRelayCDNStateUpdate(const std::string &taskID, const std::vector<ZegoStreamRelayCDNInfo> &infoList)
+{
+    emit sigMixerRelayCDNStateUpdate(taskID, infoList);
+}
+
+void ZegoEventHandlerQt::onIMRecvBroadcastMessage(const std::string &roomID, std::vector<ZegoMessageInfo> messageList)
+{
+    emit sigIMRecvBroadcastMessage(roomID, messageList);
+}
+
+void ZegoEventHandlerQt::onIMRecvCustomCommand(const std::string &roomID, ZegoUser fromUser, const std::string &command)
+{
+    emit sigIMRecvCustomCommand(roomID, fromUser, command);
+}

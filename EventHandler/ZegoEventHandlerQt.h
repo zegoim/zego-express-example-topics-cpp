@@ -31,6 +31,9 @@ public:
     void onDeviceError(int errorCode, const std::string& deviceName) override;
     void onRemoteCameraStateUpdate(const std::string& streamID, ZegoRemoteDeviceState state) override;
     void onRemoteMicStateUpdate(const std::string& streamID, ZegoRemoteDeviceState state) override;
+    void onMixerRelayCDNStateUpdate(const std::string& taskID, const std::vector<ZegoStreamRelayCDNInfo>& infoList) override;
+    void onIMRecvBroadcastMessage(const std::string& roomID, std::vector<ZegoMessageInfo> messageList) override;
+    void onIMRecvCustomCommand(const std::string& roomID, ZegoUser fromUser, const std::string& command) override;
 
 signals:
     void sigDebugError(int errorCode, const std::string& funcName, const std::string& info);
@@ -52,6 +55,9 @@ signals:
     void sigDeviceError(int errorCode, const std::string& deviceName);
     void sigRemoteCameraStateUpdate(const std::string& streamID, ZegoRemoteDeviceState state);
     void sigRemoteMicStateUpdate(const std::string& streamID, ZegoRemoteDeviceState state);
+    void sigMixerRelayCDNStateUpdate(const std::string& taskID, const std::vector<ZegoStreamRelayCDNInfo>& infoList);
+    void sigIMRecvBroadcastMessage(const std::string& roomID, std::vector<ZegoMessageInfo> messageList);
+    void sigIMRecvCustomCommand(const std::string& roomID, ZegoUser fromUser, const std::string& command);
 
 public slots:
 };

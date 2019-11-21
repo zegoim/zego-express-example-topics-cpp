@@ -43,8 +43,6 @@ private:
 
 private:
     Ui::ZegoPlayDemo *ui;
-
-    std::shared_ptr<IZegoEventHandler> eventHandler;
     ZEGO::EXPRESS::IZegoExpressEngine *engine;
 };
 

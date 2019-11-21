@@ -37,7 +37,6 @@ private:
 private:
     Ui::ZegoVideoCommunicationDemo *ui;
     std::vector<ZegoStream> zegoStreamList;
-    std::shared_ptr<IZegoEventHandler> eventHandler;
     ZEGO::EXPRESS::IZegoExpressEngine *engine;
 };
 

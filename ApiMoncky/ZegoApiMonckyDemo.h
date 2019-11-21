@@ -25,6 +25,10 @@ public slots:
     void onPublisherStateUpdate(const std::string& streamID, ZegoPublisherState state, int errCode);
     void onPlayerStateUpdate(const std::string& streamID, ZegoPlayerState state, int errCode);
 
+    void onMixerRelayCDNStateUpdate(const std::string& taskID, const std::vector<ZegoStreamRelayCDNInfo>& infoList);
+    void onIMRecvBroadcastMessage(const std::string& roomID, std::vector<ZegoMessageInfo> messageList);
+    void onIMRecvCustomCommand(const std::string& roomID, ZegoUser fromUser, const std::string& command);
+
 private slots:
     void on_pushButton_login_clicked();
     void on_pushButton_logout_clicked();
@@ -34,6 +38,10 @@ private slots:
     void on_pushButton_stop_play_clicked();
     void on_pushButton_start_mixer_task_clicked();
     void on_pushButton_stop_mixer_task_clicked();
+
+    void on_pushButton_sendBroadcastMessage_clicked();
+
+    void on_pushButton_sendCustomCommand_clicked();
 
 private:
     void printLogToView(QString log);

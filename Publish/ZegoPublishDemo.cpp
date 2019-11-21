@@ -129,9 +129,9 @@ void ZegoPublishDemo::onRoomUserUpdate(const std::string& roomID, ZegoUpdateType
 
 void ZegoPublishDemo::onPublisherStateUpdate(const std::string& streamID, ZegoPublisherState state, int errCode) {
     QStringList stateExplain = {
-        "ZEGO_PUBLISHER_STATE_NOPUBLISH",
-        "ZEGO_PUBLISHER_STATE_PUBLISHING",
-        "ZEGO_PUBLISHER_STATE_PUBLISHED"
+        "ZEGO_PUBLISHER_STATE_NO_PUBLISH",
+        "ZEGO_PUBLISHER_STATE_PUBLISH_REQUESTING",
+        "ZEGO_PUBLISHER_STATE_PUBLISHING"
     };
 
     QString log = QString("onPublisherStateUpdate: streamID=%1, state=%2, errorCode=%3").arg(streamID.c_str()).arg(stateExplain.value(state)).arg(errCode);

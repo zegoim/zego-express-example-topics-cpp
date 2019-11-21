@@ -52,7 +52,6 @@ private:
 private:
     Ui::ZegoPublishDemo *ui;
     ZegoVideoConfig videoConfig;
-    std::shared_ptr<IZegoEventHandler> eventHandler;
     ZEGO::EXPRESS::IZegoExpressEngine *engine;
 };
 

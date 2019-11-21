@@ -38,7 +38,6 @@ private:
 
 private:
     Ui::ZegoQuickStartDemo *ui;
-    std::shared_ptr<IZegoEventHandler> eventHandler = nullptr;
     ZEGO::EXPRESS::IZegoExpressEngine *engine = nullptr;
 };
 

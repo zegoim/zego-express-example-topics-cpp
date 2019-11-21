@@ -33,66 +33,16 @@
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_6">
          <item>
-          <widget class="QFrame" name="frame_7">
+          <widget class="QFrame" name="frame_mixer_video">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
            <property name="frameShape">
-            <enum>QFrame::StyledPanel</enum>
+            <enum>QFrame::Box</enum>
            </property>
-           <property name="frameShadow">
-            <enum>QFrame::Raised</enum>
-           </property>
-           <layout class="QHBoxLayout" name="horizontalLayout_2">
-            <item>
-             <widget class="QFrame" name="frame_local_video">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="frameShape">
-               <enum>QFrame::Box</enum>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QFrame" name="frame_local_video_2">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="frameShape">
-               <enum>QFrame::Box</enum>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </widget>
-         </item>
-         <item>
-          <widget class="QFrame" name="frame_8">
-           <property name="frameShape">
-            <enum>QFrame::StyledPanel</enum>
-           </property>
-           <property name="frameShadow">
-            <enum>QFrame::Raised</enum>
-           </property>
-           <layout class="QHBoxLayout" name="horizontalLayout_3">
-            <item>
-             <widget class="QFrame" name="frame_local_video_3">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="frameShape">
-               <enum>QFrame::Box</enum>
-              </property>
-             </widget>
-            </item>
-           </layout>
           </widget>
          </item>
         </layout>
@@ -112,325 +62,267 @@
         <property name="frameShadow">
          <enum>QFrame::Raised</enum>
         </property>
-        <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,0,0,1">
+        <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,0,1">
          <item>
-          <widget class="QFrame" name="frame_4">
-           <property name="frameShape">
-            <enum>QFrame::StyledPanel</enum>
+          <widget class="QPushButton" name="pushButton_mixer_title">
+           <property name="enabled">
+            <bool>false</bool>
            </property>
-           <property name="frameShadow">
-            <enum>QFrame::Raised</enum>
+           <property name="text">
+            <string>This is the Room ID</string>
            </property>
-           <layout class="QGridLayout" name="gridLayout">
-            <item row="1" column="2">
-             <widget class="QPushButton" name="pushButton_stopPublish">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
+          </widget>
+         </item>
+         <item>
+          <widget class="QGroupBox" name="groupBox">
+           <property name="title">
+            <string>Start/Stop mixer</string>
+           </property>
+           <layout class="QHBoxLayout" name="horizontalLayout_2">
+            <item>
+             <widget class="QFrame" name="frame_3">
+              <property name="frameShape">
+               <enum>QFrame::StyledPanel</enum>
               </property>
-              <property name="text">
-               <string>Stop Publish</string>
+              <property name="frameShadow">
+               <enum>QFrame::Raised</enum>
               </property>
-             </widget>
-            </item>
-            <item row="0" column="0">
-             <widget class="QLineEdit" name="lineEdit_roomID">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="placeholderText">
-               <string>roomID</string>
-              </property>
-             </widget>
-            </item>
-            <item row="2" column="0">
-             <widget class="QLineEdit" name="lineEdit_streamID_2">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="placeholderText">
-               <string>playStreamID</string>
-              </property>
-             </widget>
-            </item>
-            <item row="2" column="1">
-             <widget class="QPushButton" name="pushButton_startPublish_2">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="text">
-               <string>Start Play</string>
-              </property>
-             </widget>
-            </item>
-            <item row="0" column="2">
-             <widget class="QPushButton" name="pushButton_2">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="text">
-               <string>Logout</string>
-              </property>
-             </widget>
-            </item>
-            <item row="0" column="1">
-             <widget class="QPushButton" name="pushButton">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="text">
-               <string>Login</string>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="0">
-             <widget class="QLineEdit" name="lineEdit_streamID">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="placeholderText">
-               <string>publishStreamID</string>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="1">
-             <widget class="QPushButton" name="pushButton_startPublish">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="text">
-               <string>Start Publish</string>
-              </property>
-             </widget>
-            </item>
-            <item row="2" column="2">
-             <widget class="QPushButton" name="pushButton_stopPublish_2">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="text">
-               <string>Stop Play</string>
-              </property>
+              <layout class="QFormLayout" name="formLayout_3">
+               <item row="1" column="0">
+                <widget class="QLabel" name="label_4">
+                 <property name="text">
+                  <string>MixerInput1:</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="1">
+                <widget class="QComboBox" name="comboBox_input_streamID1"/>
+               </item>
+               <item row="2" column="1">
+                <layout class="QFormLayout" name="formLayout">
+                 <item row="0" column="0">
+                  <widget class="QLabel" name="label">
+                   <property name="text">
+                    <string>left:</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="0" column="1">
+                  <widget class="QSpinBox" name="spinBox_input_left1">
+                   <property name="maximum">
+                    <number>10000</number>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="0">
+                  <widget class="QLabel" name="label_2">
+                   <property name="text">
+                    <string>top:</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="1">
+                  <widget class="QSpinBox" name="spinBox_input_top1">
+                   <property name="maximum">
+                    <number>10000</number>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="2" column="0">
+                  <widget class="QLabel" name="label_3">
+                   <property name="text">
+                    <string>right:</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="2" column="1">
+                  <widget class="QSpinBox" name="spinBox_input_right1">
+                   <property name="maximum">
+                    <number>10000</number>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="3" column="0">
+                  <widget class="QLabel" name="label_6">
+                   <property name="text">
+                    <string>bottom:</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="3" column="1">
+                  <widget class="QSpinBox" name="spinBox_input_bottom1">
+                   <property name="maximum">
+                    <number>10000</number>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </item>
+               <item row="3" column="0">
+                <widget class="QLabel" name="label_11">
+                 <property name="text">
+                  <string>MixerInput2:</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="3" column="1">
+                <widget class="QComboBox" name="comboBox_input_streamID2"/>
+               </item>
+               <item row="6" column="1">
+                <layout class="QFormLayout" name="formLayout_2">
+                 <item row="0" column="0">
+                  <widget class="QLabel" name="label_5">
+                   <property name="text">
+                    <string>left:</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="0" column="1">
+                  <widget class="QSpinBox" name="spinBox_input_left2">
+                   <property name="maximum">
+                    <number>10000</number>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="0">
+                  <widget class="QLabel" name="label_7">
+                   <property name="text">
+                    <string>top:</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="1">
+                  <widget class="QSpinBox" name="spinBox_input_top2">
+                   <property name="maximum">
+                    <number>10000</number>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="2" column="0">
+                  <widget class="QLabel" name="label_8">
+                   <property name="text">
+                    <string>right:</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="2" column="1">
+                  <widget class="QSpinBox" name="spinBox_input_right2">
+                   <property name="maximum">
+                    <number>10000</number>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="3" column="0">
+                  <widget class="QLabel" name="label_9">
+                   <property name="text">
+                    <string>bottom:</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="3" column="1">
+                  <widget class="QSpinBox" name="spinBox_input_bottom2">
+                   <property name="maximum">
+                    <number>10000</number>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </item>
+               <item row="9" column="0">
+                <widget class="QLabel" name="label_10">
+                 <property name="text">
+                  <string>MixerOutput:</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="9" column="1">
+                <layout class="QHBoxLayout" name="horizontalLayout_4">
+                 <item>
+                  <widget class="QLineEdit" name="lineEdit_output_streamID">
+                   <property name="placeholderText">
+                    <string>Input the streamID for output</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </item>
+               <item row="10" column="0" colspan="2">
+                <widget class="QPushButton" name="pushButton_start_mixer_task">
+                 <property name="text">
+                  <string>Start Mixer Task</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="11" column="0" colspan="2">
+                <widget class="QPushButton" name="pushButton_stop_mixer_task">
+                 <property name="text">
+                  <string>Stop Mixer Task</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="0" column="0">
+                <widget class="QLabel" name="label_13">
+                 <property name="text">
+                  <string>VideoConfig:</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="0" column="1">
+                <widget class="QComboBox" name="comboBox_mixerVideoConfig"/>
+               </item>
+              </layout>
              </widget>
             </item>
            </layout>
           </widget>
          </item>
          <item>
-          <widget class="QFrame" name="frame_3">
-           <property name="frameShape">
-            <enum>QFrame::StyledPanel</enum>
+          <widget class="QGroupBox" name="groupBox_2">
+           <property name="title">
+            <string>Play mixer stream</string>
            </property>
-           <property name="frameShadow">
-            <enum>QFrame::Raised</enum>
-           </property>
-           <layout class="QFormLayout" name="formLayout_3">
-            <item row="1" column="1">
-             <widget class="QLineEdit" name="lineEdit_2"/>
-            </item>
-            <item row="2" column="1">
-             <widget class="QComboBox" name="comboBox_microphone">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
+           <layout class="QHBoxLayout" name="horizontalLayout_3">
+            <item>
+             <widget class="QFrame" name="frame_4">
+              <property name="frameShape">
+               <enum>QFrame::StyledPanel</enum>
               </property>
-              <property name="maximumSize">
-               <size>
-                <width>16777215</width>
-                <height>16777215</height>
-               </size>
+              <property name="frameShadow">
+               <enum>QFrame::Raised</enum>
               </property>
-             </widget>
-            </item>
-            <item row="3" column="1">
-             <layout class="QFormLayout" name="formLayout">
-              <item row="0" column="0">
-               <widget class="QLabel" name="label">
-                <property name="text">
-                 <string>left:</string>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="1">
-               <widget class="QSpinBox" name="spinBox_2"/>
-              </item>
-              <item row="1" column="0">
-               <widget class="QLabel" name="label_2">
-                <property name="text">
-                 <string>top:</string>
-                </property>
-               </widget>
-              </item>
-              <item row="1" column="1">
-               <widget class="QSpinBox" name="spinBox_3"/>
-              </item>
-              <item row="2" column="0">
-               <widget class="QLabel" name="label_3">
-                <property name="text">
-                 <string>right:</string>
-                </property>
-               </widget>
-              </item>
-              <item row="2" column="1">
-               <widget class="QSpinBox" name="spinBox_4"/>
-              </item>
-              <item row="3" column="0">
-               <widget class="QLabel" name="label_6">
-                <property name="text">
-                 <string>bottom:</string>
-                </property>
-               </widget>
-              </item>
-              <item row="3" column="1">
-               <widget class="QSpinBox" name="spinBox"/>
-              </item>
-             </layout>
-            </item>
-            <item row="4" column="0">
-             <widget class="QLabel" name="label_11">
-              <property name="text">
-               <string>MixerInput2:</string>
-              </property>
-             </widget>
-            </item>
-            <item row="4" column="1">
-             <widget class="QLineEdit" name="lineEdit_3"/>
-            </item>
-            <item row="6" column="1">
-             <widget class="QComboBox" name="comboBox_microphone_2">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>16777215</width>
-                <height>16777215</height>
-               </size>
-              </property>
-             </widget>
-            </item>
-            <item row="8" column="1">
-             <layout class="QFormLayout" name="formLayout_2">
-              <item row="0" column="0">
-               <widget class="QLabel" name="label_5">
-                <property name="text">
-                 <string>left:</string>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="1">
-               <widget class="QSpinBox" name="spinBox_5"/>
-              </item>
-              <item row="1" column="0">
-               <widget class="QLabel" name="label_7">
-                <property name="text">
-                 <string>top:</string>
-                </property>
-               </widget>
-              </item>
-              <item row="1" column="1">
-               <widget class="QSpinBox" name="spinBox_6"/>
-              </item>
-              <item row="2" column="0">
-               <widget class="QLabel" name="label_8">
-                <property name="text">
-                 <string>right:</string>
-                </property>
-               </widget>
-              </item>
-              <item row="2" column="1">
-               <widget class="QSpinBox" name="spinBox_7"/>
-              </item>
-              <item row="3" column="0">
-               <widget class="QLabel" name="label_9">
-                <property name="text">
-                 <string>bottom:</string>
-                </property>
-               </widget>
-              </item>
-              <item row="3" column="1">
-               <widget class="QSpinBox" name="spinBox_8"/>
-              </item>
-             </layout>
-            </item>
-            <item row="11" column="1">
-             <layout class="QHBoxLayout" name="horizontalLayout_4">
-              <item>
-               <widget class="QCheckBox" name="checkBox_mutePublishStreamAudio">
-                <property name="text">
-                 <string>IsUrl</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QLineEdit" name="lineEdit">
-                <property name="placeholderText">
-                 <string>target</string>
-                </property>
-               </widget>
-              </item>
-             </layout>
-            </item>
-            <item row="1" column="0">
-             <widget class="QLabel" name="label_4">
-              <property name="text">
-               <string>MixerInput1:</string>
-              </property>
-             </widget>
-            </item>
-            <item row="11" column="0">
-             <widget class="QLabel" name="label_10">
-              <property name="text">
-               <string>MixerOutput:</string>
-              </property>
+              <layout class="QFormLayout" name="formLayout_4">
+               <item row="1" column="0">
+                <widget class="QLabel" name="label_12">
+                 <property name="text">
+                  <string>Mixer streamID:</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="1">
+                <widget class="QLineEdit" name="lineEdit_streamID_to_play">
+                 <property name="placeholderText">
+                  <string>Input the streamID for play</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="3" column="0" colspan="2">
+                <widget class="QPushButton" name="pushButton_stop_play">
+                 <property name="text">
+                  <string>Stop Play</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="2" column="0" colspan="2">
+                <widget class="QPushButton" name="pushButton_start_play">
+                 <property name="text">
+                  <string>Start Play</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
              </widget>
             </item>
            </layout>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="pushButton_3">
-           <property name="text">
-            <string>StartMixerTask</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="pushButton_4">
-           <property name="text">
-            <string>StopMixerTask</string>
-           </property>
           </widget>
          </item>
          <item>
