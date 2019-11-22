@@ -32,15 +32,17 @@ public slots:
 private slots:
     void on_pushButton_login_clicked();
     void on_pushButton_logout_clicked();
+
     void on_pushButton_start_publish_clicked();
     void on_pushButton_stop_publish_clicked();
+
     void on_pushButton_start_play_clicked();
     void on_pushButton_stop_play_clicked();
+
     void on_pushButton_start_mixer_task_clicked();
     void on_pushButton_stop_mixer_task_clicked();
 
     void on_pushButton_sendBroadcastMessage_clicked();
-
     void on_pushButton_sendCustomCommand_clicked();
 
 private:

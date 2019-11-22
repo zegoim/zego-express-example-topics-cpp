@@ -10,6 +10,7 @@
 #include "Play/ZegoPlayDemo.h"
 #include "VideoCommunication/ZegoVideoCommunicationDemo.h"
 #include "Mixer/ZegoMixerDemo.h"
+#include "RoomMessage/ZegoRoomMessageDemo.h"
 #include "ApiMoncky/ZegoApiMonckyDemo.h"
 
 
@@ -18,6 +19,7 @@ static QString ItemTextPublishStream("PublishStream");
 static QString ItemTextPlayStream("PlayStream");
 static QString ItemTextVideoCommunication("VideoCommunication");
 static QString ItemTextMixerStream("MixerStream");
+static QString ItemTextRoomMessage("RoomMessage");
 static QString ItemTextApiMoncky("ApiMoncky");
 
 
@@ -41,6 +43,7 @@ ZegoExpressDemo::ZegoExpressDemo(QWidget *parent) :
     QStringList advanceUseCaseItems;
     advanceUseCaseItems.append(ItemTextVideoCommunication);
     advanceUseCaseItems.append(ItemTextMixerStream);
+    advanceUseCaseItems.append(ItemTextRoomMessage);
     advanceUseCaseItems.append(ItemTextApiMoncky);
     ui->listWidget_advance_menu->addItems(advanceUseCaseItems);
 
@@ -97,6 +100,10 @@ void ZegoExpressDemo::doChangeTopic(QString itemText)
 
     if(currentItemText==ItemTextMixerStream){
         currentTopicWidget = new ZegoMixerDemo;
+    }
+
+    if(currentItemText==ItemTextRoomMessage){
+        currentTopicWidget = new ZegoRoomMessageDemo;
     }
 
     if(currentItemText==ItemTextApiMoncky){

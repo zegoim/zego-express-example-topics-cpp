@@ -10,9 +10,6 @@ ZegoPublishDemo::ZegoPublishDemo(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    /*
-    videoConfig = ZegoVideoConfig(ZEGO_RESOLUTION_540x960);
-    */
 
     auto appID = ZegoConfigManager::instance()->getAppID();
     auto appSign = ZegoConfigManager::instance()->getAppSign();
@@ -67,6 +64,7 @@ ZegoPublishDemo::ZegoPublishDemo(QWidget *parent) :
         "ZEGO_RESOLUTION_1080x1920"
     };
     ui->comboBox_videoConfig->addItems(videoResolutionList);
+    ui->comboBox_videoConfig->setCurrentIndex(2);
     ui->comboBox_videoConfig->blockSignals(false);
 
 
@@ -261,28 +259,8 @@ void ZegoPublishDemo::on_checkBox_enableCamera_clicked(bool checked)
 
 void ZegoPublishDemo::on_comboBox_videoConfig_currentIndexChanged(int index)
 {
-    /*
-    videoConfig = ZegoVideoConfig(ZegoResolutionType(index));
-
+    ZegoVideoConfig videoConfig = ZegoVideoConfig(ZegoResolution(index));
     engine->setVideoConfig(videoConfig);
     ui->spinBox_videoBPS->setValue(videoConfig.bitrate);
     ui->spinBox_videoFPS->setValue(videoConfig.fps);
-    */
-}
-
-void ZegoPublishDemo::on_spinBox_videoFPS_valueChanged(int arg1)
-{
-    videoConfig.fps = arg1;
-    engine->setVideoConfig(videoConfig);
-}
-
-void ZegoPublishDemo::on_spinBox_videoBPS_valueChanged(int arg1)
-{
-    videoConfig.bitrate = arg1;
-    engine->setVideoConfig(videoConfig);
-}
-
-void ZegoPublishDemo::on_spinBox_audioBPS_valueChanged(int arg1)
-{
-    engine->setAudioBitrate(arg1);
 }

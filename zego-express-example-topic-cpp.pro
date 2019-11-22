@@ -35,7 +35,8 @@ SOURCES += \
     QuickStart/ZegoQuickStartDemo.cpp \
     AppSupport/ZegoUtilHelper.cpp \
     Mixer/ZegoMixerDemo.cpp \
-    ApiMoncky/ZegoApiMonckyDemo.cpp
+    ApiMoncky/ZegoApiMonckyDemo.cpp \
+    RoomMessage/ZegoRoomMessageDemo.cpp
 
 HEADERS += \
     ZegoExpressDemo.h \
@@ -48,7 +49,8 @@ HEADERS += \
     QuickStart/ZegoQuickStartDemo.h \
     AppSupport/ZegoUtilHelper.h \
     Mixer/ZegoMixerDemo.h \
-    ApiMoncky/ZegoApiMonckyDemo.h
+    ApiMoncky/ZegoApiMonckyDemo.h \
+    RoomMessage/ZegoRoomMessageDemo.h
 
 FORMS += \
     zegoexpressdemo.ui \
@@ -57,7 +59,8 @@ FORMS += \
     VideoCommunication/ZegoVideoCommunicationDemo.ui \
     QuickStart/ZegoQuickStartDemo.ui \
     Mixer/ZegoMixerDemo.ui \
-    ApiMoncky/ZegoApiMonckyDemo.ui
+    ApiMoncky/ZegoApiMonckyDemo.ui \
+    RoomMessage/ZegoRoomMessageDemo.ui
 
 
 # Default rules for deployment.

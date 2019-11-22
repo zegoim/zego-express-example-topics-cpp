@@ -251,7 +251,7 @@
             <item row="4" column="1">
              <widget class="QComboBox" name="comboBox_videoConfig">
               <property name="enabled">
-               <bool>false</bool>
+               <bool>true</bool>
               </property>
               <property name="sizePolicy">
                <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
@@ -292,23 +292,6 @@
               </item>
               <item row="1" column="1">
                <widget class="QSpinBox" name="spinBox_videoBPS">
-                <property name="enabled">
-                 <bool>false</bool>
-                </property>
-                <property name="maximum">
-                 <number>10000000</number>
-                </property>
-               </widget>
-              </item>
-              <item row="2" column="0">
-               <widget class="QLabel" name="label_19">
-                <property name="text">
-                 <string>Audio BPS：</string>
-                </property>
-               </widget>
-              </item>
-              <item row="2" column="1">
-               <widget class="QSpinBox" name="spinBox_audioBPS">
                 <property name="enabled">
                  <bool>false</bool>
                 </property>
