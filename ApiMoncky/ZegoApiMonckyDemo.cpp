@@ -7,6 +7,7 @@
 
 #include <QDebug>
 #include <QThread>
+#include <QScrollBar>
 
 #define GuardEngineLoaded \
     if(engine==nullptr) { \
@@ -275,15 +276,13 @@ void ZegoApiMonckyDemo::on_pushButton_stop_mixer_task_clicked()
     GuardEngineLoaded
 
     std::string taskID = ui->lineEdit_mixer_taskID->text().toStdString();
-    engine->stopMixerTask(taskID, [=](int errorCode){
-        QString log = QString("stop mixer task result: errorCode=%1").arg(errorCode);
-        printLogToView(log);
-    });
+    engine->stopMixerTask(taskID);
 }
 
 void ZegoApiMonckyDemo::printLogToView(QString log)
 {
     ui->textEdit_log->append(log);
+    ui->textEdit_log->verticalScrollBar()->setValue(ui->textEdit_log->verticalScrollBar()->maximum());
 }
 
 void ZegoApiMonckyDemo::bindEventHandler()

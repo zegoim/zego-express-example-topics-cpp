@@ -5,6 +5,8 @@
 #include "AppSupport/ZegoUtilHelper.h"
 #include "EventHandler/ZegoEventHandlerQt.h"
 
+#include <QScrollBar>
+
 ZegoRoomMessageDemo::ZegoRoomMessageDemo(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::ZegoRoomMessageDemo)
@@ -155,6 +157,7 @@ void ZegoRoomMessageDemo::on_pushButton_send_custom_command_clicked()
 void ZegoRoomMessageDemo::printLogToView(QString log)
 {
     ui->textEdit_log->append(log);
+    ui->textEdit_log->verticalScrollBar()->setValue(ui->textEdit_log->verticalScrollBar()->maximum());
 }
 
 void ZegoRoomMessageDemo::bindEventHandler()

@@ -4,6 +4,8 @@
 #include "AppSupport/ZegoConfigManager.h"
 #include "EventHandler/ZegoEventHandlerQt.h"
 
+#include <QScrollBar>
+
 ZegoPublishDemo::ZegoPublishDemo(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::ZegoPublishDemo)
@@ -166,6 +168,7 @@ void ZegoPublishDemo::onPublisherVideoSizeChanged(int width, int height) {
 void ZegoPublishDemo::printLogToView(QString log)
 {
     ui->textEdit_log->append(log);
+    ui->textEdit_log->verticalScrollBar()->setValue(ui->textEdit_log->verticalScrollBar()->maximum());
 }
 
 void ZegoPublishDemo::bindEventHandler()
@@ -203,6 +206,7 @@ void ZegoPublishDemo::on_pushButton_startPublish_clicked()
 
 void ZegoPublishDemo::on_pushButton_stopPublish_clicked()
 {
+    engine->stopPreview();
     engine->stopPublishing();
 }
 
@@ -213,12 +217,12 @@ void ZegoPublishDemo::on_pushButton_clear_log_clicked()
 
 void ZegoPublishDemo::on_comboBox_camera_currentIndexChanged(const QString &arg1)
 {
-    engine->useAudioDevice(ZEGO_AUDIO_DEVICE_TYPE_INPUT, arg1.toStdString());
+    engine->useVideoDevice(arg1.toStdString());
 }
 
 void ZegoPublishDemo::on_comboBox_microphone_currentIndexChanged(const QString &arg1)
 {
-    engine->useVideoDevice(arg1.toStdString());
+   engine->useAudioDevice(ZEGO_AUDIO_DEVICE_TYPE_INPUT, arg1.toStdString());
 }
 
 void ZegoPublishDemo::on_comboBox_viewmode_currentIndexChanged(int index)

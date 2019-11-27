@@ -4,6 +4,7 @@
 #include "AppSupport/ZegoConfigManager.h"
 #include "AppSupport/ZegoUtilHelper.h"
 #include "EventHandler/ZegoEventHandlerQt.h"
+#include <QScrollBar>
 
 std::string ZegoMixerDemo::mixerTaskID;
 
@@ -28,6 +29,8 @@ ZegoMixerDemo::ZegoMixerDemo(QWidget *parent) :
     printLogToView(log);
 
     ui->pushButton_mixer_title->setText(QString("MixerRoomID: %1").arg(roomID.c_str()));
+    ui->pushButton_mixer_userID->setText(QString("MixerUserID: %1").arg(random.c_str()));
+
 
     QStringList ZegoResolutionList = {
         "ZEGO_RESOLUTION_180x320" ,
@@ -118,6 +121,18 @@ void ZegoMixerDemo::onRoomStreamUpdate(const std::string &roomID, ZegoUpdateType
 
 }
 
+void ZegoMixerDemo::onPlayerStateUpdate(const std::string &streamID, ZegoPlayerState state, int errCode)
+{
+    QStringList stateExplain = {
+        "ZEGO_PLAYER_STATE_NO_PLAY",
+        "ZEGO_PLAYER_STATE_PLAY_REQUESTING",
+        "ZEGO_PLAYER_STATE_PLAYING"
+    };
+
+    QString log = QString("onPlayerStateUpdate: streamID=%1, state=%2, errorCode=%3").arg(streamID.c_str()).arg(stateExplain.value(state)).arg(errCode);
+    printLogToView(log);
+}
+
 void ZegoMixerDemo::onMixerRelayCDNStateUpdate(const std::string &taskID, const std::vector<ZegoStreamRelayCDNInfo> &infoList)
 {
 
@@ -126,9 +141,7 @@ void ZegoMixerDemo::onMixerRelayCDNStateUpdate(const std::string &taskID, const 
 void ZegoMixerDemo::on_pushButton_start_mixer_task_clicked()
 {
     if(this->mixerTaskID!=""){
-        engine->stopMixerTask(this->mixerTaskID, [=](int errorCode){
-
-        });
+        engine->stopMixerTask(this->mixerTaskID);
     }
 
     // 0. MixerTask
@@ -164,7 +177,8 @@ void ZegoMixerDemo::on_pushButton_start_mixer_task_clicked()
 
     // 4. MixerTask-OutputList
     ZegoMixerOutput mixerOutput;
-    mixerOutput.target = ui->lineEdit_output_streamID->text().toStdString();
+    std::string target = ui->lineEdit_output_streamID->text().toStdString();
+    mixerOutput.target = target;
     task.outputList = {mixerOutput};
 
     // 5. MixerTask-watermask:(option)
@@ -172,18 +186,24 @@ void ZegoMixerDemo::on_pushButton_start_mixer_task_clicked()
     // 6. MixerTask-backgroundImage:(option)
 
     // start mixer task
+    QString log = QString("do start mixer task: taskID=%1, target=%2").arg(task.taskID.c_str()).arg(target.c_str());
+    printLogToView(log);
     engine->startMixerTask(task, [=](ZegoMixerStartResult result){
-        QString log = QString("start mixer task result: errorCode=%1").arg(result.errorCode);
+        QString log = QString("start mixer task result: taskID=%1, errorCode=%2").arg(task.taskID.c_str()).arg(result.errorCode);
         printLogToView(log);
     });
 }
 
 void ZegoMixerDemo::on_pushButton_stop_mixer_task_clicked()
 {
-    if(this->mixerTaskID!=""){
-        engine->stopMixerTask(this->mixerTaskID, [=](int errorCode){
-
-        });
+    if(this->mixerTaskID==""){
+        QString log = QString("start mixer task first, then stop it");
+        printLogToView(log);
+    }
+    else{
+        QString log = QString("do stop mixer task: taskID=%1").arg(this->mixerTaskID.c_str());
+        printLogToView(log);
+        engine->stopMixerTask(this->mixerTaskID);
     }
 }
 
@@ -203,6 +223,7 @@ void ZegoMixerDemo::on_pushButton_stop_play_clicked()
 void ZegoMixerDemo::printLogToView(QString log)
 {
     ui->textEdit_log->append(log);
+    ui->textEdit_log->verticalScrollBar()->setValue(ui->textEdit_log->verticalScrollBar()->maximum());
 }
 
 void ZegoMixerDemo::bindEventHandler()
@@ -212,6 +233,7 @@ void ZegoMixerDemo::bindEventHandler()
     connect(eventHandler.get(), &ZegoEventHandlerQt::sigDebugError, this, &ZegoMixerDemo::onDebugError);
     connect(eventHandler.get(), &ZegoEventHandlerQt::sigRoomStateUpdate, this, &ZegoMixerDemo::onRoomStateUpdate);
     connect(eventHandler.get(), &ZegoEventHandlerQt::sigRoomStreamUpdate, this, &ZegoMixerDemo::onRoomStreamUpdate);
+    connect(eventHandler.get(), &ZegoEventHandlerQt::sigPlayerStateUpdate, this, &ZegoMixerDemo::onPlayerStateUpdate);
     connect(eventHandler.get(), &ZegoEventHandlerQt::sigMixerRelayCDNStateUpdate, this, &ZegoMixerDemo::onMixerRelayCDNStateUpdate);
 
     engine->addEventHandler(eventHandler);

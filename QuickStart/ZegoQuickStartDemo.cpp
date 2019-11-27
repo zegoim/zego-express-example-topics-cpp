@@ -6,6 +6,8 @@
 #include "AppSupport/ZegoUtilHelper.h"
 #include "EventHandler/ZegoEventHandlerQt.h"
 
+#include <QScrollBar>
+
 ZegoQuickStartDemo::ZegoQuickStartDemo(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::ZegoQuickStartDemo)
@@ -182,6 +184,7 @@ void ZegoQuickStartDemo::on_pushButton_destroyEngine_clicked()
 void ZegoQuickStartDemo::printLogToView(QString log)
 {
     ui->textEdit_log->append(log);
+    ui->textEdit_log->verticalScrollBar()->setValue(ui->textEdit_log->verticalScrollBar()->maximum());
 }
 
 void ZegoQuickStartDemo::bindEventHandler()

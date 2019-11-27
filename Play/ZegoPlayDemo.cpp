@@ -4,6 +4,8 @@
 #include "AppSupport/ZegoConfigManager.h"
 #include "EventHandler/ZegoEventHandlerQt.h"
 
+#include <QScrollBar>
+
 ZegoPlayDemo::ZegoPlayDemo(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::ZegoPlayDemo)
@@ -134,6 +136,7 @@ void ZegoPlayDemo::onRoomUserUpdate(const std::string &roomID, ZegoUpdateType up
 void ZegoPlayDemo::printLogToView(QString log)
 {
     ui->textEdit_log->append(log);
+    ui->textEdit_log->verticalScrollBar()->setValue(ui->textEdit_log->verticalScrollBar()->maximum());
 }
 
 void ZegoPlayDemo::bindEventHandler()

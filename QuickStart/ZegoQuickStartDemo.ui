@@ -298,7 +298,7 @@
             <item row="0" column="0" colspan="2">
              <widget class="QPushButton" name="pushButton_destroyEngine">
               <property name="text">
-               <string>DestroEngine</string>
+               <string>DestroyEngine</string>
               </property>
              </widget>
             </item>

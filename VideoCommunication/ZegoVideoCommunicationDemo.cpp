@@ -1,6 +1,8 @@
 #include "ZegoVideoCommunicationDemo.h"
 #include "ui_ZegoVideoCommunicationDemo.h"
 
+#include <QScrollBar>
+
 #include "AppSupport/ZegoConfigManager.h"
 #include "AppSupport/ZegoUtilHelper.h"
 
@@ -155,6 +157,7 @@ void ZegoVideoCommunicationDemo::onPlayerStateUpdate(const std::string &streamID
 void ZegoVideoCommunicationDemo::printLogToView(QString log)
 {
     ui->textEdit_log->append(log);
+    ui->textEdit_log->verticalScrollBar()->setValue(ui->textEdit_log->verticalScrollBar()->maximum());
 }
 
 void ZegoVideoCommunicationDemo::bindEventHandler()
