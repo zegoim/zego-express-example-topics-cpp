@@ -41,9 +41,6 @@ private slots:
     void on_checkBox_enableMicrophone_clicked(bool checked);
     void on_checkBox_enableCamera_clicked(bool checked);
     void on_comboBox_videoConfig_currentIndexChanged(int index);
-    void on_spinBox_videoFPS_valueChanged(int arg1);
-    void on_spinBox_videoBPS_valueChanged(int arg1);
-    void on_spinBox_audioBPS_valueChanged(int arg1);
 
 private:
     void printLogToView(QString log);
@@ -51,8 +48,6 @@ private:
 
 private:
     Ui::ZegoPublishDemo *ui;
-    ZegoVideoConfig videoConfig;
-    std::shared_ptr<IZegoEventHandler> eventHandler;
     ZEGO::EXPRESS::IZegoExpressEngine *engine;
 };
 

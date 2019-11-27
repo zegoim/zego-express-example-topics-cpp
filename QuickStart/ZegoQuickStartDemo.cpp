@@ -6,6 +6,8 @@
 #include "AppSupport/ZegoUtilHelper.h"
 #include "EventHandler/ZegoEventHandlerQt.h"
 
+#include <QScrollBar>
+
 ZegoQuickStartDemo::ZegoQuickStartDemo(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::ZegoQuickStartDemo)
@@ -23,7 +25,6 @@ ZegoQuickStartDemo::ZegoQuickStartDemo(QWidget *parent) :
     ui->label_roomID->setText("QuickStartRoom-1");
 
     std::string userID = ZegoUtilHelper::getRandomString();
-    std::string roomID = ZegoUtilHelper::getRandomString();
     ui->label_userID->setText(userID.c_str());
     ui->label_userName->setText(userID.c_str());
 }
@@ -100,12 +101,6 @@ void ZegoQuickStartDemo::onPlayerStateUpdate(const std::string &streamID, ZegoPl
     printLogToView(log);
 }
 
-
-void ZegoQuickStartDemo::on_pushButton_clear_log_clicked()
-{
-    ui->textEdit_log->clear();
-}
-
 void ZegoQuickStartDemo::on_pushButton_createEngine_clicked()
 {    
     if(engine == nullptr){
@@ -148,7 +143,7 @@ void ZegoQuickStartDemo::on_pushButton_PublishStream_clicked()
 
         engine->startPublishing(streamID);
 
-        ZegoCanvas canvas((void *)ui->frame_local_video->winId(), ZEGO_VIEW_MODE_ASPECT_FIT);
+        ZegoCanvas canvas((void*)ui->frame_local_video->winId(), ZEGO_VIEW_MODE_ASPECT_FIT);
         engine->startPreview(&canvas);
 
         QString log = QString("do publish stream");
@@ -166,18 +161,30 @@ void ZegoQuickStartDemo::on_pushButton_PlayStream_clicked()
             return;
         }
 
-        ZegoCanvas canvas((void *)ui->frame_remote_video->winId(), ZEGO_VIEW_MODE_ASPECT_FIT);
+        ZegoCanvas canvas((void*)ui->frame_remote_video->winId(), ZEGO_VIEW_MODE_ASPECT_FIT);
         engine->startPlayingStream(streamID, &canvas);
 
-        QString log = QString("do play stream");
+        QString log = QString("do  play stream");
         printLogToView(log);
+    }
+}
+
+void ZegoQuickStartDemo::on_pushButton_destroyEngine_clicked()
+{
+    if(engine){
+        // fix here
+        // engine->stopPreview();
+        QString log = QString("do destroy engine");
+        printLogToView(log);
+        ZegoExpressEngine::destroyEngine(engine);
+        engine = nullptr;
     }
 }
 
 void ZegoQuickStartDemo::printLogToView(QString log)
 {
     ui->textEdit_log->append(log);
-    ui->textEdit_log->append("\n");
+    ui->textEdit_log->verticalScrollBar()->setValue(ui->textEdit_log->verticalScrollBar()->maximum());
 }
 
 void ZegoQuickStartDemo::bindEventHandler()

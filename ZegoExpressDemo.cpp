@@ -4,20 +4,23 @@
 #include "ZegoExpressEngine.h"
 #include <string>
 #include <iostream>
-#include <QTimer>
 
 #include "QuickStart/ZegoQuickStartDemo.h"
 #include "Publish/ZegoPublishDemo.h"
 #include "Play/ZegoPlayDemo.h"
 #include "VideoCommunication/ZegoVideoCommunicationDemo.h"
-
-#include "AppSupport/ZegoConfigManager.h"
+#include "Mixer/ZegoMixerDemo.h"
+#include "RoomMessage/ZegoRoomMessageDemo.h"
+#include "ApiMoncky/ZegoApiMonckyDemo.h"
 
 
 static QString ItemTextQuickStart("QuickStart");
 static QString ItemTextPublishStream("PublishStream");
 static QString ItemTextPlayStream("PlayStream");
 static QString ItemTextVideoCommunication("VideoCommunication");
+static QString ItemTextMixerStream("MixerStream");
+static QString ItemTextRoomMessage("RoomMessage");
+static QString ItemTextApiMoncky("ApiMoncky");
 
 
 ZegoExpressDemo::ZegoExpressDemo(QWidget *parent) :
@@ -38,8 +41,10 @@ ZegoExpressDemo::ZegoExpressDemo(QWidget *parent) :
 
     // ================================================Advance use case ==========================================
     QStringList advanceUseCaseItems;
-
     advanceUseCaseItems.append(ItemTextVideoCommunication);
+    advanceUseCaseItems.append(ItemTextMixerStream);
+    advanceUseCaseItems.append(ItemTextRoomMessage);
+    advanceUseCaseItems.append(ItemTextApiMoncky);
     ui->listWidget_advance_menu->addItems(advanceUseCaseItems);
 
     connect(ui->listWidget_basic_menu, &QListWidget::itemClicked, this, &ZegoExpressDemo::onBasicUseCaseItemChanged);
@@ -91,6 +96,18 @@ void ZegoExpressDemo::doChangeTopic(QString itemText)
 
     if(currentItemText==ItemTextVideoCommunication){
         currentTopicWidget = new ZegoVideoCommunicationDemo;
+    }
+
+    if(currentItemText==ItemTextMixerStream){
+        currentTopicWidget = new ZegoMixerDemo;
+    }
+
+    if(currentItemText==ItemTextRoomMessage){
+        currentTopicWidget = new ZegoRoomMessageDemo;
+    }
+
+    if(currentItemText==ItemTextApiMoncky){
+        currentTopicWidget = new ZegoApiMonckyDemo;
     }
 
     if(currentTopicWidget != nullptr){

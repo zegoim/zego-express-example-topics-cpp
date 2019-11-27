@@ -4,21 +4,20 @@
 #include "AppSupport/ZegoConfigManager.h"
 #include "EventHandler/ZegoEventHandlerQt.h"
 
+#include <QScrollBar>
+
 ZegoPublishDemo::ZegoPublishDemo(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::ZegoPublishDemo)
 {
     ui->setupUi(this);
 
-    /*
-    videoConfig = ZegoVideoConfig(ZEGO_RESOLUTION_540x960);
-    */
 
     auto appID = ZegoConfigManager::instance()->getAppID();
     auto appSign = ZegoConfigManager::instance()->getAppSign();
-    auto isTest = ZegoConfigManager::instance()->isTestEnviroment();
+    auto isTestEnv = ZegoConfigManager::instance()->isTestEnviroment();
 
-    engine = ZegoExpressEngine::createEngine(appID, appSign, isTest, ZEGO_SCENARIO_GENERAL, nullptr);
+    engine = ZegoExpressEngine::createEngine(appID, appSign, isTestEnv, ZEGO_SCENARIO_GENERAL, nullptr);
     bindEventHandler();
 
     ui->comboBox_microphone->blockSignals(true);
@@ -67,6 +66,7 @@ ZegoPublishDemo::ZegoPublishDemo(QWidget *parent) :
         "ZEGO_RESOLUTION_1080x1920"
     };
     ui->comboBox_videoConfig->addItems(videoResolutionList);
+    ui->comboBox_videoConfig->setCurrentIndex(2);
     ui->comboBox_videoConfig->blockSignals(false);
 
 
@@ -129,9 +129,9 @@ void ZegoPublishDemo::onRoomUserUpdate(const std::string& roomID, ZegoUpdateType
 
 void ZegoPublishDemo::onPublisherStateUpdate(const std::string& streamID, ZegoPublisherState state, int errCode) {
     QStringList stateExplain = {
-        "ZEGO_PUBLISHER_STATE_NOPUBLISH",
-        "ZEGO_PUBLISHER_STATE_PUBLISHING",
-        "ZEGO_PUBLISHER_STATE_PUBLISHED"
+        "ZEGO_PUBLISHER_STATE_NO_PUBLISH",
+        "ZEGO_PUBLISHER_STATE_PUBLISH_REQUESTING",
+        "ZEGO_PUBLISHER_STATE_PUBLISHING"
     };
 
     QString log = QString("onPublisherStateUpdate: streamID=%1, state=%2, errorCode=%3").arg(streamID.c_str()).arg(stateExplain.value(state)).arg(errCode);
@@ -168,7 +168,7 @@ void ZegoPublishDemo::onPublisherVideoSizeChanged(int width, int height) {
 void ZegoPublishDemo::printLogToView(QString log)
 {
     ui->textEdit_log->append(log);
-    ui->textEdit_log->append("\n");
+    ui->textEdit_log->verticalScrollBar()->setValue(ui->textEdit_log->verticalScrollBar()->maximum());
 }
 
 void ZegoPublishDemo::bindEventHandler()
@@ -206,6 +206,7 @@ void ZegoPublishDemo::on_pushButton_startPublish_clicked()
 
 void ZegoPublishDemo::on_pushButton_stopPublish_clicked()
 {
+    engine->stopPreview();
     engine->stopPublishing();
 }
 
@@ -216,18 +217,18 @@ void ZegoPublishDemo::on_pushButton_clear_log_clicked()
 
 void ZegoPublishDemo::on_comboBox_camera_currentIndexChanged(const QString &arg1)
 {
-    engine->useAudioDevice(ZEGO_AUDIO_DEVICE_TYPE_INPUT, arg1.toStdString());
+    engine->useVideoDevice(arg1.toStdString());
 }
 
 void ZegoPublishDemo::on_comboBox_microphone_currentIndexChanged(const QString &arg1)
 {
-    engine->useVideoDevice(arg1.toStdString());
+   engine->useAudioDevice(ZEGO_AUDIO_DEVICE_TYPE_INPUT, arg1.toStdString());
 }
 
 void ZegoPublishDemo::on_comboBox_viewmode_currentIndexChanged(int index)
 {
      ZegoCanvas canvas((void *)ui->frame_local_video->winId(), ZegoViewMode(index));
-     engine->updatePreviewView(&canvas);
+     engine->startPreview(&canvas);
 }
 
 void ZegoPublishDemo::on_comboBox_mirrormode_currentIndexChanged(int index)
@@ -262,28 +263,8 @@ void ZegoPublishDemo::on_checkBox_enableCamera_clicked(bool checked)
 
 void ZegoPublishDemo::on_comboBox_videoConfig_currentIndexChanged(int index)
 {
-    /*
-    videoConfig = ZegoVideoConfig(ZegoResolutionType(index));
-
+    ZegoVideoConfig videoConfig = ZegoVideoConfig(ZegoResolution(index));
     engine->setVideoConfig(videoConfig);
     ui->spinBox_videoBPS->setValue(videoConfig.bitrate);
     ui->spinBox_videoFPS->setValue(videoConfig.fps);
-    */
-}
-
-void ZegoPublishDemo::on_spinBox_videoFPS_valueChanged(int arg1)
-{
-    videoConfig.fps = arg1;
-    engine->setVideoConfig(videoConfig);
-}
-
-void ZegoPublishDemo::on_spinBox_videoBPS_valueChanged(int arg1)
-{
-    videoConfig.bitrate = arg1;
-    engine->setVideoConfig(videoConfig);
-}
-
-void ZegoPublishDemo::on_spinBox_audioBPS_valueChanged(int arg1)
-{
-    engine->setAudioBitrate(arg1);
 }

@@ -4,6 +4,8 @@
 #include "AppSupport/ZegoConfigManager.h"
 #include "EventHandler/ZegoEventHandlerQt.h"
 
+#include <QScrollBar>
+
 ZegoPlayDemo::ZegoPlayDemo(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::ZegoPlayDemo)
@@ -134,7 +136,7 @@ void ZegoPlayDemo::onRoomUserUpdate(const std::string &roomID, ZegoUpdateType up
 void ZegoPlayDemo::printLogToView(QString log)
 {
     ui->textEdit_log->append(log);
-    ui->textEdit_log->append("\n");
+    ui->textEdit_log->verticalScrollBar()->setValue(ui->textEdit_log->verticalScrollBar()->maximum());
 }
 
 void ZegoPlayDemo::bindEventHandler()
@@ -168,7 +170,7 @@ void ZegoPlayDemo::on_comboBox_viewmode_currentIndexChanged(int index)
 {
     std::string streamID = ui->lineEdit_streamID->text().toStdString();
     ZegoCanvas canvas((void *)ui->frame_remote_video->winId(), ZegoViewMode(index));
-    engine->updatePlayView(streamID, &canvas);
+    engine->startPlayingStream(streamID, &canvas);
 }
 
 void ZegoPlayDemo::on_checkBox_mutePlayStreamAudio_clicked(bool checked)

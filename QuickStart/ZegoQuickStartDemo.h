@@ -26,11 +26,11 @@ public slots:
     void onPlayerStateUpdate(const std::string& streamID, ZegoPlayerState state, int errCode);
 
 private slots:
-    void on_pushButton_clear_log_clicked();
     void on_pushButton_createEngine_clicked();
     void on_pushButton_loginRoom_clicked();
     void on_pushButton_PublishStream_clicked();
     void on_pushButton_PlayStream_clicked();
+    void on_pushButton_destroyEngine_clicked();
 
 private:
     void printLogToView(QString log);
@@ -38,7 +38,6 @@ private:
 
 private:
     Ui::ZegoQuickStartDemo *ui;
-    std::shared_ptr<IZegoEventHandler> eventHandler = nullptr;
     ZEGO::EXPRESS::IZegoExpressEngine *engine = nullptr;
 };
 
