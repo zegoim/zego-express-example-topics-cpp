@@ -353,7 +353,7 @@ void ZegoApiMonckyDemo::on_pushButton_sendCustomCommand_clicked()
         toUserList.push_back(user);
     }
 
-    engine->sendCustomCommad(roomID.toStdString(),toUserList, command.toStdString(),  [=](int errorCode){
+    engine->sendCustomCommand(roomID.toStdString(),toUserList, command.toStdString(),  [=](int errorCode){
         if(errorCode==0){
             ui->textEdit_im_panel->append(QString("send custom Command: roomID=%1, command=%2").arg(roomID).arg(command));
         }

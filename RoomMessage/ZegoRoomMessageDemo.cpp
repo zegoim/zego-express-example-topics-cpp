@@ -143,7 +143,7 @@ void ZegoRoomMessageDemo::on_pushButton_send_custom_command_clicked()
     std::string roomID = "ChatRoom-1";
     std::string command = ui->lineEdit_custom_command->text().toStdString();
 
-    engine->sendCustomCommad(roomID, {user}, command,  [=](int errorCode){
+    engine->sendCustomCommand(roomID, {user}, command,  [=](int errorCode){
         if(errorCode==0){
             ui->textEdit_IM_panel->append(QString("[send command]\t: roomID=%1, toUser=%2, command=%3").arg(roomID.c_str()).arg(user.userID.c_str()).arg(command.c_str()));
         }
