@@ -8,17 +8,12 @@
 #include <sstream>
 #include <locale>
 #include <codecvt>
-
-#define WM_ZEGO_SWITCH_THREAD   WM_APP+10086
-#define ZEGO_SWITCH_THREAD_PRE  auto hCommWnd = ::FindWindow(pthis->ZegoCommWndClassName, pthis->ZegoCommWndName); std::function<void(void)>* pFunc = new  std::function<void(void)>;*pFunc = [=](void) {
-#define ZEGO_SWITCH_THREAD_ING }; PostMessage(hCommWnd, WM_ZEGO_SWITCH_THREAD, (WPARAM)pFunc, 0);
-
-#else	
-
+#define ZEGO_SWITCH_THREAD_PRE  auto hCommWnd = ::FindWindow(ZegoSingleton<ZegoMainThreadTool>::GetInstance()->ZegoCommWndClassName, ZegoSingleton<ZegoMainThreadTool>::GetInstance()->ZegoCommWndName); std::function<void(void)>* pFunc = new  std::function<void(void)>;*pFunc = [=](void) {
+#define ZEGO_SWITCH_THREAD_ING }; PostMessage(hCommWnd, WM_APP+10086, WPARAM(pFunc), 0);
+#else
 #import <Foundation/Foundation.h>
 #define ZEGO_SWITCH_THREAD_PRE dispatch_async(dispatch_get_main_queue(), ^{;
 #define ZEGO_SWITCH_THREAD_ING });
-
 #endif // WIN32
 
 #define ZEGO_UNUSED_VARIABLE(x) ((void)(x))
@@ -27,7 +22,11 @@
 #include <string>
 #include <vector>
 #include <map>
+#include <unordered_map>
 #include <functional>
+#include <thread>
+#include <mutex>
+#include <chrono>
 
 namespace ZEGO {
     namespace EXPRESS {
@@ -462,11 +461,11 @@ namespace ZEGO {
         {
             /** 音频混流内容类型
              */
-            ZegoMixerInputContentTypeAudio = 0,
+            ZEGO_MIXER_INPUT_CONTENT_TYPE_AUDIO = 0,
 
             /** 视频混流内容类型
              */
-            ZegoMixerInputContentTypeVideo = 1,
+            ZEGO_MIXER_INPUT_CONTENT_TYPE_VIDEO = 1,
 
         };
 
@@ -474,11 +473,91 @@ namespace ZEGO {
         {
             /** 采集后立即进行缩放，默认
              */
-            ZegoCapturePipelineScaleModePre = 0,
+            ZEGO_CAPTURE_PIPELINE_SCALE_MODE_PRE = 0,
 
             /** 编码时进行缩放
              */
-            ZegoCapturePipelineScaleModePost = 1,
+            ZEGO_CAPTURE_PIPELINE_SCALE_MODE_POST = 1,
+
+        };
+
+        enum ZegoVideoFrameFormat
+        {
+            /** 未知格式，将取平台默认值
+             */
+            ZEGO_VIDEO_FRAME_FORMAT_UNKNOWN = 0,
+
+            /** I420 (YUV420Planar) 格式
+             */
+            ZEGO_VIDEO_FRAME_FORMAT_I420 = 1,
+
+            /** NV12 (YUV420SemiPlanar) 格式
+             */
+            ZEGO_VIDEO_FRAME_FORMAT_NV12 = 2,
+
+            /** NV32 (YUV420SemiPlanar) 格式
+             */
+            ZEGO_VIDEO_FRAME_FORMAT_NV21 = 3,
+
+            /** BGRA32 格式
+             */
+            ZEGO_VIDEO_FRAME_FORMAT_BGRA32 = 4,
+
+            /** RGBA32 格式
+             */
+            ZEGO_VIDEO_FRAME_FORMAT_RGBA32 = 5,
+
+            /** ARGB32 格式
+             */
+            ZEGO_VIDEO_FRAME_FORMAT_ARGB32 = 6,
+
+            /** ABGR32 格式
+             */
+            ZEGO_VIDEO_FRAME_FORMAT_ABGR32 = 7,
+
+            /** I422 (YUV422Planar) 格式
+             */
+            ZEGO_VIDEO_FRAME_FORMAT_I422 = 8,
+
+        };
+
+        enum ZegoAudioConfigPreset
+        {
+            /** 低延迟-基础音质
+             */
+            ZEGO_AUDIO_CONFIG_PRESET_LOW_LATENCY_BASIC_QUALITY = 0,
+
+            /** 低延迟-标准音质
+             */
+            ZEGO_AUDIO_CONFIG_PRESET_LOW_LATENCY_STANDARD_QUALITY = 1,
+
+            /** 低延迟-标准音质-双声道
+             */
+            ZEGO_AUDIO_CONFIG_PRESET_LOW_LATENCY_STANDARD_QUALITY_STEREO = 2,
+
+            /** 低延迟-高音质
+             */
+            ZEGO_AUDIO_CONFIG_PRESET_LOW_LATENCY_HIGH_QUALITY = 3,
+
+            /** 低延迟-高音质-双声道
+             */
+            ZEGO_AUDIO_CONFIG_PRESET_LOW_LATENCY_HIGH_QUALITY_STEREO = 4,
+
+            /** 普通延迟-标准音质
+             */
+            ZEGO_AUDIO_CONFIG_PRESET_NORMAL_LATENCY_STANDARD_QUALITY = 5,
+
+            /** 普通延迟-标准音质-双声道
+             */
+            ZEGO_AUDIO_CONFIG_PRESET_NORMAL_LATENCY_STANDARD_QUALITY_STEREO = 6,
+
+            /** 普通延迟-高音质
+             */
+            ZEGO_AUDIO_CONFIG_PRESET_NORMAL_LATENCY_HIGH_QUALITY = 7,
+
+            /** 普通延迟-高音质-双声道
+             */
+            ZEGO_AUDIO_CONFIG_PRESET_NORMAL_LATENCY_HIGH_QUALITY_STEREO = 8,
 
         };
 
@@ -898,7 +977,7 @@ namespace ZEGO {
         {
             /** 
              */
-            ZegoMixerInput() : contentType(ZegoMixerInputContentTypeVideo){}
+            ZegoMixerInput() : contentType(ZEGO_MIXER_INPUT_CONTENT_TYPE_VIDEO){}
             
             ZegoMixerInput(std::string streamID, ZegoRect layout, ZegoMixerInputContentType contentType)
              : streamID(streamID), contentType(contentType), layout(layout) {}
@@ -1020,6 +1099,115 @@ namespace ZEGO {
             /** 消息的发送者
              */
             ZegoUser fromUser;
+
+        };
+
+        struct ZegoVideoFrameParam
+        {
+            /** 视频帧的格式
+             */
+            ZegoVideoFrameFormat format;
+
+            /** 每个平面一行字节数（例：RGBA 只需考虑 strides[0]，I420 需考虑 strides[0,1,2]）
+             */
+            int * strides;
+
+            /** 每个平面的数据大小（例：RGBA 只需考虑 dataLength[0]，I420 需考虑 dataLength[0,1,2]）
+             */
+            int * dataLength;
+
+            /** 视频帧的画面宽
+             */
+            int width;
+
+            /** 视频帧的画面高
+             */
+            int height;
+
+        };
+
+        struct ZegoAudioFrameParam
+        {
+            /** 音频帧数据长度，bufferLength = 2 * samples * channels
+             */
+            int bufferLength;
+
+            /** 采样率
+             */
+            int sampleRate;
+
+            /** 声道数
+             */
+            int channels;
+
+        };
+
+        struct ZegoAudioConfig
+        {
+            /** 
+             */
+            ZegoAudioConfig(ZegoAudioConfigPreset preset = ZEGO_AUDIO_CONFIG_PRESET_LOW_LATENCY_STANDARD_QUALITY)
+            {
+             switch (preset) {
+             case ZEGO_AUDIO_CONFIG_PRESET_LOW_LATENCY_BASIC_QUALITY:
+              bitrate = 16 * 1000;
+              channels = 1;
+              codecID = 5;
+              break;
+             case ZEGO_AUDIO_CONFIG_PRESET_LOW_LATENCY_STANDARD_QUALITY:
+              bitrate = 48 * 1000;
+              channels = 1;
+              codecID = 5;
+              break;
+             case ZEGO_AUDIO_CONFIG_PRESET_LOW_LATENCY_STANDARD_QUALITY_STEREO:
+              bitrate = 56 * 1000;
+              channels = 2;
+              codecID = 5;
+              break;
+             case ZEGO_AUDIO_CONFIG_PRESET_LOW_LATENCY_HIGH_QUALITY:
+              bitrate = 128 * 1000;
+              channels = 1;
+              codecID = 5;
+              break;
+             case ZEGO_AUDIO_CONFIG_PRESET_LOW_LATENCY_HIGH_QUALITY_STEREO:
+              bitrate = 192 * 1000;
+              channels = 2;
+              codecID = 5;
+              break;
+             case ZEGO_AUDIO_CONFIG_PRESET_NORMAL_LATENCY_STANDARD_QUALITY:
+              bitrate = 48 * 1000;   
+              channels = 1;     
+              codecID = 0;     
+              break;       
+             case ZEGO_AUDIO_CONFIG_PRESET_NORMAL_LATENCY_STANDARD_QUALITY_STEREO:
+              bitrate = 56 * 1000;   
+              channels = 2;     
+              codecID = 0;     
+              break;       
+             case ZEGO_AUDIO_CONFIG_PRESET_NORMAL_LATENCY_HIGH_QUALITY:
+              bitrate = 128 * 1000;   
+              channels = 1;     
+              codecID = 1;     
+              break;       
+             case ZEGO_AUDIO_CONFIG_PRESET_NORMAL_LATENCY_HIGH_QUALITY_STEREO:
+              bitrate = 192 * 1000;
+              channels = 2;
+              codecID = 1;
+              break;
+             }
+            }
+
+            /** 码率
+             */
+            int bitrate;
+
+            /** 声道数
+             */
+            int channels;
+
+            /** 编码 ID
+             */
+            int codecID;
 
         };
 

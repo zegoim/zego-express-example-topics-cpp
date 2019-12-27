@@ -78,17 +78,10 @@ R"({
     ui->textEdit_sendCustomCommad->setText(ZegoUtilHelper::jsonObjectToString(ZegoUtilHelper::stringToJsonObject(imCustomCommand, ok)));
     }
 
-
-    QString log = QString("do createEngine");
-    printLogToView(log);
-
     auto appID = ZegoConfigManager::instance()->getAppID();
     auto appSign = ZegoConfigManager::instance()->getAppSign();
     auto isTestEnv = ZegoConfigManager::instance()->isTestEnviroment();
-    auto iEngine = ZegoExpressEngine::createEngine(appID, appSign, isTestEnv, ZEGO_SCENARIO_GENERAL, nullptr);
-    if(iEngine != nullptr){
-        engine = iEngine;
-    }
+    engine = ZegoExpressSDK::createEngine(appID, appSign, isTestEnv, ZEGO_SCENARIO_GENERAL, nullptr);
     bindEventHandler();
 }
 
@@ -97,8 +90,7 @@ ZegoApiMonkeyDemo::~ZegoApiMonkeyDemo()
     QString log = QString("do destroyEngine");
     printLogToView(log);
 
-    ZegoExpressEngine::destroyEngine(engine);
-    engine = nullptr;
+    ZegoExpressSDK::destroyEngine(engine);
     delete ui;
 }
 
@@ -279,6 +271,7 @@ void ZegoApiMonkeyDemo::bindEventHandler()
 {
     GuardEngineLoaded
     auto eventHandler = std::make_shared<ZegoEventHandlerWithLogger>(ui->textEdit_log);
+    connect(eventHandler.get(), &ZegoEventHandlerWithLogger::sigPlayerRecvSEI, this, &ZegoApiMonkeyDemo::onPlayerRecvSEI);
     engine->addEventHandler(eventHandler);
 }
 
@@ -337,4 +330,23 @@ void ZegoApiMonkeyDemo::on_pushButton_sendCustomCommand_clicked()
         QString log = QString("send custom Command: roomID=%1, message=%2, errorCode=%3").arg(roomID).arg(command).arg(errorCode);
         printLogToView(log);
     });
+}
+
+void ZegoApiMonkeyDemo::on_pushButton_sendSEI_clicked()
+{
+    QString seiString = ui->lineEdit_sendSEI->text();
+    u_int seiLength = u_int(strlen(seiString.toStdString().c_str()) + 1);
+    unsigned char* test2 = new u_char[seiLength];
+    memcpy(test2, seiString.toStdString().c_str(), seiLength);
+    engine->sendSEI(test2,  seiLength);
+    delete [] test2;
+}
+
+void ZegoApiMonkeyDemo::onPlayerRecvSEI(const std::string &streamID, const unsigned char *data, unsigned int dataLength)
+{
+    std::string sei = (char*)data;
+    if(dataLength == (strlen(sei.c_str())+1)){
+        QString log = QString("onPlayerRecvSEI: streamID=%1, sei=%2").arg(streamID.c_str()).arg(sei.c_str());
+        printLogToView(log);
+    }
 }

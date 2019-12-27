@@ -86,6 +86,11 @@ void ZegoEventHandlerQt::onPlayerVideoSizeChanged(const std::string &streamID, i
     emit sigPlayerVideoSizeChanged(streamID,  width,  height);
 }
 
+void ZegoEventHandlerQt::onPlayerRecvSEI(const std::string &streamID, const unsigned char *data, unsigned int dataLength)
+{
+    emit sigPlayerRecvSEI(streamID, data, dataLength);
+}
+
 void ZegoEventHandlerQt::onAudioDeviceStateChanged(ZegoUpdateType updateType, ZegoAudioDeviceType deviceType, const ZegoDeviceInfo &deviceInfo)
 {
     emit sigAudioDeviceStateChanged(updateType,  deviceType,deviceInfo);

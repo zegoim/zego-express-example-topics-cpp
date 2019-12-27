@@ -14,7 +14,7 @@ ZegoPlayDemo::ZegoPlayDemo(QWidget *parent) :
     auto appSign = ZegoConfigManager::instance()->getAppSign();
     auto isTest = ZegoConfigManager::instance()->isTestEnviroment();
 
-    engine = ZegoExpressEngine::createEngine(appID, appSign, isTest, ZEGO_SCENARIO_GENERAL, nullptr);
+    engine = ZegoExpressSDK::createEngine(appID, appSign, isTest, ZEGO_SCENARIO_GENERAL, nullptr);
     bindEventHandler();
 
     ui->comboBox_audioOutputDevice->blockSignals(true);
@@ -40,9 +40,7 @@ ZegoPlayDemo::ZegoPlayDemo(QWidget *parent) :
 
 ZegoPlayDemo::~ZegoPlayDemo()
 {
-    ZegoExpressEngine::destroyEngine(engine);
-    engine = nullptr;
-
+    ZegoExpressSDK::destroyEngine(engine);
     delete ui;
 }
 

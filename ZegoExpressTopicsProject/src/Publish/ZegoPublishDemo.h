@@ -2,7 +2,7 @@
 #define ZEGOPUBLISHDEMO_H
 
 #include <QWidget>
-#include "ZegoExpressEngine.h"
+#include "ZegoExpressSDK.h"
 using namespace ZEGO::EXPRESS;
 
 namespace Ui {
@@ -24,7 +24,6 @@ public slots:
 private slots:
     void on_pushButton_startPublish_clicked();
     void on_pushButton_stopPublish_clicked();
-    void on_pushButton_clear_log_clicked();
     void on_comboBox_camera_currentIndexChanged(const QString &arg1);
     void on_comboBox_microphone_currentIndexChanged(const QString &arg1);
     void on_comboBox_viewmode_currentIndexChanged(int index);
@@ -35,6 +34,8 @@ private slots:
     void on_checkBox_muteMicrophone_clicked(bool checked);
     void on_checkBox_enableCamera_clicked(bool checked);
     void on_comboBox_videoConfig_currentIndexChanged(int index);
+
+    void on_comboBox_audioConfig_currentIndexChanged(int index);
 
 private:
     void bindEventHandler();

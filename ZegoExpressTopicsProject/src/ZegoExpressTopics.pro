@@ -40,7 +40,8 @@ SOURCES += \
     EventHandler/ZegoEventHandlerWithLogger.cpp \
     VideoTalk/ZegoVideoTalkDemo.cpp \
     Beautify/ZegoBeautifyDemo.cpp \
-    ApiMonkey/ZegoApiMonkeyDemo.cpp
+    ApiMonkey/ZegoApiMonkeyDemo.cpp \
+    MediaPlayer/ZegoMediaPlayerDemo.cpp
 
 HEADERS += \
     ExpressDemo/ZegoExpressDemo.h \
@@ -58,7 +59,8 @@ HEADERS += \
     EventHandler/ZegoEventHandlerWithLogger.h \
     VideoTalk/ZegoVideoTalkDemo.h \
     Beautify/ZegoBeautifyDemo.h \
-    ApiMonkey/ZegoApiMonkeyDemo.h
+    ApiMonkey/ZegoApiMonkeyDemo.h \
+    MediaPlayer/ZegoMediaPlayerDemo.h
 
 FORMS += \
     ExpressDemo/ZegoExpressDemo.ui \
@@ -70,7 +72,8 @@ FORMS += \
     SoundLevel/ZegoSoundLevelDemo.ui \
     VideoTalk/ZegoVideoTalkDemo.ui \
     Beautify/ZegoBeautifyDemo.ui \
-    ApiMonkey/ZegoApiMonkeyDemo.ui
+    ApiMonkey/ZegoApiMonkeyDemo.ui \
+    MediaPlayer/ZegoMediaPlayerDemo.ui
 
 
 # Default rules for deployment.

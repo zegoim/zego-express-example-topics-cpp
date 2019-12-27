@@ -2,7 +2,7 @@
 #define ZEGOEVENTHANDLERQT_H
 
 #include <QObject>
-#include "ZegoExpressEngine.h"
+#include "ZegoExpressSDK.h"
 using namespace ZEGO::EXPRESS;
 
 class ZegoEventHandlerQt : public QObject, public IZegoEventHandler
@@ -29,6 +29,7 @@ public:
     void onPlayerMediaEvent(const std::string& streamID, ZegoPlayerMediaEvent event) override;
     void onPlayerRecvFirstFrameEvent(const std::string& streamID, ZegoPlayerFirstFrameEvent event) override;
     void onPlayerVideoSizeChanged(const std::string& streamID, int width, int height) override;
+    void onPlayerRecvSEI(const std::string& streamID, const unsigned char* data, unsigned int dataLength) override;
 
     void onAudioDeviceStateChanged(ZegoUpdateType updateType, ZegoAudioDeviceType deviceType, const ZegoDeviceInfo& deviceInfo) override;
     void onVideoDeviceStateChanged(ZegoUpdateType updateType, const ZegoDeviceInfo& deviceInfo) override;
@@ -64,6 +65,7 @@ signals:
     void sigPlayerMediaEvent(const std::string& streamID, ZegoPlayerMediaEvent event);
     void sigPlayerRecvFirstFrameEvent(const std::string& streamID, ZegoPlayerFirstFrameEvent event);
     void sigPlayerVideoSizeChanged(const std::string& streamID, int width, int height);
+    void sigPlayerRecvSEI(const std::string& streamID, const unsigned char* data, unsigned int dataLength);
 
     void sigAudioDeviceStateChanged(ZegoUpdateType updateType, ZegoAudioDeviceType deviceType, const ZegoDeviceInfo& deviceInfo);
     void sigVideoDeviceStateChanged(ZegoUpdateType updateType, const ZegoDeviceInfo& deviceInfo);

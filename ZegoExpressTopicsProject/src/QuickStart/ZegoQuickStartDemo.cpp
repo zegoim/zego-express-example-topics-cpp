@@ -32,8 +32,7 @@ ZegoQuickStartDemo::ZegoQuickStartDemo(QWidget *parent) :
 ZegoQuickStartDemo::~ZegoQuickStartDemo()
 {
     if(engine){
-        ZegoExpressEngine::destroyEngine(engine);
-        engine = nullptr;
+        ZegoExpressSDK::destroyEngine(engine);
     }
     delete ui;
 }
@@ -46,7 +45,7 @@ void ZegoQuickStartDemo::on_pushButton_createEngine_clicked()
         auto appSign = ui->label_appSign->text().toStdString();
         auto isTestEnv = ui->radioButton_isTestEnv->isChecked();
 
-        engine = ZegoExpressEngine::createEngine(appID, appSign, isTestEnv, ZEGO_SCENARIO_GENERAL, nullptr);
+        engine = ZegoExpressSDK::createEngine(appID, appSign, isTestEnv, ZEGO_SCENARIO_GENERAL, nullptr);
         bindEventHandler();
 
         QString log = QString("do createEngine: testEnv=%1").arg(isTestEnv);
@@ -112,8 +111,7 @@ void ZegoQuickStartDemo::on_pushButton_destroyEngine_clicked()
     if(engine){
         QString log = QString("do destroy engine");
         printLogToView(log);
-        ZegoExpressEngine::destroyEngine(engine);
-        engine = nullptr;
+        ZegoExpressSDK::destroyEngine(engine);
     }
 }
 

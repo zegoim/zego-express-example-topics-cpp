@@ -5,6 +5,8 @@
 #include "AppSupport/ZegoUtilHelper.h"
 #include "EventHandler/ZegoEventHandlerWithLogger.h"
 
+#include <QFileDialog>
+
 ZegoBeautifyDemo::ZegoBeautifyDemo(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::ZegoBeautifyDemo)
@@ -15,7 +17,7 @@ ZegoBeautifyDemo::ZegoBeautifyDemo(QWidget *parent) :
     auto appSign = ZegoConfigManager::instance()->getAppSign();
     auto isTest = ZegoConfigManager::instance()->isTestEnviroment();
 
-    engine = ZegoExpressEngine::createEngine(appID, appSign, isTest, ZEGO_SCENARIO_GENERAL, nullptr);
+    engine = ZegoExpressSDK::createEngine(appID, appSign, isTest, ZEGO_SCENARIO_GENERAL, nullptr);
     bindEventHandler();
 
     roomID = "BeautifyRoom-1";
@@ -37,9 +39,7 @@ ZegoBeautifyDemo::ZegoBeautifyDemo(QWidget *parent) :
 
 ZegoBeautifyDemo::~ZegoBeautifyDemo()
 {
-    ZegoExpressEngine::destroyEngine(engine);
-    engine = nullptr;
-
+    ZegoExpressSDK::destroyEngine(engine);
     delete ui;
 }
 
@@ -51,8 +51,15 @@ void ZegoBeautifyDemo::bindEventHandler()
 
 void ZegoBeautifyDemo::on_pushButton_setWatermark_clicked()
 {
+    QString path = QFileDialog::getOpenFileName(this, "Select watermark file", ".", "pic (*.png *jpg)");
+    if(path.isEmpty()){
+        return;
+    }
+    QString imageURL = QString("file:///%1").arg(path);
+    ui->lineEdit_watermark_imageURL->setText(imageURL);
+
     ZegoWatermark watermark;
-    watermark.imageURL = ui->lineEdit_watermark_imageURL->text().toStdString();
+    watermark.imageURL = imageURL.toStdString();
     watermark.layout = ZegoRect(0, 0, 100, 200);
     engine->setPublishWatermark(&watermark, true);
 }

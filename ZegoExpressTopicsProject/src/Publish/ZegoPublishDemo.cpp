@@ -15,7 +15,7 @@ ZegoPublishDemo::ZegoPublishDemo(QWidget *parent) :
     auto appSign = ZegoConfigManager::instance()->getAppSign();
     auto isTestEnv = ZegoConfigManager::instance()->isTestEnviroment();
 
-    engine = ZegoExpressEngine::createEngine(appID, appSign, isTestEnv, ZEGO_SCENARIO_GENERAL, nullptr);
+    engine = ZegoExpressSDK::createEngine(appID, appSign, isTestEnv, ZEGO_SCENARIO_GENERAL, nullptr);
     bindEventHandler();
 
     ui->comboBox_microphone->blockSignals(true);
@@ -67,6 +67,22 @@ ZegoPublishDemo::ZegoPublishDemo(QWidget *parent) :
     ui->comboBox_videoConfig->setCurrentIndex(ZEGO_RESOLUTION_640x360);
     ui->comboBox_videoConfig->blockSignals(false);
 
+    ui->comboBox_audioConfig->blockSignals(true);
+    QStringList ZegoAudioConfigPresetList = {
+        "LOW_LATENCY_BASIC_QUALITY",
+        "LOW_LATENCY_STANDARD_QUALITY",
+        "LOW_LATENCY_STANDARD_QUALITY_STEREO" ,
+        "LOW_LATENCY_HIGH_QUALITY",
+        "LOW_LATENCY_HIGH_QUALITY_STEREO",
+        "NORMAL_LATENCY_STANDARD_QUALITY",
+        "NORMAL_LATENCY_STANDARD_QUALITY_STEREO",
+        "NORMAL_LATENCY_HIGH_QUALITY",
+        "NORMAL_LATENCY_HIGH_QUALITY_STEREO",
+    };
+    ui->comboBox_audioConfig->addItems(ZegoAudioConfigPresetList);
+    ui->comboBox_audioConfig->setCurrentIndex(ZEGO_AUDIO_CONFIG_PRESET_LOW_LATENCY_STANDARD_QUALITY);
+    ui->comboBox_audioConfig->blockSignals(false);
+
 
     ui->slider_captureVolume->blockSignals(true);
     ui->slider_captureVolume->setValue(100);
@@ -83,9 +99,7 @@ ZegoPublishDemo::ZegoPublishDemo(QWidget *parent) :
 
 ZegoPublishDemo::~ZegoPublishDemo()
 {
-    ZegoExpressEngine::destroyEngine(engine);
-    engine = nullptr;
-
+    ZegoExpressSDK::destroyEngine(engine);
     delete ui;
 }
 
@@ -131,11 +145,6 @@ void ZegoPublishDemo::on_pushButton_stopPublish_clicked()
 {
     engine->stopPreview();
     engine->stopPublishing();
-}
-
-void ZegoPublishDemo::on_pushButton_clear_log_clicked()
-{
-    ui->textEdit_log->clear();
 }
 
 void ZegoPublishDemo::on_comboBox_camera_currentIndexChanged(const QString &arg1)
@@ -190,3 +199,10 @@ void ZegoPublishDemo::on_comboBox_videoConfig_currentIndexChanged(int index)
     engine->setVideoConfig(videoConfig);
 }
 
+
+void ZegoPublishDemo::on_comboBox_audioConfig_currentIndexChanged(int index)
+{
+    ZegoAudioConfig audioConfig = ZegoAudioConfig(ZegoAudioConfigPreset(index));
+    engine->setAudioConfig(audioConfig);
+
+}

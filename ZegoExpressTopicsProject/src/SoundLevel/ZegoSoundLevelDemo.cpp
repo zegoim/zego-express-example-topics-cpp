@@ -16,7 +16,7 @@ ZegoSoundLevelDemo::ZegoSoundLevelDemo(QWidget *parent) :
     auto appSign = ZegoConfigManager::instance()->getAppSign();
     auto isTest = ZegoConfigManager::instance()->isTestEnviroment();
 
-    engine = ZegoExpressEngine::createEngine(appID, appSign, isTest, ZEGO_SCENARIO_GENERAL, nullptr);
+    engine = ZegoExpressSDK::createEngine(appID, appSign, isTest, ZEGO_SCENARIO_GENERAL, nullptr);
     bindEventHandler();
 
     roomID = "SoundLevelRoom-1";
@@ -39,9 +39,7 @@ ZegoSoundLevelDemo::ZegoSoundLevelDemo(QWidget *parent) :
 
 ZegoSoundLevelDemo::~ZegoSoundLevelDemo()
 {
-    ZegoExpressEngine::destroyEngine(engine);
-    engine = nullptr;
-
+    ZegoExpressSDK::destroyEngine(engine);
     delete ui;
 }
 

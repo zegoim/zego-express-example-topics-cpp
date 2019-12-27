@@ -2,7 +2,7 @@
 #define ZEGOROOMMESSAGEDEMO_H
 
 #include <QWidget>
-#include "ZegoExpressEngine.h"
+#include "ZegoExpressSDK.h"
 using namespace ZEGO::EXPRESS;
 
 namespace Ui {

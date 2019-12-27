@@ -28,6 +28,7 @@ public:
     void onPlayerMediaEvent(const std::string& streamID, ZegoPlayerMediaEvent event) override;
     void onPlayerRecvFirstFrameEvent(const std::string& streamID, ZegoPlayerFirstFrameEvent event) override;
     void onPlayerVideoSizeChanged(const std::string& streamID, int width, int height) override;
+    void onPlayerRecvSEI(const std::string& streamID, const unsigned char* data, unsigned int dataLength) override;
 
     void onAudioDeviceStateChanged(ZegoUpdateType updateType, ZegoAudioDeviceType deviceType, const ZegoDeviceInfo& deviceInfo) override;
     void onVideoDeviceStateChanged(ZegoUpdateType updateType, const ZegoDeviceInfo& deviceInfo) override;

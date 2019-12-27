@@ -16,7 +16,7 @@ ZegoRoomMessageDemo::ZegoRoomMessageDemo(QWidget *parent) :
     auto appSign = ZegoConfigManager::instance()->getAppSign();
     auto isTestEnv = ZegoConfigManager::instance()->isTestEnviroment();
 
-    engine = ZegoExpressEngine::createEngine(appID, appSign, isTestEnv, ZEGO_SCENARIO_GENERAL, nullptr);
+    engine = ZegoExpressSDK::createEngine(appID, appSign, isTestEnv, ZEGO_SCENARIO_GENERAL, nullptr);
     bindEventHandler();
 
     roomID = "ChatRoom-1";
@@ -31,9 +31,7 @@ ZegoRoomMessageDemo::ZegoRoomMessageDemo(QWidget *parent) :
 
 ZegoRoomMessageDemo::~ZegoRoomMessageDemo()
 {
-    ZegoExpressEngine::destroyEngine(engine);
-    engine = nullptr;
-
+    ZegoExpressSDK::destroyEngine(engine);
     delete ui;
 }
 

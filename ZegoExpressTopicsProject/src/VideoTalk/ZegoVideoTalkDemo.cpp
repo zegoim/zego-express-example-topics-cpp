@@ -15,7 +15,7 @@ ZegoVideoTalkDemo::ZegoVideoTalkDemo(QWidget *parent) :
     auto appSign = ZegoConfigManager::instance()->getAppSign();
     auto isTest = ZegoConfigManager::instance()->isTestEnviroment();
 
-    engine = ZegoExpressEngine::createEngine(appID, appSign, isTest, ZEGO_SCENARIO_GENERAL, nullptr);
+    engine = ZegoExpressSDK::createEngine(appID, appSign, isTest, ZEGO_SCENARIO_GENERAL, nullptr);
     bindEventHandler();
 
     videoList = {
@@ -40,9 +40,7 @@ ZegoVideoTalkDemo::ZegoVideoTalkDemo(QWidget *parent) :
 
 ZegoVideoTalkDemo::~ZegoVideoTalkDemo()
 {
-    ZegoExpressEngine::destroyEngine(engine);
-    engine = nullptr;
-
+    ZegoExpressSDK::destroyEngine(engine);
     delete ui;
 }
 

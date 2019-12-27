@@ -2,7 +2,7 @@
 #define ZEGOAPIMONCKYDEMO_H
 
 #include <QWidget>
-#include "ZegoExpressEngine.h"
+#include "ZegoExpressSDK.h"
 using namespace ZEGO::EXPRESS;
 
 namespace Ui {
@@ -33,6 +33,11 @@ private slots:
 
     void on_pushButton_sendBroadcastMessage_clicked();
     void on_pushButton_sendCustomCommand_clicked();
+
+    void on_pushButton_sendSEI_clicked();
+
+private slots:
+    void onPlayerRecvSEI(const std::string& streamID, const unsigned char* data, unsigned int dataLength);
 
 
 private:

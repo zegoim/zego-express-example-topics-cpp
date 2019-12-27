@@ -18,7 +18,7 @@ ZegoMixerDemo::ZegoMixerDemo(QWidget *parent) :
     auto appSign = ZegoConfigManager::instance()->getAppSign();
     auto isTestEnv = ZegoConfigManager::instance()->isTestEnviroment();
 
-    engine = ZegoExpressEngine::createEngine(appID, appSign, isTestEnv, ZEGO_SCENARIO_GENERAL, nullptr);
+    engine = ZegoExpressSDK::createEngine(appID, appSign, isTestEnv, ZEGO_SCENARIO_GENERAL, nullptr);
     bindEventHandler();
 
     roomID = "MixerRoom-1";
@@ -43,9 +43,7 @@ ZegoMixerDemo::ZegoMixerDemo(QWidget *parent) :
 
 ZegoMixerDemo::~ZegoMixerDemo()
 {
-    ZegoExpressEngine::destroyEngine(engine);
-    engine = nullptr;
-
+    ZegoExpressSDK::destroyEngine(engine);
     delete ui;
 }
 
@@ -95,7 +93,7 @@ void ZegoMixerDemo::on_pushButton_start_mixer_task_clicked()
     // 3. MixerTask-InputList
     ZegoMixerInput mixerInput1;
     mixerInput1.streamID = ui->comboBox_input_streamID1->currentText().toStdString();
-    mixerInput1.contentType = ZegoMixerInputContentTypeVideo;
+    mixerInput1.contentType = ZEGO_MIXER_INPUT_CONTENT_TYPE_VIDEO;
     mixerInput1.layout.x = 0;
     mixerInput1.layout.y = 0;
     mixerInput1.layout.width = videoConfig.width/2;
@@ -103,7 +101,7 @@ void ZegoMixerDemo::on_pushButton_start_mixer_task_clicked()
 
     ZegoMixerInput mixerInput2;
     mixerInput2.streamID = ui->comboBox_input_streamID2->currentText().toStdString();
-    mixerInput2.contentType = ZegoMixerInputContentTypeVideo;
+    mixerInput2.contentType = ZEGO_MIXER_INPUT_CONTENT_TYPE_VIDEO;
     mixerInput2.layout.x = videoConfig.width/2;
     mixerInput2.layout.y = 0;
     mixerInput2.layout.width = videoConfig.width/2;

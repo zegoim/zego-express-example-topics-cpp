@@ -5,7 +5,7 @@
 #include <QMap>
 #include <QVBoxLayout>
 
-#include "ZegoExpressEngine.h"
+#include "ZegoExpressSDK.h"
 #include "ZegoSoundFrame.h"
 
 using namespace ZEGO::EXPRESS;

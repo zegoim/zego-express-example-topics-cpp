@@ -1,7 +1,7 @@
 #include "ZegoExpressDemo.h"
 #include "ui_ZegoExpressDemo.h"
 
-#include "ZegoExpressEngine.h"
+#include "ZegoExpressSDK.h"
 #include <string>
 #include <iostream>
 
@@ -13,6 +13,7 @@
 #include "RoomMessage/ZegoRoomMessageDemo.h"
 #include "SoundLevel/ZegoSoundLevelDemo.h"
 #include "Beautify/ZegoBeautifyDemo.h"
+#include "MediaPlayer/ZegoMediaPlayerDemo.h"
 #include "ApiMonkey/ZegoApiMonkeyDemo.h"
 
 
@@ -24,6 +25,7 @@ static QString ItemTextMixerStream("MixerStream");
 static QString ItemTextRoomMessage("RoomMessage");
 static QString ItemTextSoundLevel("SoundLevel");
 static QString ItemTextBeautify("Beautify");
+static QString ItemTextMediaPlayer("MediaPlayer");
 static QString ItemTextApiMonkey("ApiMonkey");
 
 
@@ -34,7 +36,7 @@ ZegoExpressDemo::ZegoExpressDemo(QWidget *parent) :
     ui->setupUi(this);
 
     // show SDK version
-    ui->label_sdk_version->setText(QString::fromStdString(ZegoExpressEngine::getVersion()));
+    ui->label_sdk_version->setText(QString::fromStdString(ZegoExpressSDK::getVersion()));
 
     // ================================================ Basic use case ==========================================
     QStringList basicUseCaseItems;
@@ -50,6 +52,7 @@ ZegoExpressDemo::ZegoExpressDemo(QWidget *parent) :
     advanceUseCaseItems.append(ItemTextRoomMessage);
     advanceUseCaseItems.append(ItemTextSoundLevel);
     advanceUseCaseItems.append(ItemTextBeautify);
+    advanceUseCaseItems.append(ItemTextMediaPlayer);
     advanceUseCaseItems.append(ItemTextApiMonkey);
     ui->listWidget_advance_menu->addItems(advanceUseCaseItems);
 
@@ -122,6 +125,10 @@ void ZegoExpressDemo::doChangeTopic(QString itemText)
 
     if(currentItemText == ItemTextBeautify) {
         currentTopicWidget = new ZegoBeautifyDemo;
+    }
+
+    if(currentItemText == ItemTextMediaPlayer){
+        currentTopicWidget = new ZegoMediaPlayerDemo;
     }
 
     if(currentTopicWidget != nullptr){
