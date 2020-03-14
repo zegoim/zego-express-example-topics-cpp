@@ -1,10 +1,15 @@
 #include <QApplication>
 #include "ExpressDemo/ZegoExpressDemo.h"
+
+#ifdef WIN32
 #include "AppSupport/ZegoCrashHelper.h"
+#endif
 
 int main(int argc, char *argv[])
 {
-    SetUnhandledExceptionFilter(ExceptionFilter);
+#ifdef WIN32
+   SetUnhandledExceptionFilter(ExceptionFilter);
+#endif
     QApplication a(argc, argv);
     ZegoExpressDemo w;
     w.setMinimumSize(1024, 768);

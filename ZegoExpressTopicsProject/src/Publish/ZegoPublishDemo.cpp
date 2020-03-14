@@ -10,6 +10,8 @@ ZegoPublishDemo::ZegoPublishDemo(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    ZegoEngineConfig engineConfig;
+    ZegoExpressSDK::setEngineConfig(engineConfig);
 
     auto appID = ZegoConfigManager::instance()->getAppID();
     auto appSign = ZegoConfigManager::instance()->getAppSign();
@@ -35,9 +37,9 @@ ZegoPublishDemo::ZegoPublishDemo(QWidget *parent) :
 
     ui->comboBox_viewmode->blockSignals(true);
     QStringList viewModeList = {
-        "ZEGO_VIEW_MODE_ASPECT_FIT",
-        "ZEGO_VIEW_MODE_ASPECT_FILL",
-        "ZEGO_VIEW_MODE_SCALE_TO_FILL"
+        "ASPECT_FIT",
+        "ASPECT_FILL",
+        "SCALE_TO_FILL"
     };
     ui->comboBox_viewmode->addItems(viewModeList);
     ui->comboBox_viewmode->blockSignals(false);
@@ -45,10 +47,10 @@ ZegoPublishDemo::ZegoPublishDemo(QWidget *parent) :
 
     ui->comboBox_mirrormode->blockSignals(true);
     QStringList mirroModeList = {
-        "ZEGO_VIDEO_MORROR_MODE_ONLY_PREVIEW_MIRROR",
-        "ZEGO_VIDEO_MORROR_MODE_BOTH_MIRROR",
-        "ZEGO_VIDEO_MORROR_MODE_NO_MIRROR",
-        "ZEGO_VIDEO_MORROR_MODE_ONLY_PUBLISHER_MIRROR"
+        "ONLY_PREVIEW_MIRROR",
+        "BOTH_MIRROR",
+        "NO_MIRROR",
+        "ONLY_PUBLISHER_MIRROR"
     };
     ui->comboBox_mirrormode->addItems(mirroModeList);
     ui->comboBox_mirrormode->blockSignals(false);
@@ -56,31 +58,27 @@ ZegoPublishDemo::ZegoPublishDemo(QWidget *parent) :
 
     ui->comboBox_videoConfig->blockSignals(true);
     QStringList ZegoResolutionList = {
-        "ZEGO_RESOLUTION_320x180" ,
-        "ZEGO_RESOLUTION_480x270" ,
-        "ZEGO_RESOLUTION_640x360" ,
-        "ZEGO_RESOLUTION_960x540" ,
-        "ZEGO_RESOLUTION_1280x720",
-        "ZEGO_RESOLUTION_1920x1080"
+        "180P" ,
+        "270P" ,
+        "360P" ,
+        "540P" ,
+        "720P",
+        "1080P"
     };
     ui->comboBox_videoConfig->addItems(ZegoResolutionList);
-    ui->comboBox_videoConfig->setCurrentIndex(ZEGO_RESOLUTION_640x360);
+    ui->comboBox_videoConfig->setCurrentIndex(ZEGO_VIDEO_CONFIG_PRESET_360P);
     ui->comboBox_videoConfig->blockSignals(false);
 
     ui->comboBox_audioConfig->blockSignals(true);
     QStringList ZegoAudioConfigPresetList = {
-        "LOW_LATENCY_BASIC_QUALITY",
-        "LOW_LATENCY_STANDARD_QUALITY",
-        "LOW_LATENCY_STANDARD_QUALITY_STEREO" ,
-        "LOW_LATENCY_HIGH_QUALITY",
-        "LOW_LATENCY_HIGH_QUALITY_STEREO",
-        "NORMAL_LATENCY_STANDARD_QUALITY",
-        "NORMAL_LATENCY_STANDARD_QUALITY_STEREO",
-        "NORMAL_LATENCY_HIGH_QUALITY",
-        "NORMAL_LATENCY_HIGH_QUALITY_STEREO",
+        "BASIC_QUALITY",
+        "STANDARD_QUALITY",
+        "STANDARD_QUALITY_STEREO",
+        "HIGH_QUALITY",
+        "HIGH_QUALITY_STEREO"
     };
     ui->comboBox_audioConfig->addItems(ZegoAudioConfigPresetList);
-    ui->comboBox_audioConfig->setCurrentIndex(ZEGO_AUDIO_CONFIG_PRESET_LOW_LATENCY_STANDARD_QUALITY);
+    ui->comboBox_audioConfig->setCurrentIndex(ZEGO_AUDIO_CONFIG_PRESET_STANDARD_QUALITY);
     ui->comboBox_audioConfig->blockSignals(false);
 
 
@@ -121,7 +119,7 @@ void ZegoPublishDemo::bindEventHandler()
     auto eventHandler = std::make_shared<ZegoEventHandlerWithLogger>(ui->textEdit_log);
     connect(eventHandler.get(), &ZegoEventHandlerWithLogger::sigPublisherQualityUpdate, this, &ZegoPublishDemo::onPublisherQualityUpdate);
     connect(eventHandler.get(), &ZegoEventHandlerWithLogger::sigPublisherVideoSizeChanged, this, &ZegoPublishDemo::onPublisherVideoSizeChanged);
-    engine->addEventHandler(eventHandler);
+    engine->setEventHandler(eventHandler);
 }
 
 void ZegoPublishDemo::on_pushButton_startPublish_clicked()
@@ -133,11 +131,11 @@ void ZegoPublishDemo::on_pushButton_startPublish_clicked()
     ZegoUser user;
     user.userID = userID;
     user.userName = userID;
-    engine->loginRoom(roomID, user,  nullptr);
+    engine->loginRoom(roomID, user);
     engine->startPublishing(streamID);
 
 
-    ZegoCanvas canvas((void *)ui->frame_local_video->winId(), ZEGO_VIEW_MODE_ASPECT_FIT);
+    ZegoCanvas canvas(ZegoView(ui->frame_local_video->winId()));
     engine->startPreview(&canvas);
 }
 
@@ -159,7 +157,7 @@ void ZegoPublishDemo::on_comboBox_microphone_currentIndexChanged(const QString &
 
 void ZegoPublishDemo::on_comboBox_viewmode_currentIndexChanged(int index)
 {
-     ZegoCanvas canvas((void *)ui->frame_local_video->winId(), ZegoViewMode(index));
+     ZegoCanvas canvas(ZegoView(ui->frame_local_video->winId()), ZegoViewMode(index));
      engine->startPreview(&canvas);
 }
 
@@ -195,7 +193,7 @@ void ZegoPublishDemo::on_checkBox_enableCamera_clicked(bool checked)
 
 void ZegoPublishDemo::on_comboBox_videoConfig_currentIndexChanged(int index)
 {
-    ZegoVideoConfig videoConfig = ZegoVideoConfig(ZegoResolution(index));
+    ZegoVideoConfig videoConfig = ZegoVideoConfig(ZegoVideoConfigPreset(index));
     engine->setVideoConfig(videoConfig);
 }
 

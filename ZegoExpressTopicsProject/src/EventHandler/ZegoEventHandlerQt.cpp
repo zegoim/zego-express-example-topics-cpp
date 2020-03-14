@@ -16,9 +16,9 @@ void ZegoEventHandlerQt::onDebugError(int errorCode, const std::string &funcName
     emit sigDebugError(errorCode, funcName, info);
 }
 
-void ZegoEventHandlerQt::onRoomStateUpdate(const std::string &roomID, ZegoRoomState state, int errorCode)
+void ZegoEventHandlerQt::onRoomStateUpdate(const std::string &roomID, ZegoRoomState state, int errorCode, const std::string &extendData)
 {
-    emit sigRoomStateUpdate(roomID, state, errorCode);
+    emit sigRoomStateUpdate(roomID, state, errorCode, extendData);
 }
 
 void ZegoEventHandlerQt::onRoomUserUpdate(const std::string &roomID, ZegoUpdateType updateType, const std::vector<ZegoUser> &userList)
@@ -36,9 +36,9 @@ void ZegoEventHandlerQt::onRoomStreamExtraInfoUpdate(const std::string &roomID, 
     emit sigRoomStreamExtraInfoUpdate(roomID, streamList);
 }
 
-void ZegoEventHandlerQt::onPublisherStateUpdate(const std::string &streamID, ZegoPublisherState state, int errorCode)
+void ZegoEventHandlerQt::onPublisherStateUpdate(const std::string &streamID, ZegoPublisherState state, int errorCode, const std::string &extendData)
 {
-    emit sigPublisherStateUpdate(streamID, state, errorCode);
+    emit sigPublisherStateUpdate(streamID, state, errorCode, extendData);
 }
 
 void ZegoEventHandlerQt::onPublisherQualityUpdate(const std::string &streamID, const ZegoPublishStreamQuality &quality)
@@ -46,14 +46,16 @@ void ZegoEventHandlerQt::onPublisherQualityUpdate(const std::string &streamID, c
     emit sigPublisherQualityUpdate(streamID, quality);
 }
 
-void ZegoEventHandlerQt::onPublisherRecvFirstFrameEvent(ZegoPublisherFirstFrameEvent event)
-{
-    emit sigPublisherRecvFirstFrameEvent(event);
+void ZegoEventHandlerQt::onPublisherCapturedAudioFirstFrame(){
+    emit sigPublisherCapturedAudioFirstFrame();
 }
 
-void ZegoEventHandlerQt::onPublisherVideoSizeChanged(int width, int height)
-{
-    emit sigPublisherVideoSizeChanged(width, height);
+void ZegoEventHandlerQt::onPublisherCapturedVideoFirstFrame(ZegoPublishChannel channel){
+    emit sigPublisherCapturedVideoFirstFrame(channel);
+}
+
+void ZegoEventHandlerQt::onPublisherVideoSizeChanged(int width, int height, ZegoPublishChannel channel){
+    emit sigPublisherVideoSizeChanged(width, height, channel);
 }
 
 void ZegoEventHandlerQt::onPublisherRelayCDNStateUpdate(const std::string &streamID, const std::vector<ZegoStreamRelayCDNInfo> &streamInfoList)
@@ -61,9 +63,9 @@ void ZegoEventHandlerQt::onPublisherRelayCDNStateUpdate(const std::string &strea
     emit sigPublisherRelayCDNStateUpdate(streamID, streamInfoList);
 }
 
-void ZegoEventHandlerQt::onPlayerStateUpdate(const std::string &streamID, ZegoPlayerState state, int errorCode)
+void ZegoEventHandlerQt::onPlayerStateUpdate(const std::string &streamID, ZegoPlayerState state, int errorCode, const std::string &extendData)
 {
-    emit sigPlayerStateUpdate(streamID, state, errorCode);
+    emit sigPlayerStateUpdate(streamID, state, errorCode, extendData);
 }
 
 void ZegoEventHandlerQt::onPlayerQualityUpdate(const std::string &streamID, const ZegoPlayStreamQuality &quality)
@@ -76,9 +78,19 @@ void ZegoEventHandlerQt::onPlayerMediaEvent(const std::string &streamID, ZegoPla
     emit sigPlayerMediaEvent(streamID, event);
 }
 
-void ZegoEventHandlerQt::onPlayerRecvFirstFrameEvent(const std::string &streamID, ZegoPlayerFirstFrameEvent event)
+void ZegoEventHandlerQt::onPlayerRecvAudioFirstFrame(const std::string &streamID)
 {
-    emit sigPlayerRecvFirstFrameEvent(streamID,  event);
+    emit sigPlayerRecvAudioFirstFrame(streamID);
+}
+
+void ZegoEventHandlerQt::onPlayerRecvVideoFirstFrame(const std::string &streamID)
+{
+    emit sigPlayerRecvVideoFirstFrame(streamID);
+}
+
+void ZegoEventHandlerQt::onPlayerRenderVideoFirstFrame(const std::string &streamID)
+{
+    emit sigPlayerRenderVideoFirstFrame(streamID);
 }
 
 void ZegoEventHandlerQt::onPlayerVideoSizeChanged(const std::string &streamID, int width, int height)
@@ -136,14 +148,19 @@ void ZegoEventHandlerQt::onRemoteAudioSpectrumUpdate(const std::map<std::string,
     emit sigRemoteAudioSpectrumUpdate(frequencySpectrums);
 }
 
-void ZegoEventHandlerQt::onMixerRelayCDNStateUpdate(const std::string &taskID, const std::vector<ZegoStreamRelayCDNInfo> &infoList)
+void ZegoEventHandlerQt::onMixerRelayCDNStateUpdate(const std::vector<ZegoStreamRelayCDNInfo> &infoList, const std::string &taskID)
 {
     emit sigMixerRelayCDNStateUpdate(taskID, infoList);
 }
 
-void ZegoEventHandlerQt::onIMRecvBroadcastMessage(const std::string &roomID, std::vector<ZegoMessageInfo> messageList)
+void ZegoEventHandlerQt::onIMRecvBroadcastMessage(const std::string &roomID, std::vector<ZegoBroadcastMessageInfo> messageList)
 {
     emit sigIMRecvBroadcastMessage(roomID, messageList);
+}
+
+void ZegoEventHandlerQt::onIMRecvBarrageMessage(const std::string &roomID, std::vector<ZegoBarrageMessageInfo> messageList)
+{
+    emit sigIMRecvBarrageMessage(roomID, messageList);
 }
 
 void ZegoEventHandlerQt::onIMRecvCustomCommand(const std::string &roomID, ZegoUser fromUser, const std::string &command)

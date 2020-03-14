@@ -14,6 +14,10 @@
 #include "SoundLevel/ZegoSoundLevelDemo.h"
 #include "Beautify/ZegoBeautifyDemo.h"
 #include "MediaPlayer/ZegoMediaPlayerDemo.h"
+#include "CustomVideoRender/ZegoCustomVideoRenderDemo.h"
+#include "CustomVideoCapture/ZegoCustomVideoCaptureDemo.h"
+#include "CDNAbout/ZegoCDNAboutDemo.h"
+#include "AuxStream/ZegoAuxStreamDemo.h"
 #include "ApiMonkey/ZegoApiMonkeyDemo.h"
 
 
@@ -26,6 +30,10 @@ static QString ItemTextRoomMessage("RoomMessage");
 static QString ItemTextSoundLevel("SoundLevel");
 static QString ItemTextBeautify("Beautify");
 static QString ItemTextMediaPlayer("MediaPlayer");
+static QString ItemTextCustomVideoRender("CustomVideoRender");
+static QString ItemTextCustomVideoCapture("CustomVideoCapture");
+static QString ItemTextCDNAbout("CDNAbout");
+static QString ItemTextAuxStream("AuxStream");
 static QString ItemTextApiMonkey("ApiMonkey");
 
 
@@ -53,7 +61,11 @@ ZegoExpressDemo::ZegoExpressDemo(QWidget *parent) :
     advanceUseCaseItems.append(ItemTextSoundLevel);
     advanceUseCaseItems.append(ItemTextBeautify);
     advanceUseCaseItems.append(ItemTextMediaPlayer);
-    advanceUseCaseItems.append(ItemTextApiMonkey);
+    advanceUseCaseItems.append(ItemTextCustomVideoRender);
+    advanceUseCaseItems.append(ItemTextCustomVideoCapture);
+    advanceUseCaseItems.append(ItemTextCDNAbout);
+    advanceUseCaseItems.append(ItemTextAuxStream);
+    // advanceUseCaseItems.append(ItemTextApiMonkey);
     ui->listWidget_advance_menu->addItems(advanceUseCaseItems);
 
     connect(ui->listWidget_basic_menu, &QListWidget::itemClicked, this, &ZegoExpressDemo::onBasicUseCaseItemChanged);
@@ -129,6 +141,22 @@ void ZegoExpressDemo::doChangeTopic(QString itemText)
 
     if(currentItemText == ItemTextMediaPlayer){
         currentTopicWidget = new ZegoMediaPlayerDemo;
+    }
+
+    if(currentItemText == ItemTextCustomVideoRender){
+        currentTopicWidget = new ZegoCustomVideoRenderDemo;
+    }
+
+    if(currentItemText == ItemTextCustomVideoCapture){
+        currentTopicWidget = new ZegoCustomVideoCaptureDemo;
+    }
+
+    if(currentItemText == ItemTextCDNAbout){
+        currentTopicWidget = new ZegoCDNAboutDemo;
+    }
+
+    if(currentItemText == ItemTextAuxStream){
+        currentTopicWidget = new ZegoAuxStreamDemo;
     }
 
     if(currentTopicWidget != nullptr){

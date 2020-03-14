@@ -41,7 +41,15 @@ SOURCES += \
     VideoTalk/ZegoVideoTalkDemo.cpp \
     Beautify/ZegoBeautifyDemo.cpp \
     ApiMonkey/ZegoApiMonkeyDemo.cpp \
-    MediaPlayer/ZegoMediaPlayerDemo.cpp
+    MediaPlayer/ZegoMediaPlayerDemo.cpp \
+    CustomVideoRender/ZegoCustomVideoRenderDemo.cpp \
+    CustomVideoCapture/ZegoCustomVideoCaptureDemo.cpp \
+    CustomVideoCapture/ZegoCustomVideoSourceBase.cpp \
+    CustomVideoCapture/ZegoCustomVideoSourceImage.cpp \
+    CustomVideoCapture/ZegoCustomVideoSourceMedia.cpp \
+    CustomVideoCapture/ZegoCustomVideoSourceContext.cpp \
+    CDNAbout/ZegoCDNAboutDemo.cpp \
+    AuxStream/ZegoAuxStreamDemo.cpp
 
 HEADERS += \
     ExpressDemo/ZegoExpressDemo.h \
@@ -60,7 +68,15 @@ HEADERS += \
     VideoTalk/ZegoVideoTalkDemo.h \
     Beautify/ZegoBeautifyDemo.h \
     ApiMonkey/ZegoApiMonkeyDemo.h \
-    MediaPlayer/ZegoMediaPlayerDemo.h
+    MediaPlayer/ZegoMediaPlayerDemo.h \
+    CustomVideoRender/ZegoCustomVideoRenderDemo.h \
+    CustomVideoCapture/ZegoCustomVideoCaptureDemo.h \
+    CustomVideoCapture/ZegoCustomVideoSourceBase.h \
+    CustomVideoCapture/ZegoCustomVideoSourceImage.h \
+    CustomVideoCapture/ZegoCustomVideoSourceMedia.h \
+    CustomVideoCapture/ZegoCustomVideoSourceContext.h \
+    CDNAbout/ZegoCDNAboutDemo.h \
+    AuxStream/ZegoAuxStreamDemo.h
 
 FORMS += \
     ExpressDemo/ZegoExpressDemo.ui \
@@ -73,7 +89,11 @@ FORMS += \
     VideoTalk/ZegoVideoTalkDemo.ui \
     Beautify/ZegoBeautifyDemo.ui \
     ApiMonkey/ZegoApiMonkeyDemo.ui \
-    MediaPlayer/ZegoMediaPlayerDemo.ui
+    MediaPlayer/ZegoMediaPlayerDemo.ui \
+    CustomVideoRender/ZegoCustomVideoRenderDemo.ui \
+    CustomVideoCapture/ZegoCustomVideoCaptureDemo.ui \
+    CDNAbout/ZegoCDNAboutDemo.ui \
+    AuxStream/ZegoAuxStreamDemo.ui
 
 
 # Default rules for deployment.
@@ -84,14 +104,14 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 INCLUDEPATH += $$PWD/../libs/ZegoExpress/include
 DEPENDPATH  += $$PWD/../libs/ZegoExpress/include
 
-msvc {
-    debug {
-        DESTDIR = $$PWD/../bin/debug
-    }
-    release {
-        DESTDIR = $$PWD/../bin/release
-    }
+debug {
+    DESTDIR = $$PWD/../bin/debug
+}
+release {
+    DESTDIR = $$PWD/../bin/release
+}
 
+msvc {
     contains(QT_ARCH, i386) {
         LIBS += -L$$PWD/../libs/ZegoExpress/lib/x86 -lZegoExpressEngine
     } else {
@@ -102,3 +122,10 @@ msvc {
         -luser32 \
         -lgdi32 \
 }
+
+macx {
+    QMAKE_CXXFLAGS += -x objective-c++
+    LIBS += -framework Foundation
+    LIBS += -L$$PWD/../libs/ZegoExpress/lib/ -lZegoExpressEngine
+}
+

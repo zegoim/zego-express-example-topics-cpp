@@ -83,8 +83,7 @@
 #define ZEGO_EXPRESS_MAX_IMAGE_PATH         (512)
 #define ZEGO_EXPRESS_MAX_MESSAGE_LEN        (512)
 #define ZEGO_EXPRESS_MAX_CUSTOM_CMD_LEN     (1024)
-
-struct zego_event_handler;
+#define ZEGO_EXPRESS_MAX_MEDIAPLAYER_INSTANCE_COUNT (4)
 
 
 struct zego_user
@@ -102,11 +101,12 @@ struct zego_stream
 
 
 enum zego_scenario {
+    
     zego_scenario_general,
-    zego_scenario_single_live,
-    zego_scenario_interactive_live,
-    zego_scenario_chatroom,
-    zego_scenario_education
+    
+    zego_scenario_communication,
+    
+    zego_scenario_live
 };
 
 enum zego_language {
@@ -114,9 +114,59 @@ enum zego_language {
     zego_language_chinese
 };
 
-struct zego_init_config {
+enum zego_engine_state {
+    zego_engine_state_uninitialized,
+    zego_engine_state_initialized,
+    zego_engine_state_start,
+    zego_engine_state_stop,
+};
+
+struct zego_log_config
+{
     char log_path[ZEGO_EXPRESS_MAX_COMMON_LEN + 1];
     unsigned long long log_size;
+};
+
+enum zego_video_buffer_type
+{
+    zego_video_buffer_type_unknown = 0,
+    zego_video_buffer_type_raw_data = 1,
+    zego_video_buffer_type_encoded_data = 2,
+    zego_video_buffer_type_gl_texture_2d = 3,
+    zego_video_buffer_type_cv_pixel_buffer = 4,
+    zego_video_buffer_type_surface_texture = 5
+};
+
+enum zego_custom_video_render_series
+{
+    zego_custom_video_render_series_rgb,
+    zego_custom_video_render_series_yuv
+};
+
+struct zego_custom_video_capture_config
+{
+    enum zego_video_buffer_type type;
+};
+
+struct zego_custom_video_render_config
+{
+    enum zego_video_buffer_type type;
+    enum zego_custom_video_render_series series;
+    bool is_internal_render;
+};
+
+struct zego_engine_config {
+    
+    struct zego_log_config* log_config;
+    
+    
+    struct zego_custom_video_capture_config* custom_video_capture_config;
+    
+    
+    struct zego_custom_video_capture_config* custom_video_capture_aux_config;
+    
+    
+    struct zego_custom_video_render_config* custom_video_render_config;
     
     
     char advanced_config[ZEGO_EXPRESS_MAX_COMMON_LEN + 1];
@@ -140,6 +190,8 @@ struct zego_room_config
 {
     unsigned int max_member_count;
     bool is_user_status_notify;
+    
+    char thrid_token[ZEGO_EXPRESS_MAX_COMMON_LEN];
 };
 
 enum zego_stream_quality
@@ -203,7 +255,13 @@ struct zego_canvas
     int background_color;
 };
 
-
+enum zego_rotation
+{
+    zego_rotation_0,
+    zego_rotation_90,
+    zego_rotation_180,
+    zego_rotation_270
+};
 
 enum zego_orientation
 {
@@ -222,23 +280,38 @@ enum zego_ios_orientation
     zego_ios_orientation_landscape_left
 };
 
-enum zego_latency_mode
+enum zego_audio_channel
 {
-    zego_latency_mode_normal,
-    zego_latency_mode_low,
-    zego_latency_mode_normal2,
-    zego_latency_mode_low2,
-    zego_latency_mode_low3,
-    zego_latency_mode_normal3
+    
+    zego_audio_channel_mono,
+    
+    zego_audio_channel_stereo
 };
 
+enum zego_audio_codec_id
+{
+    
+    zego_audio_codec_id_default,
+    zego_audio_codec_id_normal,
+    zego_audio_codec_id_normal2,
+    zego_audio_codec_id_normal3,
+    zego_audio_codec_id_low,
+    zego_audio_codec_id_low2,
+    zego_audio_codec_id_low3
+};
 
+enum zego_video_codec_id
+{
+    zego_video_codec_id_default,
+    zego_video_codec_id_multi_layer,
+    zego_video_codec_id_vp8
+};
 
 struct zego_audio_config
 {
     int bitrate;
-    int channels;
-    int audio_codec_id;
+    zego_audio_channel channel;
+    zego_audio_codec_id audio_codec_id;
 };
 
 struct zego_video_config
@@ -251,6 +324,8 @@ struct zego_video_config
     
     int bitrate;
     int fps;
+    
+    zego_video_codec_id video_codec_id;
 };
 
 enum zego_video_mirror_mode
@@ -269,9 +344,9 @@ enum zego_capture_pipeline_scale_mode
 
 enum zego_stream_relay_cdn_state
 {
-    zego_stream_relay_cdn_state_stop,
-    zego_stream_relay_cdn_state_start,
-    zego_stream_relay_cdn_state_retry
+    zego_stream_relay_cdn_state_no_relay,
+    zego_stream_relay_cdn_state_relay_requesting,
+    zego_stream_relay_cdn_state_relaying
 };
 
 enum zego_stream_relay_cdn_update_reason
@@ -306,12 +381,55 @@ struct zego_publish_stream_info
     unsigned int uiHlsURLCount;
 };
 
+struct zego_cdn_config
+{
+    char url[ZEGO_EXPRESS_MAX_URL_LEN + 1];
+    char auth_param[ZEGO_EXPRESS_MAX_COMMON_LEN + 1];
+};
+
+enum zego_publish_channel
+{
+    zego_publish_channel_main,
+    zego_publish_channel_aux
+};
+
+enum zego_traffic_control_property
+{
+    zego_traffic_control_basic,
+    zego_traffic_control_adaptive_fps = 1,
+    zego_traffic_control_adaptive_resolution = 1 << 1,
+    zego_traffic_control_adaptive_audio_bitrate = 1 << 2
+};
+
+enum zego_traffic_control_min_video_bitrate_mode
+{
+    
+    zego_traffic_control_min_video_bitrate_mode_no_video,
+    
+    zego_traffic_control_min_video_bitrate_mode_ultra_low_fps
+};
+
 
 enum zego_player_state
 {
     zego_player_state_no_play,
     zego_player_state_play_requesting,
     zego_player_state_playing
+};
+
+enum zego_player_video_layer
+{
+    zego_player_video_layer_auto,            
+    zego_player_video_layer_base,             
+    zego_player_video_layer_extend       
+};
+
+struct zego_player_config
+{
+    
+    zego_cdn_config* cdn_config;
+    
+    zego_player_video_layer video_layer;
 };
 
 struct zego_play_stream_quality
@@ -400,6 +518,7 @@ struct zego_mixer_input
     enum zego_mixer_input_content_type content_type;
     char stream_id[ZEGO_EXPRESS_MAX_STREAM_LEN + 1];
     struct zego_rect layout;
+    unsigned int sound_level_id;
 };
 
 struct zego_mixer_output
@@ -435,6 +554,8 @@ struct zego_mixer_cdn_info
 struct zego_mixer_start_result
 {
     zego_error error_code;
+    
+    const char* extended_data;
 };
 
 struct zego_mixer_audio_config
@@ -442,7 +563,10 @@ struct zego_mixer_audio_config
     
     int bitrate;
     
-    int audio_encode_type;
+    zego_audio_channel channel;
+    
+    
+    zego_audio_codec_id audio_codec_id;
 };
 
 struct zego_mixer_video_config
@@ -451,6 +575,63 @@ struct zego_mixer_video_config
     int resolution_height;
     int fps;
     int bitrate;
+};
+
+struct zego_mixer_sound_level_info
+{
+    unsigned int sound_level_id;
+    double sound_level;
+};
+
+struct zego_mixer_task
+{
+    
+    char task_id[ZEGO_EXPRESS_MAX_MIXER_TASK_LEN];
+    
+    
+    struct zego_mixer_input* input_list;
+    unsigned int input_list_count;
+    
+    
+    struct zego_mixer_output* output_list;
+    unsigned int output_list_count;
+    
+    
+    struct zego_mixer_audio_config audio_config;
+    
+    
+    struct zego_mixer_video_config video_config;
+    
+    
+    struct zego_watermark* watermark;
+    
+    
+    char background_image_url[ZEGO_EXPRESS_MAX_URL_LEN];
+    
+    
+    
+    
+    bool enable_sound_level;
+};
+
+struct zego_auto_mixer_task
+{
+    
+    char task_id[ZEGO_EXPRESS_MAX_MIXER_TASK_LEN];
+    
+    
+    char room_id[ZEGO_EXPRESS_MAX_ROOMID_LEN];
+    
+    
+    struct zego_mixer_output* output_list;
+    unsigned int output_list_count;
+    
+    
+    struct zego_mixer_audio_config audio_config;
+    
+    
+    bool enable_sound_level;
+    
 };
 
 
@@ -494,7 +675,7 @@ struct zego_sound_level_info
 struct zego_audio_spectrum_info
 {
     char stream_id[ZEGO_EXPRESS_MAX_STREAM_LEN + 1];
-    double *spectrum_list;
+    float* spectrum_list;
     unsigned int spectrum_count;
 };
 
@@ -513,9 +694,18 @@ enum zego_audio_capture_channel_type
 };
 
 
-struct zego_message_info
+struct zego_broadcast_message_info
 {
     char message[ZEGO_EXPRESS_MAX_MESSAGE_LEN + 1];
+    unsigned long long message_id;
+    unsigned long long send_time;
+    struct zego_user from_user;
+};
+
+struct zego_barrage_message_info
+{
+    char message[ZEGO_EXPRESS_MAX_MESSAGE_LEN + 1];
+    char message_id[64];
     unsigned long long send_time;
     struct zego_user from_user;
 };
@@ -533,34 +723,43 @@ enum zego_video_frame_format
     zego_video_frame_format_i422
 };
 
+enum zego_video_encoded_frame_format
+{
+    zego_video_encoded_frame_format_avc_avcc,
+    zego_video_encoded_frame_format_avc_annexb
+};
+
 struct zego_audio_frame_param
 {
-    int buffer_length;
-    int channels;
+    zego_audio_channel channel;
     int samples_rate;
 };
 
 struct zego_video_frame_param
 {
     enum zego_video_frame_format format;
-    int* strides;
-    int* data_length;
+    int strides[4];
     int width;
     int height;
 };
 
-#endif 
+struct zego_video_encoded_frame_param
+{
+    enum zego_video_encoded_frame_format format;
+    bool is_key_frame;
+    int width;
+    int height;
+    const unsigned char* sei_data;
+    unsigned int sei_data_length;
+};
 
-
-
-
-
-
-
-#ifndef zego_express_mediaplayer_defines_h
-#define zego_express_mediaplayer_defines_h
-
-#define ZEGO_EXPRESS_MAX_MEDIAPLAYER_INSTANCE_COUNT 4
+enum zego_video_flip_mode
+{
+    zego_video_flip_mode_none,
+    zego_video_flip_mode_x,
+    zego_video_flip_mode_y,
+    zego_video_flip_mode_x_y,
+};
 
 enum zego_mediaplayer_instance_index
 {
@@ -574,7 +773,6 @@ enum zego_mediaplayer_instance_index
 enum zego_mediaplayer_state
 {
     zego_mediaplayer_state_no_play,
-    zego_mediaplayer_state_will_play,
     zego_mediaplayer_state_playing,
     zego_mediaplayer_state_pausing,
     zego_mediaplayer_state_play_end
@@ -586,208 +784,251 @@ enum zego_mediaplayer_network_event
     zego_mediaplayer_network_event_buffer_end
 };
 
-
-
-
 #endif 
 
 #ifndef __ZEGOEXPRESSBRIDGE_H__
 #define __ZEGOEXPRESSBRIDGE_H__
 
+
+#ifdef WIN32
+#include <windows.h>
+#include <wchar.h>
+#include <sstream>
+typedef void(*ZegoCommuExchangeWndFunc)(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+ZEGO_EXPRESS void setZegoCommuExchangeWndFunc(ZegoCommuExchangeWndFunc func);
+
+class ZEGO_EXPRESS ZegoMainThreadTool {
+public:
+    ZegoMainThreadTool();
+    static LRESULT CALLBACK ZegoCommuExchangeWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+    static LPCWSTR ZegoCommWndClassName;
+    static LPCWSTR  ZegoCommWndName;
+};
+#endif
+
 namespace ZEGO {
-	namespace EXPRESS {
+    namespace EXPRESS {
 
-		class ZegoExpressRoom;
-		class ZegoExpressPublisher;
-		class ZegoExpressPlayer;
-		class ZegoExpressDevice;
-		class ZegoExpressPreprocess;
-		class ZegoExpressIM;
-		class ZegoExpressMixer;
-		class ZegoExpressMediaPlayer;
+        class ZegoExpressRoom;
+        class ZegoExpressPublisher;
+        class ZegoExpressPlayer;
+        class ZegoExpressDevice;
+        class ZegoExpressPreprocess;
+        class ZegoExpressIM;
+        class ZegoExpressMixer;
+        class ZegoExpressMediaPlayer;
+        class ZegoExpressCustomIO;
 
-		class ZEGO_EXPRESS ZegoExpressEngineBridge
-		{
-		public:
-			ZegoExpressEngineBridge();
-			~ZegoExpressEngineBridge();
+        class ZEGO_EXPRESS ZegoExpressEngineBridge
+        {
+        public:
+            static ZegoExpressEngineBridge *GetInstance();
+            
+            // engine
+            static const char* getVersion();
+            void setEngineConfig(zego_engine_config config);
+            int initSDK(unsigned int appID, const char * appSign, bool isTestEnvironment, zego_scenario scenario);
+            void uninitSDKAsync();
+            void uploadLog();
+            void setDebugVerbose(bool enable, zego_language language);
 
-			static const char* getVersion();
-			static long long GetCurTimeStampMs();
+            void showDebugMessageBox(int error_code, const char* func_name, const char* _info);
+            void printDebugInfoAndPopupWhenError(int module, const char * function_name, int error_code);
+            void printDebugInfo(int module, const char * function_name, int error_code);
 
-			void showDebugMessageBox(int error_code, const char* func_name, const char* _info);
-			void printDebugInfo(int level, int module, const char * function_name, int error_code, int info_id = 0);
+            // room
+            void loginRoom(const char* room_id, zego_user user, zego_room_config* room_config);
+            void logoutRoom(const char* room_id);
 
-			int initSDK(unsigned int appID, const char * appSign, bool isTestEnvironment, zego_scenario scenario);
-			void uninitSDK();
-			void uploadLog();
-			void setDebugVerbose(bool enable, zego_language language);
+            //  publisher
+            void setVideoMirrorMode(zego_video_mirror_mode mirrorMode, enum zego_publish_channel channel = zego_publish_channel_main);
+            void startPreview(zego_canvas *canvas, enum zego_publish_channel channel = zego_publish_channel_main);
+            void stopPreview(enum zego_publish_channel channel = zego_publish_channel_main);
+            void setAudioConfig(zego_audio_config audioConfig);
+            void setVideoConfig(zego_video_config videoConfig, enum zego_publish_channel channel = zego_publish_channel_main);
+            void startPublishing(const char* streamID, enum zego_publish_channel channel = zego_publish_channel_main);
+            void stopPublishing(enum zego_publish_channel channel = zego_publish_channel_main);
+            int setStreamExtraInfo(const char * extraInfo, enum zego_publish_channel channel = zego_publish_channel_main);
+            void mutePublishStreamAudio(bool mute, enum zego_publish_channel channel = zego_publish_channel_main);
+            void mutePublishStreamVideo(bool mute, enum zego_publish_channel channel = zego_publish_channel_main);
+            void setCaptureVolume(int volume);
+            int addPublishCNDURL(const char * streamID, const char *  targetURL);
+            int removePublishCNDURL(const char * streamID, const char *  targetURL);
+            void enablePublishDirectToCDN(bool enable, zego_cdn_config* config, enum zego_publish_channel channel = zego_publish_channel_main);
+            void setPublishWatermark(zego_watermark* watermark, bool isPreviewVisible, enum zego_publish_channel channel =  zego_publish_channel_main);
+            void enableHardwareEncoder(bool enable);
+            void setCapturePipelineScaleMode(zego_capture_pipeline_scale_mode mode);
+            void sendSEI(const unsigned char* buffer, unsigned int buffer_length, enum zego_publish_channel channel = zego_publish_channel_main);
+            void enableTrafficControl(bool enable, int property);
+            void setMinVideoBitrateForTrafficControl(int bitrate, enum zego_traffic_control_min_video_bitrate_mode mode);
 
-			// room
-			int loginRoom(zego_user user, const char* room_id, zego_room_config*  room_config);
-			int loginRoom(zego_user user, const char* room_id, zego_room_config* room_config, const char* token);
-			void logoutRoom(const char* room_id);
+            // play
+            void startPlayingStream(const char * streamID, zego_canvas *canvas);
+            void startPlayingStreamWithConfig(const char* streamID, zego_canvas* canvas, zego_player_config config);
+            void stopPlayingStream(const char * streamID);
+            void setPlayVolume(const char * streamID, int volume);
+            void mutePlayStreamAudio(const char * streamID, bool mute);
+            void mutePlayStreamVideo(const char * streamID, bool mute);
+            void enableHardwareDecoder(bool enable);
+            void enableCheckPoc(bool enable);
 
-			//  publisher
-			void setVideoMirrorMode(zego_video_mirror_mode mirrorMode);
-			void startPreview(zego_canvas *canvas);
-			void stopPreview();
-			void setAudioConfig(zego_audio_config audioConfig);
-			void setVideoConfig(zego_video_config videoConfig);
-			int startPublishing(const char* streamID);
-			void stopPublishing();
-			int setStreamExtraInfo(const char * extraInfo);
-			void mutePublishStreamAudio(bool mute);
-			void mutePublishStreamVideo(bool mute);
-			void setCaptureVolume(int volume);
-			int addPublishCNDURL(const char * streamID, const char *  targetURL);
-			int removePublishCNDURL(const char * streamID, const char *  targetURL);
-			void setPublishWatermark(zego_watermark* watermark, bool isPreviewVisible);
-			void enableHardwareEncoder(bool enable);
-			void setCapturePipelineScaleMode(zego_capture_pipeline_scale_mode mode);
-			void sendSEI(const unsigned char* buffer, unsigned int buffer_length);
+            // device
+            void muteMicrophone(bool enable);
+            void muteAudioOutput(bool mute);
+            void enableCamera(bool enable, enum zego_publish_channel channel = zego_publish_channel_main);
+            void enableAudioCaptureDevice(bool enable);
+            void startSoundLevelMonitor();
+            void stopSoundLevelMonitor();
+            void startAudioSpectrumMonitor();
+            void stopAudioSpectrumMonitor();
 
-			// play
-			int startPlayingStream(const char * streamID, zego_canvas *canvas);
-			void stopPlayingStream(const char * streamID);
-			void setPlayVolume(const char * streamID, int volume);
-			void mutePlayStreamAudio(const char * streamID, bool mute);
-			void mutePlayStreamVideo(const char * streamID, bool mute);
-			void enableHardwareDecoder(bool enable);
-			void enableCheckPoc(bool enable);
+            void useAudioDevice(zego_audio_device_type deviceType, const char * deviceID);
+            zego_device_info* getAudioDeviceList(zego_audio_device_type device_type, int * device_count);
+            void freeAudioDeviceList(zego_device_info* device_list);
+            void useVideoDevice(const char * deviceID, enum zego_publish_channel channel = zego_publish_channel_main);
+            zego_device_info* getVideoDeviceList(int * device_count);
+            void freeVideoDeviceList(zego_device_info* device_list);
 
-			// device
-			void muteMicrophone(bool enable);
-			void muteAudioOutput(bool mute);
-			void enableCamera(bool enable);
-			void enableAudioCaptureDevice(bool enable);
-			void startSoundLevelMonitor();
-			void stopSoundLevelMonitor();
-			void startAudioSpectrumMonitor();
-			void stopAudioSpectrumMonitor();
+            // preprocess
+            void enableAEC(bool enable);
+            void setAECMode(zego_aec_mode mode);
+            void enableAGC(bool enable);
+            void enableANS(bool enable);
+            void enableBeautify(int feature, enum zego_publish_channel channel = zego_publish_channel_main);
+            void setBeautifyOption(zego_beautify_option option, enum zego_publish_channel channel = zego_publish_channel_main);
 
-			void useAudioDevice(zego_audio_device_type deviceType, const char * deviceID);
-			zego_device_info* getAudioDeviceList(zego_audio_device_type device_type, int * device_count);
-			void freeAudioDeviceList(zego_device_info* device_list);
-			void useVideoDevice(const char * deviceID);
-			zego_device_info* getVideoDeviceList(int * device_count);
-			void freeVideoDeviceList(zego_device_info* device_list);
+            // IM
+            int sendBroadcastMessage(const char* room_id, const char* content);
+            int sendBarrageMessage(const char* room_id, const char* content);
+            int sendCustomCommand(const char* room_id, struct zego_user*  to_user_list, unsigned int to_user_count, const char* content);
 
-			// preprocess
-			void enableAEC(bool enable);
-			void setAECMode(zego_aec_mode mode);
-			void enableAGC(bool enable);
-			void enableANS(bool enable);
-			void enableBeautify(int feature);
-			void setBeautifyOption(zego_beautify_option option);
+            // Mixer
+            int startMixerTask(zego_mixer_task task);
+            int stopMixerTask(zego_mixer_task task);
+            int startAutoMixerTask(zego_auto_mixer_task task);
+            int stopAutoMixerTask(zego_auto_mixer_task task);
 
-			// IM
-			int sendBroadcastMessage(const char* room_id, const char* content);
-			int sendCustomCommand(const char* room_id, struct zego_user*  to_user_list, unsigned int to_user_count, const char* content);
+            // MediaPlayer
+            zego_mediaplayer_instance_index mpCreate();
+            int mpRelease(zego_mediaplayer_instance_index instance_index);
+            int mpStart(zego_mediaplayer_instance_index instance_index);
+            int mpStop(zego_mediaplayer_instance_index instance_index);
+            int mpPause(zego_mediaplayer_instance_index instance_index);
+            int mpResume(zego_mediaplayer_instance_index instance_index);
+            int mpPreload(const char* path, zego_mediaplayer_instance_index instance_index);
+            int mpSeekTo(unsigned long long millisecond, zego_mediaplayer_instance_index instance_index);
+            int mpSetVolume(int volume, zego_mediaplayer_instance_index instance_index);
+            unsigned long long mpGetTotalDuration(zego_mediaplayer_instance_index instance_index);
+            unsigned long long mpGetCurrentProgress(zego_mediaplayer_instance_index instance_index);
+            int mpGetVolume(zego_mediaplayer_instance_index instance_index);
+            zego_mediaplayer_state mpGetCurrentState(zego_mediaplayer_instance_index instance_index);
+            int mpMuteLocal(bool mute, zego_mediaplayer_instance_index instance_index);
+            int mpSetPlayerCanvas(struct zego_canvas *canvas, zego_mediaplayer_instance_index instance_index);
+            int mpEnableAUX(bool enable, zego_mediaplayer_instance_index instance_index);
+            int mpEnableRepeat(bool enable, zego_mediaplayer_instance_index instance_index);
+            int mpSetProgressInterval(unsigned long long millisecond, zego_mediaplayer_instance_index instance_index);
+            int mpEnableAudioData(bool enable, zego_mediaplayer_instance_index instance_index);
+            int mpEnableVideoData(bool enable, zego_video_frame_format format, zego_mediaplayer_instance_index instance_index);
 
-			// Mixer
-			int startMixerTask(const char* task_id);
-			int stopMixerTask(const char* task_id);
-			void setMixerInputList(const char* task_id, zego_mixer_input* input_list, unsigned int input_count);
-			void setMixerOutputList(const char* task_id, zego_mixer_output* output_list, unsigned int output_count);
-			void setMixerOutputAudioConfig(const char* task_id, zego_mixer_audio_config audio_config);
-			void setMixerOutputVideoConfig(const char* task_id, zego_mixer_video_config video_config);
-			void setMixerOutputBackgroundImage(const char* task_id, const char* image_url);
-			void setMixerOutputWatermark(const char* task_id, zego_watermark* watermark);
+            // CustomlIO
+            void customVideoCaptureSetFillMode(zego_view_mode mode, enum zego_publish_channel channel = zego_publish_channel_main);
+            void customVideoCaptureSendRawData(const unsigned char* data, unsigned int data_length, const struct zego_video_frame_param param, unsigned long long reference_time_millisecond, enum zego_publish_channel channel = zego_publish_channel_main);
+            void customVideoCaptureSendEncodedFrameData(const unsigned char* data, unsigned int data_length, const struct zego_video_encoded_frame_param param, double reference_time_millisecond, enum zego_publish_channel channel = zego_publish_channel_main);
 
-			// MediaPlayer
-			zego_mediaplayer_instance_index mpCreate();
-			int mpRelease(zego_mediaplayer_instance_index instance_index);
-			int mpStart(zego_mediaplayer_instance_index instance_index);
-			int mpStop(zego_mediaplayer_instance_index instance_index);
-			int mpPause(zego_mediaplayer_instance_index instance_index);
-			int mpResume(zego_mediaplayer_instance_index instance_index);
-			int mpPreload(const char* path, zego_mediaplayer_instance_index instance_index);
-			int mpSeekTo(unsigned long long millisecond, zego_mediaplayer_instance_index instance_index);
-			int mpSetVolume(int volume, zego_mediaplayer_instance_index instance_index);
-			unsigned long long mpGetTotalDuration(zego_mediaplayer_instance_index instance_index);
-			unsigned long long mpGetCurrentDuration(zego_mediaplayer_instance_index instance_index);
-			int mpGetVolume(zego_mediaplayer_instance_index instance_index);
-			zego_mediaplayer_state mpGetCurrentState(zego_mediaplayer_instance_index instance_index);
-			int mpMuteLocalAudio(bool mute, zego_mediaplayer_instance_index instance_index);
-			int mpSetPlayerCanvas(struct zego_canvas *canvas, zego_mediaplayer_instance_index instance_index);
-			int mpEnableAUX(bool enable, zego_mediaplayer_instance_index instance_index);
-			int mpEnableRepeat(bool enable, zego_mediaplayer_instance_index instance_index);
-			int mpSetProcessInterval(unsigned long long millisecond, zego_mediaplayer_instance_index instance_index);
-			int mpEnableAudioData(bool enable, zego_mediaplayer_instance_index instance_index);
-			int mpEnableVideoData(bool enable, zego_video_frame_format format, zego_mediaplayer_instance_index instance_index);
+            // eventHandler
+            void unregisterEngineCallback();
 
-			// eventHandler
-			void registerDebugErrorCallback(void* callback_func, void* user_context);
+            void registerEngineStateCallback(void* callback_func, void* user_context);
 
-			void registerRoomStreamUpdateCallback(void* callback_func, void* user_context);
-			void registerRoomStreamExtraInfoUpdateCallback(void* callback_func, void* user_context);
-			void registerRoomStateUpdateCallback(void* callback_func, void* user_context);
-			void registerRoomUserStateUpdateCallback(void* callback_func, void* user_context);
+            void registerRoomStreamUpdateCallback(void* callback_func, void* user_context);
+            void registerRoomStreamExtraInfoUpdateCallback(void* callback_func, void* user_context);
+            void registerRoomStateUpdateCallback(void* callback_func, void* user_context);
+            void registerRoomUserStateUpdateCallback(void* callback_func, void* user_context);
 
-			void registerPublisherStateUpdateCallback(void* callback_func, void* user_context);
-			void registerPublisherQualityUpdateCallback(void* callback_func, void* user_context);
-			void registerPublisherRecvAudioCapturedFirstFrameCallback(void* callback_func, void* user_context);
-			void registerPublisherRecvVideoCapturedFirstFrameCallback(void* callback_func, void* user_context);
-			void registerPublisherVideoSizeChangedCallback(void* callback_func, void* user_context);
-			void registerPublisherRelayCDNStateUpdateCallback(void *callback_func, void *user_context);
-			void registerPublisherUpdatePublishCDNUrlCallback(void* callback_func, void* user_context);
-			void registerPublisherUpdateStreamExtraInfoResultCallback(void* callback_func, void* user_context);
+            void registerPublisherStateUpdateCallback(void* callback_func, void* user_context);
+            void registerPublisherQualityUpdateCallback(void* callback_func, void* user_context);
+            void registerPublisherRecvAudioCapturedFirstFrameCallback(void* callback_func, void* user_context);
+            void registerPublisherRecvVideoCapturedFirstFrameCallback(void* callback_func, void* user_context);
+            void registerPublisherVideoSizeChangedCallback(void* callback_func, void* user_context);
+            void registerPublisherRelayCDNStateUpdateCallback(void *callback_func, void *user_context);
+            void registerPublisherUpdatePublishCDNUrlCallback(void* callback_func, void* user_context);
+            void registerPublisherUpdateStreamExtraInfoResultCallback(void* callback_func, void* user_context);
 
-			void registerPlayerStateUpdateCallback(void* callback_func, void* user_context);
-			void registerPlayerQualityUpdateCallback(void* callback_func, void* user_context);
-			void registerPlayerMediaEventCallback(void* callback_func, void* user_context);
-			void registerPlayerRecvAudioFirstFrameCallback(void* callback_func, void* user_context);
-			void registerPlayerRecvVideoFirstFrameCallback(void* callback_func, void* user_context);
-			void registerPlayerRenderVideoFirstFrameCallback(void* callback_func, void* user_context);
-			void registerPlayerVideoSizeChangedCallback(void* callback_func, void* user_context);
-			void registerPlayerRecvSEICallback(void* callback_func, void* user_context);
+            void registerPlayerStateUpdateCallback(void* callback_func, void* user_context);
+            void registerPlayerQualityUpdateCallback(void* callback_func, void* user_context);
+            void registerPlayerMediaEventCallback(void* callback_func, void* user_context);
+            void registerPlayerRecvAudioFirstFrameCallback(void* callback_func, void* user_context);
+            void registerPlayerRecvVideoFirstFrameCallback(void* callback_func, void* user_context);
+            void registerPlayerRenderVideoFirstFrameCallback(void* callback_func, void* user_context);
+            void registerPlayerVideoSizeChangedCallback(void* callback_func, void* user_context);
+            void registerPlayerRecvSEICallback(void* callback_func, void* user_context);
 
-			void registerCapturedSoundLevelUpdateCallback(void* callback_func, void* user_context);
-			void registerRemoteSoundLevelUpdateCallback(void* callback_func, void* user_context);
-			void registerCapturedAudioSpectrumUpdateCallback(void* callback_func, void* user_context);
-			void registerRemoteAudioSpectrumUpdateCallback(void* callback_func, void* user_context);
+            void registerCapturedSoundLevelUpdateCallback(void* callback_func, void* user_context);
+            void registerRemoteSoundLevelUpdateCallback(void* callback_func, void* user_context);
+            void registerCapturedAudioSpectrumUpdateCallback(void* callback_func, void* user_context);
+            void registerRemoteAudioSpectrumUpdateCallback(void* callback_func, void* user_context);
 
-			void registerAudioDeviceStateChangedCallback(void* callback_func, void* user_context);
-			void registerVideoDeviceStateChangedCallback(void* callback_func, void* user_context);
-			void registerDeviceErrorCallback(void* callback_func, void* user_context);
+            void registerAudioDeviceStateChangedCallback(void* callback_func, void* user_context);
+            void registerVideoDeviceStateChangedCallback(void* callback_func, void* user_context);
+            void registerDeviceErrorCallback(void* callback_func, void* user_context);
 
-			void registerRemoteCameraStateUpdateCallback(void* callback_func, void* user_context);
-			void registerRemoteMicStateUpdateCallback(void* callback_func, void* user_context);	
+            void registerRemoteCameraStateUpdateCallback(void* callback_func, void* user_context);
+            void registerRemoteMicStateUpdateCallback(void* callback_func, void* user_context);	
 
-			void registerIMSendBroadcastMessageResultCallback(void* callback_func, void* user_context);
-			void registerIMRecvBroadcasMessageCallback(void* callback_func, void* user_context);
-			void registerIMSendCustomCommandResultCallback(void* callback_func, void* user_context);
-			void registerIMRecvCustomCommandCallback(void* callback_func, void* user_context);
+            void registerIMSendBroadcastMessageResultCallback(void* callback_func, void* user_context);
+            void registerIMRecvBroadcasMessageCallback(void* callback_func, void* user_context);
+            void registerIMSendBarrageMessageResultCallback(void* callback_func, void* user_context);
+            void registerIMRecvBarrageMessageResultCallback(void* callback_func, void* user_context);
+            void registerIMSendCustomCommandResultCallback(void* callback_func, void* user_context);
+            void registerIMRecvCustomCommandCallback(void* callback_func, void* user_context);
 
-			void registerMixerStartResultCallback(void* callback_func, void* user_context);
-			void registerMixerRelayCDNStateUpdateCallback(void* callback_func, void* user_context);
+            void registerMixerStartResultCallback(void* callback_func, void* user_context);
+            void registerMixerStopResultCallback(void* callback_func, void* user_context);
+            void registerMixerSoundLevelUpdateCallback(void* callback_func, void* user_context);
+            void registerAutoMixerSoundLevelUpdateCallback(void* callback_func, void* user_context);
+            void registerMixerRelayCDNStateUpdateCallback(void* callback_func, void* user_context);
 
-			void registerMediaPlayerStateUpdateCallback(void* callback_func, void* user_context);
-			void registerMediaPlayerNetworkEventCallback(void* callback_func, void* user_context);
-			void registerMediaPlayerPlayingProcessCallback(void* callback_func, void* user_context);
-			void registerMediaPlayerSeekToTimeResult(void* callback_func, void* user_context);
-			void registerMediaPlayerLoadFileResult(void* callback_func, void* user_context);
-			void registerMediaPlayerAudioDataCallback(void* callback_func, void* user_context);
-			void registerMediaPlayerVideoDataCallback(void* callback_func,  void* user_context);
-			
+            void registerMediaPlayerStateUpdateCallback(void* callback_func, void* user_context);
+            void registerMediaPlayerNetworkEventCallback(void* callback_func, void* user_context);
+            void registerMediaPlayerPlayingProgressCallback(void* callback_func, void* user_context);
+            void registerMediaPlayerSeekToResult(void* callback_func, void* user_context);
+            void registerMediaPlayerLoadFileResult(void* callback_func, void* user_context);
+            void registerMediaPlayerAudioDataCallback(void* callback_func, void* user_context);
+            void registerMediaPlayerVideoDataCallback(void* callback_func,  void* user_context);
 
-		private:
-			ZegoExpressRoom *mRoom = nullptr;
-			ZegoExpressPublisher *mPublisher = nullptr;
-			ZegoExpressPlayer *mPlayer = nullptr;
-			ZegoExpressDevice *mDevice = nullptr;
-			ZegoExpressPreprocess *mPreprocess = nullptr;
-			ZegoExpressIM *mIM = nullptr;
-			ZegoExpressMixer *mMixer = nullptr;
-			ZegoExpressMediaPlayer *mMediaPlayer = nullptr;
+            void registerCustomVideoRenderLocalFrameDataCallback(void* callback_func, void* user_context);
+            void registerCustomVideoRenderRemoteFrameDataCallback(void* callback_func, void* user_context);
+            
+            void registerCustomVideoCaptureStartCallback(void* callback_func, void* user_context);
+            void registerCustomVideoCaptureStopCallback(void* callback_func, void* user_context);
 
-			zego_language debugVerboseLanguage = zego_language_english;
-			bool debugVerboseEnabled = true;
-			bool isTestEnv = false;
-		};
+        public:
+            typedef void(*CBridgeOnCallError)(int error_code, const char* func_name, const char* info, void* user_context);
+            void registerOnCallErrorCallback(void* callback, void* context);
+        private:
+            CBridgeOnCallError mOnCallError = nullptr;
+            void* mOnCallErrorContext = nullptr;
+            
+        private:
+            ZegoExpressEngineBridge();
+            ~ZegoExpressEngineBridge();
 
-	}
+            ZegoExpressRoom *mRoom = nullptr;
+            ZegoExpressPublisher *mPublisher = nullptr;
+            ZegoExpressPlayer *mPlayer = nullptr;
+            ZegoExpressDevice *mDevice = nullptr;
+            ZegoExpressPreprocess *mPreprocess = nullptr;
+            ZegoExpressIM *mIM = nullptr;
+            ZegoExpressMixer *mMixer = nullptr;
+            ZegoExpressMediaPlayer *mMediaPlayer = nullptr;
+            ZegoExpressCustomIO *mCustomIO = nullptr;
+
+            zego_language debugVerboseLanguage = zego_language_english;
+            bool debugVerboseEnabled = true;
+            bool isTestEnv = false;
+        };
+
+    }
 }
 
 #endif /* __ZEGOEXPRESSBRIDGE_H__ */

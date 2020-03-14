@@ -11,6 +11,9 @@ ZegoVideoTalkDemo::ZegoVideoTalkDemo(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    ZegoEngineConfig engineConfig;
+    ZegoExpressSDK::setEngineConfig(engineConfig);
+    
     auto appID = ZegoConfigManager::instance()->getAppID();
     auto appSign = ZegoConfigManager::instance()->getAppSign();
     auto isTest = ZegoConfigManager::instance()->isTestEnviroment();
@@ -57,7 +60,7 @@ void ZegoVideoTalkDemo::onRoomStreamUpdate(const std::string &roomID, ZegoUpdate
             zegoStreamList.push_back(stream);
         }
 
-        if(updateType == ZEGO_UPDATE_TYPE_DEL && it != zegoStreamList.end()){
+        if(updateType == ZEGO_UPDATE_TYPE_DELETE && it != zegoStreamList.end()){
             engine->stopPlayingStream(stream.streamID);
             zegoStreamList.erase(it);
         }
@@ -72,7 +75,7 @@ void ZegoVideoTalkDemo::onRoomStreamUpdate(const std::string &roomID, ZegoUpdate
         auto stream = zegoStreamList.at(i);
         auto widget = videoList.value(int(i));
         if(widget){
-            ZegoCanvas canvas((void *)widget->winId(), ZEGO_VIEW_MODE_ASPECT_FIT);
+            ZegoCanvas canvas(ZegoView(widget->winId()));
             engine->startPlayingStream(stream.streamID, &canvas);
         }
     }
@@ -87,15 +90,15 @@ void ZegoVideoTalkDemo::bindEventHandler()
 {
     auto eventHandler = std::make_shared<ZegoEventHandlerWithLogger>(ui->textEdit_log);
     connect(eventHandler.get(), &ZegoEventHandlerWithLogger::sigRoomStreamUpdate, this, &ZegoVideoTalkDemo::onRoomStreamUpdate);
-    engine->addEventHandler(eventHandler);
+    engine->setEventHandler(eventHandler);
 }
 
 void ZegoVideoTalkDemo::on_pushButton_login_clicked()
 {
     ZegoUser user(userID, userID);
-    engine->loginRoom(roomID, user, nullptr);
+    engine->loginRoom(roomID, user);
 
-    ZegoCanvas canvas((void *)ui->frame_video_0->winId(), ZEGO_VIEW_MODE_ASPECT_FIT);
+    ZegoCanvas canvas(ZegoView(ui->frame_video_0->winId()));
     engine->startPreview(&canvas);
     engine->startPublishing(user.userID);
 }

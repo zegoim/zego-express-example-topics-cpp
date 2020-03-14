@@ -42,7 +42,7 @@ private:
 
 private:
     Ui::ZegoPublishDemo *ui;
-    ZEGO::EXPRESS::IZegoExpressEngine *engine;
+    ZEGO::EXPRESS::IZegoExpressEngine *engine = nullptr;
 };
 
 #endif // ZEGOPUBLISHDEMO_H

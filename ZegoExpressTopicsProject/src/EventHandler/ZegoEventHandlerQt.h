@@ -13,21 +13,24 @@ public:
     ~ZegoEventHandlerQt() override;
 
     void onDebugError(int errorCode, const std::string& funcName, const std::string& info) override;
-    void onRoomStateUpdate(const std::string& roomID, ZegoRoomState state, int errorCode) override;
+    void onRoomStateUpdate(const std::string& roomID, ZegoRoomState state, int errorCode, const std::string &extendData) override;
     void onRoomUserUpdate(const std::string& roomID, ZegoUpdateType updateType, const std::vector<ZegoUser>& userList) override;
     void onRoomStreamUpdate(const std::string& roomID, ZegoUpdateType updateType, const std::vector<ZegoStream>& streamList) override;
     void onRoomStreamExtraInfoUpdate(const std::string& roomID, const std::vector<ZegoStream>& streamList) override;
 
-    void onPublisherStateUpdate(const std::string& streamID, ZegoPublisherState state, int errorCode) override;
+    void onPublisherStateUpdate(const std::string& streamID, ZegoPublisherState state, int errorCode, const std::string &extendData) override;
     void onPublisherQualityUpdate(const std::string& streamID, const ZegoPublishStreamQuality& quality) override;
-    void onPublisherRecvFirstFrameEvent(ZegoPublisherFirstFrameEvent event) override;
-    void onPublisherVideoSizeChanged(int width, int height) override;
+    void onPublisherCapturedAudioFirstFrame() override;
+    void onPublisherCapturedVideoFirstFrame(ZegoPublishChannel channel) override;
+    void onPublisherVideoSizeChanged(int width, int height, ZegoPublishChannel channel) override;
     void onPublisherRelayCDNStateUpdate(const std::string& streamID, const std::vector<ZegoStreamRelayCDNInfo>& streamInfoList) override;
 
-    void onPlayerStateUpdate(const std::string& streamID, ZegoPlayerState state, int errorCode) override;
+    void onPlayerStateUpdate(const std::string& streamID, ZegoPlayerState state, int errorCode, const std::string &extendData) override;
     void onPlayerQualityUpdate(const std::string& streamID, const ZegoPlayStreamQuality& quality) override;
     void onPlayerMediaEvent(const std::string& streamID, ZegoPlayerMediaEvent event) override;
-    void onPlayerRecvFirstFrameEvent(const std::string& streamID, ZegoPlayerFirstFrameEvent event) override;
+    void onPlayerRecvAudioFirstFrame(const std::string& streamID) override;
+    void onPlayerRecvVideoFirstFrame(const std::string& streamID) override;
+    void onPlayerRenderVideoFirstFrame(const std::string& streamID) override;
     void onPlayerVideoSizeChanged(const std::string& streamID, int width, int height) override;
     void onPlayerRecvSEI(const std::string& streamID, const unsigned char* data, unsigned int dataLength) override;
 
@@ -41,29 +44,33 @@ public:
     void onCapturedAudioSpectrumUpdate(const ZegoAudioSpectrum& frequencySpectrum) override;
     void onRemoteAudioSpectrumUpdate(const std::map<std::string, ZegoAudioSpectrum>& frequencySpectrums) override;
 
-    void onMixerRelayCDNStateUpdate(const std::string& taskID, const std::vector<ZegoStreamRelayCDNInfo>& infoList) override;
+    void onMixerRelayCDNStateUpdate(const std::vector<ZegoStreamRelayCDNInfo>& infoList, const std::string& taskID) override;
 
-    void onIMRecvBroadcastMessage(const std::string& roomID, std::vector<ZegoMessageInfo> messageList) override;
+    void onIMRecvBroadcastMessage(const std::string& roomID, std::vector<ZegoBroadcastMessageInfo> messageList) override;
+    void onIMRecvBarrageMessage(const std::string& roomID, std::vector<ZegoBarrageMessageInfo> messageList) override;
     void onIMRecvCustomCommand(const std::string& roomID, ZegoUser fromUser, const std::string& command) override;
 
 signals:
     void sigDebugError(int errorCode, const std::string& funcName, const std::string& info);
 
-    void sigRoomStateUpdate(const std::string& roomID, ZegoRoomState state, int errorCode);
+    void sigRoomStateUpdate(const std::string& roomID, ZegoRoomState state, int errorCode, const std::string &extendData);
     void sigRoomUserUpdate(const std::string& roomID, ZegoUpdateType updateType, const std::vector<ZegoUser>& userList);
     void sigRoomStreamUpdate(const std::string& roomID, ZegoUpdateType updateType, const std::vector<ZegoStream>& streamList);
     void sigRoomStreamExtraInfoUpdate(const std::string& roomID, const std::vector<ZegoStream>& streamList);
 
-    void sigPublisherStateUpdate(const std::string& streamID, ZegoPublisherState state, int errorCode);
+    void sigPublisherStateUpdate(const std::string& streamID, ZegoPublisherState state, int errorCode, const std::string &extendData);
     void sigPublisherQualityUpdate(const std::string& streamID, const ZegoPublishStreamQuality& quality);
-    void sigPublisherRecvFirstFrameEvent(ZegoPublisherFirstFrameEvent event);
-    void sigPublisherVideoSizeChanged(int width, int height);
+    void sigPublisherCapturedAudioFirstFrame();
+    void sigPublisherCapturedVideoFirstFrame(ZegoPublishChannel channel);
+    void sigPublisherVideoSizeChanged(int width, int height, ZegoPublishChannel channel);
     void sigPublisherRelayCDNStateUpdate(const std::string& streamID, const std::vector<ZegoStreamRelayCDNInfo>& streamInfoList);
 
-    void sigPlayerStateUpdate(const std::string& streamID, ZegoPlayerState state, int errorCode);
+    void sigPlayerStateUpdate(const std::string& streamID, ZegoPlayerState state, int errorCode, const std::string &extendData);
     void sigPlayerQualityUpdate(const std::string& streamID, const ZegoPlayStreamQuality& quality);
     void sigPlayerMediaEvent(const std::string& streamID, ZegoPlayerMediaEvent event);
-    void sigPlayerRecvFirstFrameEvent(const std::string& streamID, ZegoPlayerFirstFrameEvent event);
+    void sigPlayerRecvAudioFirstFrame(const std::string& streamID);
+    void sigPlayerRecvVideoFirstFrame(const std::string& streamID);
+    void sigPlayerRenderVideoFirstFrame(const std::string& streamID);
     void sigPlayerVideoSizeChanged(const std::string& streamID, int width, int height);
     void sigPlayerRecvSEI(const std::string& streamID, const unsigned char* data, unsigned int dataLength);
 
@@ -79,7 +86,8 @@ signals:
 
     void sigMixerRelayCDNStateUpdate(const std::string& taskID, const std::vector<ZegoStreamRelayCDNInfo>& infoList);
 
-    void sigIMRecvBroadcastMessage(const std::string& roomID, std::vector<ZegoMessageInfo> messageList);
+    void sigIMRecvBroadcastMessage(const std::string& roomID, std::vector<ZegoBroadcastMessageInfo> messageList);
+    void sigIMRecvBarrageMessage(const std::string& roomID, std::vector<ZegoBarrageMessageInfo> messageList);
     void sigIMRecvCustomCommand(const std::string& roomID, ZegoUser fromUser, const std::string& command);
 
 

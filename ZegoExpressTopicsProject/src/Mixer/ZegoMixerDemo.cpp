@@ -6,7 +6,6 @@
 #include "EventHandler/ZegoEventHandlerWithLogger.h"
 #include <QScrollBar>
 
-std::string ZegoMixerDemo::mixerTaskID;
 
 ZegoMixerDemo::ZegoMixerDemo(QWidget *parent) :
     QWidget(parent),
@@ -14,6 +13,9 @@ ZegoMixerDemo::ZegoMixerDemo(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    ZegoEngineConfig engineConfig;
+    ZegoExpressSDK::setEngineConfig(engineConfig);
+    
     auto appID = ZegoConfigManager::instance()->getAppID();
     auto appSign = ZegoConfigManager::instance()->getAppSign();
     auto isTestEnv = ZegoConfigManager::instance()->isTestEnviroment();
@@ -24,21 +26,21 @@ ZegoMixerDemo::ZegoMixerDemo(QWidget *parent) :
     roomID = "MixerRoom-1";
     userID = ZegoUtilHelper::getRandomString();
     ZegoUser user(userID, userID);
-    engine->loginRoom(roomID, user, nullptr);
+    engine->loginRoom(roomID, user);
 
     ui->pushButton_roomID->setText(QString("RoomID: %1").arg(roomID.c_str()));
     ui->pushButton_userID->setText(QString("UserID: %1").arg(userID.c_str()));
 
     QStringList ZegoResolutionList = {
-        "ZEGO_RESOLUTION_320x180" ,
-        "ZEGO_RESOLUTION_480x270" ,
-        "ZEGO_RESOLUTION_640x360" ,
-        "ZEGO_RESOLUTION_960x540" ,
-        "ZEGO_RESOLUTION_1280x720",
-        "ZEGO_RESOLUTION_1920x1080"
+        "180P" ,
+        "270P" ,
+        "360P" ,
+        "540P" ,
+        "720P",
+        "1080P"
     };
     ui->comboBox_mixerVideoConfig->addItems(ZegoResolutionList);
-    ui->comboBox_mixerVideoConfig->setCurrentIndex(ZEGO_RESOLUTION_640x360);
+    ui->comboBox_mixerVideoConfig->setCurrentIndex(ZEGO_VIDEO_CONFIG_PRESET_360P);
 }
 
 ZegoMixerDemo::~ZegoMixerDemo()
@@ -59,7 +61,7 @@ void ZegoMixerDemo::onRoomStreamUpdate(const std::string &roomID, ZegoUpdateType
             zegoStreamList.push_back(stream);
         }
 
-        if(updateType == ZEGO_UPDATE_TYPE_DEL && it != zegoStreamList.end()){
+        if(updateType == ZEGO_UPDATE_TYPE_DELETE && it != zegoStreamList.end()){
             zegoStreamList.erase(it);
         }
     });
@@ -79,11 +81,11 @@ void ZegoMixerDemo::onRoomStreamUpdate(const std::string &roomID, ZegoUpdateType
 void ZegoMixerDemo::on_pushButton_start_mixer_task_clicked()
 {
     // 0. MixerTask
-    this->mixerTaskID = ZegoUtilHelper::getRandomString();
-    ZegoMixerTask task(this->mixerTaskID);
+    auto mixerTaskID = ZegoUtilHelper::getRandomString();
+    ZegoMixerTask task(mixerTaskID);
 
     // 1. MixerTask-VideoConfig
-    ZegoMixerVideoConfig videoConfig(ZegoResolution(ui->comboBox_mixerVideoConfig->currentIndex()));
+    ZegoMixerVideoConfig videoConfig;
     task.videoConfig = videoConfig;
 
     // 2. MixerTask-AudioConfig
@@ -116,41 +118,45 @@ void ZegoMixerDemo::on_pushButton_start_mixer_task_clicked()
     task.outputList = {mixerOutput};
 
     // 5. MixerTask-watermark:(option)
-    ZegoWatermark watermark;
-    watermark.imageURL = "preset-id://zegowp.png";
-    watermark.layout = ZegoRect(0, 0, 100, 100);
-    task.watermark = &watermark;
-
+    watermark = std::make_shared<ZegoWatermark>();
+    watermark->imageURL = "preset-id://zegowp.png";
+    watermark->layout = ZegoRect(0, 0, 100, 100);
+    task.watermark = watermark.get();
 
     // 6. MixerTask-backgroundImage:(option)
     task.backgroundImageURL = "preset-id://zegobg.png";
 
+    currentTask = task;
+
     // start mixer task
     QString log = QString("do start mixer task: taskID=%1, target=%2").arg(task.taskID.c_str()).arg(target.c_str());
     printLogToView(log);
-    engine->startMixerTask(task, [=](ZegoMixerStartResult result){
-        QString log = QString("start mixer task result: taskID=%1, errorCode=%2").arg(task.taskID.c_str()).arg(result.errorCode);
+    engine->startMixerTask(task, [=](int errorCode, std::string extendData){
+        QString log = QString("start mixer task result: taskID=%1, errorCode=%2, extendData=%3").arg(task.taskID.c_str()).arg(errorCode).arg(extendData.c_str());
         printLogToView(log);
     });
 }
 
 void ZegoMixerDemo::on_pushButton_stop_mixer_task_clicked()
-{
-    if(this->mixerTaskID==""){
+{    
+    if(currentTask.taskID==""){
         QString log = QString("start mixer task first, then stop it");
         printLogToView(log);
     }
     else{
-        QString log = QString("do stop mixer task: taskID=%1").arg(this->mixerTaskID.c_str());
+        QString log = QString("do stop mixer task: taskID=%1").arg(currentTask.taskID.c_str());
         printLogToView(log);
-        engine->stopMixerTask(this->mixerTaskID);
+        engine->stopMixerTask(currentTask, [=](int errorCode){
+            QString log = QString("stop mixer task result: taskID=%1, errorCode=%2").arg(currentTask.taskID.c_str()).arg(errorCode);
+            printLogToView(log);
+        });
     }
 }
 
 void ZegoMixerDemo::on_pushButton_start_play_clicked()
 {
     std::string streamID = ui->lineEdit_streamID_to_play->text().toStdString();
-    ZegoCanvas canvas((void *)ui->frame_mixer_video->winId(), ZEGO_VIEW_MODE_ASPECT_FIT);
+    ZegoCanvas canvas(ZegoView(ui->frame_mixer_video->winId()));
     engine->startPlayingStream(streamID, &canvas);
 }
 
@@ -170,5 +176,5 @@ void ZegoMixerDemo::bindEventHandler()
 {
     auto eventHandler = std::make_shared<ZegoEventHandlerWithLogger>(ui->textEdit_log);
     connect(eventHandler.get(), &ZegoEventHandlerWithLogger::sigRoomStreamUpdate, this, &ZegoMixerDemo::onRoomStreamUpdate);
-    engine->addEventHandler(eventHandler);
+    engine->setEventHandler(eventHandler);
 }

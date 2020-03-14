@@ -10,6 +10,9 @@ ZegoPlayDemo::ZegoPlayDemo(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    ZegoEngineConfig engineConfig;
+    ZegoExpressSDK::setEngineConfig(engineConfig);
+    
     auto appID = ZegoConfigManager::instance()->getAppID();
     auto appSign = ZegoConfigManager::instance()->getAppSign();
     auto isTest = ZegoConfigManager::instance()->isTestEnviroment();
@@ -26,9 +29,9 @@ ZegoPlayDemo::ZegoPlayDemo(QWidget *parent) :
 
     ui->comboBox_viewmode->blockSignals(true);
     QStringList viewModeList = {
-        "ZEGO_VIEW_MODE_ASPECT_FIT",
-        "ZEGO_VIEW_MODE_ASPECT_FILL",
-        "ZEGO_VIEW_MODE_SCALE_TO_FILL"
+        "ASPECT_FIT",
+        "ASPECT_FILL",
+        "SCALE_TO_FILL"
     };
     ui->comboBox_viewmode->addItems(viewModeList);
     ui->comboBox_viewmode->blockSignals(false);
@@ -66,7 +69,7 @@ void ZegoPlayDemo::bindEventHandler()
     auto eventHandler = std::make_shared<ZegoEventHandlerWithLogger>(ui->textEdit_log);
     connect(eventHandler.get(), &ZegoEventHandlerWithLogger::sigPlayerQualityUpdate, this, &ZegoPlayDemo::onPlayerQualityUpdate);
 	connect(eventHandler.get(), &ZegoEventHandlerWithLogger::sigPlayerVideoSizeChanged, this, &ZegoPlayDemo::onPlayerVideoSizeChanged);
-    engine->addEventHandler(eventHandler);
+    engine->setEventHandler(eventHandler);
 }
 
 void ZegoPlayDemo::on_comboBox_audioOutputDevice_currentIndexChanged(const QString &arg1)
@@ -77,7 +80,8 @@ void ZegoPlayDemo::on_comboBox_audioOutputDevice_currentIndexChanged(const QStri
 void ZegoPlayDemo::on_comboBox_viewmode_currentIndexChanged(int index)
 {
     std::string streamID = ui->lineEdit_streamID->text().toStdString();
-    ZegoCanvas canvas((void *)ui->frame_remote_video->winId(), ZegoViewMode(index));
+    ZegoCanvas canvas(ZegoView(ui->frame_remote_video->winId()), ZegoViewMode(index));
+
     engine->startPlayingStream(streamID, &canvas);
 }
 
@@ -100,9 +104,9 @@ void ZegoPlayDemo::on_pushButton_startPlay_clicked()
     ZegoUser user;
     user.userID = userID;
     user.userName = userID;
-    engine->loginRoom(roomID, user,  nullptr);
+    engine->loginRoom(roomID, user);
 
-    ZegoCanvas canvas((void *)ui->frame_remote_video->winId(), ZEGO_VIEW_MODE_ASPECT_FIT);
+    ZegoCanvas canvas(ZegoView(ui->frame_remote_video->winId()));
     engine->startPlayingStream(streamID, &canvas);
 }
 

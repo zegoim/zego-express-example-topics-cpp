@@ -34,7 +34,7 @@ private:
 
 private:
     Ui::ZegoPlayDemo *ui;
-    ZEGO::EXPRESS::IZegoExpressEngine *engine;
+    ZEGO::EXPRESS::IZegoExpressEngine *engine = nullptr;
 };
 
 #endif // ZEGOPLAYDEMO_H

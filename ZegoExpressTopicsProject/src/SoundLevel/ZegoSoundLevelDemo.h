@@ -43,7 +43,7 @@ private:
 private:
     Ui::ZegoSoundLevelDemo *ui;
     std::vector<ZegoStream> zegoStreamList;
-    ZEGO::EXPRESS::IZegoExpressEngine *engine;
+    ZEGO::EXPRESS::IZegoExpressEngine *engine = nullptr;
 
     std::string roomID;
     std::string userID;

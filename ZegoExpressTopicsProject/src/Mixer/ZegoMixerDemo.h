@@ -34,10 +34,13 @@ private:
 private:
     Ui::ZegoMixerDemo *ui;
     std::vector<ZegoStream> zegoStreamList;
-    static std::string mixerTaskID;
-    ZEGO::EXPRESS::IZegoExpressEngine *engine;
+    ZEGO::EXPRESS::IZegoExpressEngine *engine = nullptr;
     std::string roomID;
     std::string userID;
+    ZegoMixerTask currentTask;
+    std::shared_ptr<ZegoWatermark> watermark;
+
+    static std::string mixerTaskID;
 };
 
 #endif // ZEGOMIXERDEMO_H

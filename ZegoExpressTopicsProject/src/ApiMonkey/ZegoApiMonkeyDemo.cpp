@@ -78,6 +78,9 @@ R"({
     ui->textEdit_sendCustomCommad->setText(ZegoUtilHelper::jsonObjectToString(ZegoUtilHelper::stringToJsonObject(imCustomCommand, ok)));
     }
 
+    ZegoEngineConfig engineConfig;
+    ZegoExpressSDK::setEngineConfig(engineConfig);
+
     auto appID = ZegoConfigManager::instance()->getAppID();
     auto appSign = ZegoConfigManager::instance()->getAppSign();
     auto isTestEnv = ZegoConfigManager::instance()->isTestEnviroment();
@@ -103,7 +106,7 @@ void ZegoApiMonkeyDemo::on_pushButton_login_clicked()
     user.userID = ui->lineEdit_userID->text().toStdString();
     user.userName = ui->lineEdit_userName->text().toStdString();
 
-    engine->loginRoom(roomID, user, nullptr);
+    engine->loginRoom(roomID, user);
     QString log = QString("do loginRoom");
     printLogToView(log);
 
@@ -130,7 +133,7 @@ void ZegoApiMonkeyDemo::on_pushButton_start_publish_clicked()
 
     engine->startPublishing(streamID);
 
-    ZegoCanvas canvas((void *)ui->frame_local_video->winId(), ZEGO_VIEW_MODE_ASPECT_FIT);
+    ZegoCanvas canvas(ZegoView(ui->frame_local_video->winId()));
     engine->startPreview(&canvas);
 
     QString log = QString("do publish stream");
@@ -162,7 +165,7 @@ void ZegoApiMonkeyDemo::on_pushButton_start_play_clicked()
     std::string roomID = ui->lineEdit_roomID->text().toStdString();
     std::string streamID = ui->lineEdit_play_streamID->text().toStdString();
 
-    ZegoCanvas canvas((void *)ui->frame_remote_video->winId(), ZEGO_VIEW_MODE_ASPECT_FIT);
+    ZegoCanvas canvas(ZegoView(ui->frame_remote_video->winId()));
     engine->startPlayingStream(streamID, &canvas);
 }
 
@@ -242,16 +245,13 @@ void ZegoApiMonkeyDemo::on_pushButton_start_mixer_task_clicked()
         task.watermark = nullptr;
     }
 
-    ZegoMixerVideoConfig videoConfig(ZEGO_RESOLUTION_640x360);
+    ZegoMixerVideoConfig videoConfig;
     task.videoConfig = videoConfig;
 
     ZegoMixerAudioConfig audioConfig;
     task.audioConfig = audioConfig;
 
-    engine->startMixerTask(task, [=](ZegoMixerStartResult result){
-        QString log = QString("start mixer task result: errorCode=%1").arg(result.errorCode);
-        printLogToView(log);
-    });
+    engine->startMixerTask(task, nullptr);
 }
 
 void ZegoApiMonkeyDemo::on_pushButton_stop_mixer_task_clicked()
@@ -259,7 +259,7 @@ void ZegoApiMonkeyDemo::on_pushButton_stop_mixer_task_clicked()
     GuardEngineLoaded
 
     std::string taskID = ui->lineEdit_mixer_taskID->text().toStdString();
-    engine->stopMixerTask(taskID);
+    engine->stopMixerTask(taskID,nullptr);
 }
 
 void ZegoApiMonkeyDemo::printLogToView(QString log)
@@ -272,7 +272,7 @@ void ZegoApiMonkeyDemo::bindEventHandler()
     GuardEngineLoaded
     auto eventHandler = std::make_shared<ZegoEventHandlerWithLogger>(ui->textEdit_log);
     connect(eventHandler.get(), &ZegoEventHandlerWithLogger::sigPlayerRecvSEI, this, &ZegoApiMonkeyDemo::onPlayerRecvSEI);
-    engine->addEventHandler(eventHandler);
+    engine->setEventHandler(eventHandler);
 }
 
 void ZegoApiMonkeyDemo::on_pushButton_sendBroadcastMessage_clicked()
@@ -289,9 +289,9 @@ void ZegoApiMonkeyDemo::on_pushButton_sendBroadcastMessage_clicked()
 
     QString roomID = BroadcastMessage["roomID"].toString();
     QString message = BroadcastMessage["message"].toString();
-    engine->sendBroadcastMassage(roomID.toStdString(), message.toStdString(),  [=](int errorCode){
+    engine->sendBroadcastMessage(roomID.toStdString(), message.toStdString(),  [=](int errorCode, unsigned long long messageID){
         if(errorCode==0){
-            ui->textEdit_im_panel->append(QString("send broadcast message: roomID=%1, message=%2").arg(roomID).arg(message));
+            ui->textEdit_im_panel->append(QString("send broadcast message: roomID=%1, message=%2, messageID").arg(roomID).arg(message).arg(messageID));
         }
         QString log = QString("send broadcast message: roomID=%1, message=%2, errorCode=%3").arg(roomID).arg(message).arg(errorCode);
         printLogToView(log);

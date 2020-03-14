@@ -12,20 +12,23 @@ ZegoSoundLevelDemo::ZegoSoundLevelDemo(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    ZegoEngineConfig engineConfig;
+    ZegoExpressSDK::setEngineConfig(engineConfig);
+    
     auto appID = ZegoConfigManager::instance()->getAppID();
     auto appSign = ZegoConfigManager::instance()->getAppSign();
     auto isTest = ZegoConfigManager::instance()->isTestEnviroment();
 
     engine = ZegoExpressSDK::createEngine(appID, appSign, isTest, ZEGO_SCENARIO_GENERAL, nullptr);
     bindEventHandler();
-
+    
     roomID = "SoundLevelRoom-1";
     userID = ZegoUtilHelper::getRandomString();
     ui->pushButton_roomID->setText(QString("RoomID: %1").arg(roomID.c_str()));
     ui->pushButton_userID->setText(QString("UserID: %1").arg(userID.c_str()));
 
     ZegoUser user(userID, userID);
-    engine->loginRoom(roomID, user, nullptr);
+    engine->loginRoom(roomID, user);
     engine->startPublishing(userID);
 
     soundFrameLayout = new QVBoxLayout(ui->frame_content);
@@ -59,7 +62,7 @@ void ZegoSoundLevelDemo::onRoomStreamUpdate(const std::string &roomID, ZegoUpdat
             addSoundFrame(stream.streamID);
         }
 
-        if(updateType == ZEGO_UPDATE_TYPE_DEL && it != zegoStreamList.end()){
+        if(updateType == ZEGO_UPDATE_TYPE_DELETE && it != zegoStreamList.end()){
             zegoStreamList.erase(it);
             engine->stopPlayingStream(stream.streamID);
             removeSoundFrame(stream.streamID);
@@ -121,7 +124,7 @@ void ZegoSoundLevelDemo::bindEventHandler()
     connect(eventHandler.get(), &ZegoEventHandlerWithLogger::sigCapturedAudioSpectrumUpdate, this, &ZegoSoundLevelDemo::onCapturedAudioSpectrumUpdate);
     connect(eventHandler.get(), &ZegoEventHandlerWithLogger::sigRemoteAudioSpectrumUpdate, this, &ZegoSoundLevelDemo::onRemoteAudioSpectrumUpdate);
 
-    engine->addEventHandler(eventHandler);
+    engine->setEventHandler(eventHandler);
 }
 
 void ZegoSoundLevelDemo::addSoundFrame(std::string streamID)

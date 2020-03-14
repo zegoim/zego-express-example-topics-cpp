@@ -30,7 +30,7 @@ private:
 
 private:
     Ui::ZegoVideoTalkDemo *ui;
-    ZEGO::EXPRESS::IZegoExpressEngine *engine;
+    ZEGO::EXPRESS::IZegoExpressEngine *engine = nullptr;
 
     std::vector<ZegoStream> zegoStreamList;
     QList<QWidget*> videoList;

@@ -41,6 +41,9 @@ ZegoQuickStartDemo::~ZegoQuickStartDemo()
 void ZegoQuickStartDemo::on_pushButton_createEngine_clicked()
 {    
     if(engine == nullptr){
+        ZegoEngineConfig engineConfig;
+        ZegoExpressSDK::setEngineConfig(engineConfig);
+
         auto appID = ui->label_appID->text().toUInt();
         auto appSign = ui->label_appSign->text().toStdString();
         auto isTestEnv = ui->radioButton_isTestEnv->isChecked();
@@ -62,7 +65,7 @@ void ZegoQuickStartDemo::on_pushButton_loginRoom_clicked()
         user.userID = ui->label_userID->text().toStdString();
         user.userName = ui->label_userName->text().toStdString();
 
-        engine->loginRoom(roomID, user, nullptr);
+        engine->loginRoom(roomID, user);
         QString log = QString("do loginRoom");
         printLogToView(log);
     }
@@ -72,11 +75,6 @@ void ZegoQuickStartDemo::on_pushButton_PublishStream_clicked()
 {
     if(engine != nullptr){
         std::string streamID = ui->lineEdit_publish_streamID->text().toStdString();
-        if(streamID == ""){
-            QString log = QString("Input publish streamID needed");
-            printLogToView(log);
-            return;
-        }
 
         engine->startPublishing(streamID);
 
@@ -92,11 +90,6 @@ void ZegoQuickStartDemo::on_pushButton_PlayStream_clicked()
 {
     if(engine != nullptr){
         std::string streamID = ui->lineEdit_play_streamID->text().toStdString();
-        if(streamID == ""){
-            QString log = QString("Input play streamID needed");
-            printLogToView(log);
-            return;
-        }
 
         ZegoCanvas canvas((void*)ui->frame_remote_video->winId(), ZEGO_VIEW_MODE_ASPECT_FIT);
         engine->startPlayingStream(streamID, &canvas);
@@ -125,6 +118,6 @@ void ZegoQuickStartDemo::bindEventHandler()
 {
     if(engine != nullptr){
         auto eventHandler = std::make_shared<ZegoEventHandlerWithLogger>(ui->textEdit_log);
-        engine->addEventHandler(eventHandler);
+        engine->setEventHandler(eventHandler);
     }
 }

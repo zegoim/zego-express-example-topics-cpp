@@ -12,6 +12,9 @@ ZegoRoomMessageDemo::ZegoRoomMessageDemo(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    ZegoEngineConfig engineConfig;
+    ZegoExpressSDK::setEngineConfig(engineConfig);
+    
     auto appID = ZegoConfigManager::instance()->getAppID();
     auto appSign = ZegoConfigManager::instance()->getAppSign();
     auto isTestEnv = ZegoConfigManager::instance()->isTestEnviroment();
@@ -25,8 +28,9 @@ ZegoRoomMessageDemo::ZegoRoomMessageDemo(QWidget *parent) :
     ui->pushButton_userID->setText(QString("UserID: %1").arg(userID.c_str()));
 
     ZegoUser user(userID, userID);
-    ZegoRoomConfig roomConfig(12, true);
-    engine->loginRoom(roomID, user, &roomConfig);
+    ZegoRoomConfig roomConfig;
+    roomConfig.isUserStatusNotify = true;
+    engine->loginRoom(roomID, user, roomConfig);
 }
 
 ZegoRoomMessageDemo::~ZegoRoomMessageDemo()
@@ -48,7 +52,7 @@ void ZegoRoomMessageDemo::onRoomUserUpdate(const std::string &roomID, ZegoUpdate
             zegoUserList.push_back(user);
         }
 
-        if(updateType == ZEGO_UPDATE_TYPE_DEL && it != zegoUserList.end()){
+        if(updateType == ZEGO_UPDATE_TYPE_DELETE && it != zegoUserList.end()){
             zegoUserList.erase(it);
         }
 
@@ -64,10 +68,18 @@ void ZegoRoomMessageDemo::onRoomUserUpdate(const std::string &roomID, ZegoUpdate
     }
 }
 
-void ZegoRoomMessageDemo::onIMRecvBroadcastMessage(const std::string &roomID, std::vector<ZegoMessageInfo> messageList)
+void ZegoRoomMessageDemo::onIMRecvBroadcastMessage(const std::string &roomID, std::vector<ZegoBroadcastMessageInfo> messageList)
 {
-    for (const ZegoMessageInfo& messageInfo : messageList) {
-        QString log = QString("[recv message]\t: roomID=%1,fromUser=%2, message=%3").arg(roomID.c_str()).arg(messageInfo.fromUser.userID.c_str()).arg(messageInfo.message.c_str());
+    for (const ZegoBroadcastMessageInfo& messageInfo : messageList) {
+        QString log = QString("[recv broadcast]\t: roomID=%1,fromUser=%2, message=%3").arg(roomID.c_str()).arg(messageInfo.fromUser.userID.c_str()).arg(messageInfo.message.c_str());
+        ui->textEdit_IM_panel->append(log);
+    }
+}
+
+void ZegoRoomMessageDemo::onIMRecvBarrageMessage(const std::string &roomID, std::vector<ZegoBarrageMessageInfo> messageList)
+{
+    for (const ZegoBarrageMessageInfo& messageInfo : messageList) {
+        QString log = QString("[recv barrage]\t: roomID=%1,fromUser=%2, message=%3").arg(roomID.c_str()).arg(messageInfo.fromUser.userID.c_str()).arg(messageInfo.message.c_str());
         ui->textEdit_IM_panel->append(log);
     }
 }
@@ -82,9 +94,22 @@ void ZegoRoomMessageDemo::on_pushButton_send_broadcast_message_clicked()
 {
     std::string message = ui->lineEdit_broadcast_message->text().toStdString();
 
-    engine->sendBroadcastMassage(roomID, message,  [=](int errorCode){
+    engine->sendBroadcastMessage(roomID, message,  [=](int errorCode, unsigned long long messageID){
         if(errorCode==0){
-            ui->textEdit_IM_panel->append(QString("[send message]\t: roomID=%1, message=%2").arg(roomID.c_str()).arg(message.c_str()));
+            ui->textEdit_IM_panel->append(QString("[send broadcast]\t: roomID=%1, message=%2, messageID").arg(roomID.c_str()).arg(message.c_str()).arg(messageID));
+        }
+        QString log = QString("[send message]\t: roomID=%1, message=%2, errorCode=%3").arg(roomID.c_str()).arg(message.c_str()).arg(errorCode);
+        printLogToView(log);
+    });
+}
+
+void ZegoRoomMessageDemo::on_pushButton_send_barrage_message_clicked()
+{
+    std::string message = ui->lineEdit_barrage_message->text().toStdString();
+
+    engine->sendBarrageMessage(roomID, message,  [=](int errorCode, std::string messageID){
+        if(errorCode==0){
+            ui->textEdit_IM_panel->append(QString("[send barrage]\t: roomID=%1, message=%2, messageID").arg(roomID.c_str()).arg(message.c_str()).arg(messageID.c_str()));
         }
         QString log = QString("[send message]\t: roomID=%1, message=%2, errorCode=%3").arg(roomID.c_str()).arg(message.c_str()).arg(errorCode);
         printLogToView(log);
@@ -128,7 +153,9 @@ void ZegoRoomMessageDemo::bindEventHandler()
     auto eventHandler = std::make_shared<ZegoEventHandlerWithLogger>(ui->textEdit_log);
 
     connect(eventHandler.get(), &ZegoEventHandlerWithLogger::sigIMRecvBroadcastMessage, this, &ZegoRoomMessageDemo::onIMRecvBroadcastMessage);
+    connect(eventHandler.get(), &ZegoEventHandlerWithLogger::sigIMRecvBarrageMessage, this, &ZegoRoomMessageDemo::onIMRecvBarrageMessage);
     connect(eventHandler.get(), &ZegoEventHandlerWithLogger::sigIMRecvCustomCommand, this, &ZegoRoomMessageDemo::onIMRecvCustomCommand);
 
-    engine->addEventHandler(eventHandler);
+
+    engine->setEventHandler(eventHandler);
 }

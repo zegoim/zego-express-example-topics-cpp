@@ -1,5 +1,7 @@
 #include "ZegoEventHandlerWithLogger.h"
 #include <QScrollBar>
+#include <QTime>
+#include <QDebug>
 
 ZegoEventHandlerWithLogger::ZegoEventHandlerWithLogger(QTextEdit *logView)
     :logView(logView)
@@ -20,7 +22,7 @@ void ZegoEventHandlerWithLogger::onDebugError(int errorCode, const std::string &
     ZegoEventHandlerQt::onDebugError(errorCode, funcName, info);
 }
 
-void ZegoEventHandlerWithLogger::onRoomStateUpdate(const std::string &roomID, ZegoRoomState state, int errorCode)
+void ZegoEventHandlerWithLogger::onRoomStateUpdate(const std::string &roomID, ZegoRoomState state, int errorCode, const std::string &extendData)
 {
     QStringList roomStateExplain = {
         "ZEGO_ROOM_STATE_DISCONNECTED",
@@ -28,10 +30,10 @@ void ZegoEventHandlerWithLogger::onRoomStateUpdate(const std::string &roomID, Ze
         "ZEGO_ROOM_STATE_CONNECTED"
     };
 
-    QString log = QString("onRoomStateUpdate: roomID=%1, state=%2, errorCode=%3").arg(QString::fromStdString(roomID)).arg(roomStateExplain.value(state)).arg(errorCode);
+    QString log = QString("onRoomStateUpdate: roomID=%1, state=%2, errorCode=%3, extendData=%4").arg(QString::fromStdString(roomID)).arg(roomStateExplain.value(state)).arg(errorCode).arg(QString::fromStdString(extendData));
     printLogToView(log);
 
-    ZegoEventHandlerQt::onRoomStateUpdate(roomID, state, errorCode);
+    ZegoEventHandlerQt::onRoomStateUpdate(roomID, state, errorCode, extendData);
 }
 
 void ZegoEventHandlerWithLogger::onRoomUserUpdate(const std::string &roomID, ZegoUpdateType updateType, const std::vector<ZegoUser> &userList)
@@ -68,7 +70,7 @@ void ZegoEventHandlerWithLogger::onRoomStreamExtraInfoUpdate(const std::string &
     ZegoEventHandlerQt::onRoomStreamExtraInfoUpdate(roomID, streamList);
 }
 
-void ZegoEventHandlerWithLogger::onPublisherStateUpdate(const std::string &streamID, ZegoPublisherState state, int errorCode)
+void ZegoEventHandlerWithLogger::onPublisherStateUpdate(const std::string &streamID, ZegoPublisherState state, int errorCode, const std::string &extendData)
 {
     QStringList stateExplain = {
         "ZEGO_PUBLISHER_STATE_NO_PUBLISH",
@@ -76,10 +78,10 @@ void ZegoEventHandlerWithLogger::onPublisherStateUpdate(const std::string &strea
         "ZEGO_PUBLISHER_STATE_PUBLISHING"
     };
 
-    QString log = QString("onPublisherStateUpdate: streamID=%1, state=%2, errorCode=%3").arg(streamID.c_str()).arg(stateExplain.value(state)).arg(errorCode);
+    QString log = QString("onPublisherStateUpdate: streamID=%1, state=%2, errorCode=%3, extendData=%4").arg(streamID.c_str()).arg(stateExplain.value(state)).arg(errorCode).arg(QString::fromStdString(extendData));
     printLogToView(log);
 
-    ZegoEventHandlerQt::onPublisherStateUpdate(streamID, state, errorCode);
+    ZegoEventHandlerQt::onPublisherStateUpdate(streamID, state, errorCode, extendData);
 }
 
 void ZegoEventHandlerWithLogger::onPublisherQualityUpdate(const std::string &streamID, const ZegoPublishStreamQuality &quality)
@@ -87,25 +89,26 @@ void ZegoEventHandlerWithLogger::onPublisherQualityUpdate(const std::string &str
     ZegoEventHandlerQt::onPublisherQualityUpdate(streamID, quality);
 }
 
-void ZegoEventHandlerWithLogger::onPublisherRecvFirstFrameEvent(ZegoPublisherFirstFrameEvent event)
+void ZegoEventHandlerWithLogger::onPublisherCapturedAudioFirstFrame()
 {
-    QStringList firstFrameEventExplain = {
-        "ZEGO_PUBLISHER_FIRST_FRAME_EVENT_AUDIO_CAPTURED",
-        "ZEGO_PUBLISHER_FIRST_FRAME_EVENT_VIDEO_CAPTURED"
-    };
-
-    QString log = QString("onPublisherFirstFrameEvent: firstFrameEvent=%1").arg(firstFrameEventExplain.value(event));
+    QString log = QString("onPublisherCapturedAudioFirstFrame");
     printLogToView(log);
 
-    ZegoEventHandlerQt::onPublisherRecvFirstFrameEvent(event);
+    ZegoEventHandlerQt::onPublisherCapturedAudioFirstFrame();
 }
-
-void ZegoEventHandlerWithLogger::onPublisherVideoSizeChanged(int width, int height)
+void ZegoEventHandlerWithLogger::onPublisherCapturedVideoFirstFrame(ZegoPublishChannel channel)
 {
-    QString log = QString("onPublisherVideoSizeChanged: width=%1, height=%2").arg(width).arg(height);
+    QString log = QString("onPublisherCapturedVideoFirstFrame: channel=%1").arg(channel);
     printLogToView(log);
 
-    ZegoEventHandlerQt::onPublisherVideoSizeChanged(width, height);
+    ZegoEventHandlerQt::onPublisherCapturedVideoFirstFrame(channel);
+}
+void ZegoEventHandlerWithLogger::onPublisherVideoSizeChanged(int width, int height, ZegoPublishChannel channel)
+{
+    QString log = QString("onPublisherVideoSizeChanged: width=%1, height=%2 channel=%3").arg(width).arg(height).arg(channel);
+    printLogToView(log);
+
+    ZegoEventHandlerQt::onPublisherVideoSizeChanged(width, height, channel);
 }
 
 void ZegoEventHandlerWithLogger::onPublisherRelayCDNStateUpdate(const std::string &streamID, const std::vector<ZegoStreamRelayCDNInfo> &streamInfoList)
@@ -113,7 +116,7 @@ void ZegoEventHandlerWithLogger::onPublisherRelayCDNStateUpdate(const std::strin
     ZegoEventHandlerQt::onPublisherRelayCDNStateUpdate(streamID, streamInfoList);
 }
 
-void ZegoEventHandlerWithLogger::onPlayerStateUpdate(const std::string &streamID, ZegoPlayerState state, int errorCode)
+void ZegoEventHandlerWithLogger::onPlayerStateUpdate(const std::string &streamID, ZegoPlayerState state, int errorCode, const std::string &extendData)
 {
     QStringList stateExplain = {
         "ZEGO_PLAYER_STATE_NO_PLAY",
@@ -121,10 +124,10 @@ void ZegoEventHandlerWithLogger::onPlayerStateUpdate(const std::string &streamID
         "ZEGO_PLAYER_STATE_PLAYING"
     };
 
-    QString log = QString("onPlayerStateUpdate: streamID=%1, state=%2, errorCode=%3").arg(streamID.c_str()).arg(stateExplain.value(state)).arg(errorCode);
+    QString log = QString("onPlayerStateUpdate: streamID=%1, state=%2, errorCode=%3, extenData=%4").arg(streamID.c_str()).arg(stateExplain.value(state)).arg(errorCode).arg(QString::fromStdString(extendData));
     printLogToView(log);
 
-    ZegoEventHandlerQt::onPlayerStateUpdate(streamID, state, errorCode);
+    ZegoEventHandlerQt::onPlayerStateUpdate(streamID, state, errorCode, extendData);
 }
 
 void ZegoEventHandlerWithLogger::onPlayerQualityUpdate(const std::string &streamID, const ZegoPlayStreamQuality &quality)
@@ -137,17 +140,27 @@ void ZegoEventHandlerWithLogger::onPlayerMediaEvent(const std::string &streamID,
     ZegoEventHandlerQt::onPlayerMediaEvent(streamID, event);
 }
 
-void ZegoEventHandlerWithLogger::onPlayerRecvFirstFrameEvent(const std::string &streamID, ZegoPlayerFirstFrameEvent event)
+void ZegoEventHandlerWithLogger::onPlayerRecvAudioFirstFrame(const std::string &streamID)
 {
-    QStringList firstFrameEventExplain = {
-        "ZEGO_PLAYER_FIRST_FRAME_EVENT_AUDIO_RCV",
-        "ZEGO_PLAYER_FIRST_FRAME_EVENT_VIDEO_RCV",
-        "ZEGO_PLAYER_FIRST_FRAME_EVENT_VIDEO_RENDER"
-    };
-    QString log = QString("onPlayerFirstFrameEvent: streamID=%1, firstFrameEvent=%2").arg(streamID.c_str()).arg(firstFrameEventExplain.value(event));
+    QString log = QString("onPlayerRecvAudioFirstFrame: streamID=%1").arg(streamID.c_str());
     printLogToView(log);
 
-    ZegoEventHandlerQt::onPlayerRecvFirstFrameEvent(streamID,  event);
+    ZegoEventHandlerQt::onPlayerRecvAudioFirstFrame(streamID);
+}
+
+void ZegoEventHandlerWithLogger::onPlayerRecvVideoFirstFrame(const std::string &streamID)
+{
+    QString log = QString("onPlayerRecvVideoFirstFrame: streamID=%1").arg(streamID.c_str());
+    printLogToView(log);
+
+    ZegoEventHandlerQt::onPlayerRecvVideoFirstFrame(streamID);}
+
+void ZegoEventHandlerWithLogger::onPlayerRenderVideoFirstFrame(const std::string &streamID)
+{
+    QString log = QString("onPlayerRenderVideoFirstFrame: streamID=%1").arg(streamID.c_str());
+    printLogToView(log);
+
+    ZegoEventHandlerQt::onPlayerRenderVideoFirstFrame(streamID);
 }
 
 void ZegoEventHandlerWithLogger::onPlayerVideoSizeChanged(const std::string &streamID, int width, int height)
@@ -208,19 +221,29 @@ void ZegoEventHandlerWithLogger::onRemoteAudioSpectrumUpdate(const std::map<std:
     ZegoEventHandlerQt::onRemoteAudioSpectrumUpdate(frequencySpectrums);
 }
 
-void ZegoEventHandlerWithLogger::onMixerRelayCDNStateUpdate(const std::string &taskID, const std::vector<ZegoStreamRelayCDNInfo> &infoList)
+void ZegoEventHandlerWithLogger::onMixerRelayCDNStateUpdate(const std::vector<ZegoStreamRelayCDNInfo> &infoList, const std::string &taskID)
 {
-    ZegoEventHandlerQt::onMixerRelayCDNStateUpdate(taskID, infoList);
+    ZegoEventHandlerQt::onMixerRelayCDNStateUpdate(infoList, taskID);
 }
 
-void ZegoEventHandlerWithLogger::onIMRecvBroadcastMessage(const std::string &roomID, std::vector<ZegoMessageInfo> messageList)
+void ZegoEventHandlerWithLogger::onIMRecvBroadcastMessage(const std::string &roomID, std::vector<ZegoBroadcastMessageInfo> messageList)
 {
-    for (const ZegoMessageInfo& messageInfo : messageList) {
-        QString log = QString("[recv message]\t: roomID=%1,fromUser=%2, message=%3").arg(roomID.c_str()).arg(messageInfo.fromUser.userID.c_str()).arg(messageInfo.message.c_str());
+    for (const ZegoBroadcastMessageInfo& messageInfo : messageList) {
+        QString log = QString("[recv broadcast]\t: roomID=%1,fromUser=%2, message=%3").arg(roomID.c_str()).arg(messageInfo.fromUser.userID.c_str()).arg(messageInfo.message.c_str());
         printLogToView(log);
     }
 
     ZegoEventHandlerQt::onIMRecvBroadcastMessage(roomID, messageList);
+}
+
+void ZegoEventHandlerWithLogger::onIMRecvBarrageMessage(const std::string &roomID, std::vector<ZegoBarrageMessageInfo> messageList)
+{
+    for (const ZegoBarrageMessageInfo& messageInfo : messageList) {
+        QString log = QString("[recv barrage]\t: roomID=%1,fromUser=%2, message=%3").arg(roomID.c_str()).arg(messageInfo.fromUser.userID.c_str()).arg(messageInfo.message.c_str());
+        printLogToView(log);
+    }
+
+    ZegoEventHandlerQt::onIMRecvBarrageMessage(roomID, messageList);
 }
 
 void ZegoEventHandlerWithLogger::onIMRecvCustomCommand(const std::string &roomID, ZegoUser fromUser, const std::string &command)
@@ -234,7 +257,8 @@ void ZegoEventHandlerWithLogger::onIMRecvCustomCommand(const std::string &roomID
 void ZegoEventHandlerWithLogger::printLogToView(QString log)
 {
     if(logView){
-        logView->append(log);
+        QString time = QTime::currentTime().toString("hh:mm:ss.zzz");
+        logView->append(QString("[ %1 ] %2").arg(time).arg(log));
         logView->verticalScrollBar()->setValue(logView->verticalScrollBar()->maximum());
     }
 }

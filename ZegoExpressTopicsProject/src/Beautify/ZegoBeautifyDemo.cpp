@@ -13,6 +13,9 @@ ZegoBeautifyDemo::ZegoBeautifyDemo(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    ZegoEngineConfig engineConfig;
+    ZegoExpressSDK::setEngineConfig(engineConfig);
+    
     auto appID = ZegoConfigManager::instance()->getAppID();
     auto appSign = ZegoConfigManager::instance()->getAppSign();
     auto isTest = ZegoConfigManager::instance()->isTestEnviroment();
@@ -26,7 +29,7 @@ ZegoBeautifyDemo::ZegoBeautifyDemo(QWidget *parent) :
     ui->pushButton_userID->setText(QString("UserID: %1").arg(userID.c_str()));
 
     ZegoUser user(userID, userID);
-    engine->loginRoom(roomID, user, nullptr);
+    engine->loginRoom(roomID, user);
 
     ZegoCanvas canvas((void*)ui->frame_local_video->winId());
     engine->startPreview(&canvas);
@@ -46,7 +49,7 @@ ZegoBeautifyDemo::~ZegoBeautifyDemo()
 void ZegoBeautifyDemo::bindEventHandler()
 {
     auto eventHandler = std::make_shared<ZegoEventHandlerWithLogger>(ui->textEdit_log);
-    engine->addEventHandler(eventHandler);
+    engine->setEventHandler(eventHandler);
 }
 
 void ZegoBeautifyDemo::on_pushButton_setWatermark_clicked()
