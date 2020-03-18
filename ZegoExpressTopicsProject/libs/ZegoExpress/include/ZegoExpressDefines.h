@@ -1,6 +1,6 @@
 ﻿
-#ifndef __ZEGOEXPRESSDEFINE_H__
-#define __ZEGOEXPRESSDEFINE_H__
+#ifndef __ZEGOEXPRESSDEFINES_H__
+#define __ZEGOEXPRESSDEFINES_H__
 
 #ifdef WIN32
 #include <windows.h>
@@ -625,7 +625,7 @@ namespace ZEGO {
 
         struct ZegoRoomConfig
         {
-            /** 房间最大用户数量，默认无限制 */
+            /** 房间最大用户数量，传 0 视为不限制，默认无限制 */
             unsigned int maxMemberCount;
 
             /** 是否开启用户进出房间回调通知 [onRoomUserUpdate]，默认关闭 */
@@ -824,7 +824,7 @@ namespace ZEGO {
 
         struct ZegoCDNConfig
         {
-            /** CDN 推流的 URL */
+            /** CDN 的 URL */
             std::string URL;
 
             /** URL 的鉴权参数 */
@@ -1137,6 +1137,7 @@ namespace ZEGO {
         /**
          * 引擎异步销毁完成的回调
          *
+         * 一般情况下开发者无需关注此回调
          */
         using ZegoDestroyCompletionCallback = std::function<void ()>;
 
@@ -1144,7 +1145,7 @@ namespace ZEGO {
         /**
          * 更新流附加信息接口的回调
          *
-         * @param errorCode 错误码，详情请参考常用错误码文档
+         * @param errorCode 错误码，详情请参考常用错误码文档 [https://doc-zh.zego.im/zh/308.html]
          */
         using ZegoPublisherSetStreamExtraInfoCallback = std::function<void (int errorCode)>;
 
@@ -1152,7 +1153,7 @@ namespace ZEGO {
         /**
          * 添加/删除转推 CDN 接口的回调
          *
-         * @param errorCode 错误码，详情请参考常用错误码文档
+         * @param errorCode 错误码，详情请参考常用错误码文档 [https://doc-zh.zego.im/zh/308.html]
          */
         using ZegoPublisherUpdateCDNURLCallback = std::function<void (int errorCode)>;
 
@@ -1160,7 +1161,7 @@ namespace ZEGO {
         /**
          * 开始混流任务的结果的回调
          *
-         * @param errorCode 错误码，详情请参考常用错误码文档
+         * @param errorCode 错误码，详情请参考常用错误码文档 [https://doc-zh.zego.im/zh/308.html]
          * @param extendedData 扩展信息
          */
         using ZegoMixerStartCallback = std::function<void (int errorCode, std::string extendedData)>;
@@ -1169,7 +1170,7 @@ namespace ZEGO {
         /**
          * 结束混流任务的结果的回调
          *
-         * @param errorCode 错误码，详情请参考常用错误码文档
+         * @param errorCode 错误码，详情请参考常用错误码文档 [https://doc-zh.zego.im/zh/308.html]
          */
         using ZegoMixerStopCallback = std::function<void (int errorCode)>;
 
@@ -1177,7 +1178,7 @@ namespace ZEGO {
         /**
          * 发送房间聊天消息的回调
          *
-         * @param errorCode 错误码，详情请参考常用错误码文档
+         * @param errorCode 错误码，详情请参考常用错误码文档 [https://doc-zh.zego.im/zh/308.html]
          * @param messageID 此消息的 ID
          */
         using ZegoIMSendBroadcastMessageCallback = std::function<void (int errorCode, unsigned long long messageID)>;
@@ -1186,7 +1187,7 @@ namespace ZEGO {
         /**
          * 发送房间弹幕消息的回调
          *
-         * @param errorCode 错误码，详情请参考常用错误码文档
+         * @param errorCode 错误码，详情请参考常用错误码文档 [https://doc-zh.zego.im/zh/308.html]
          * @param messageID 此消息的 ID
          */
         using ZegoIMSendBarrageMessageCallback = std::function<void (int errorCode, std::string messageID)>;
@@ -1195,7 +1196,7 @@ namespace ZEGO {
         /**
          * 发送房间自定义信令的回调
          *
-         * @param errorCode 错误码，详情请参考常用错误码文档
+         * @param errorCode 错误码，详情请参考常用错误码文档 [https://doc-zh.zego.im/zh/308.html]
          */
         using ZegoIMSendCustomCommandCallback = std::function<void (int errorCode)>;
 
@@ -1203,7 +1204,7 @@ namespace ZEGO {
         /**
          * 播放器加载资源完成回调
          *
-         * @param errorCode 错误码，详情请参考常用错误码文档
+         * @param errorCode 错误码，详情请参考常用错误码文档 [https://doc-zh.zego.im/zh/308.html]
          */
         using ZegoMediaPlayerLoadResourceCallback = std::function<void (int errorCode)>;
 
@@ -1211,7 +1212,7 @@ namespace ZEGO {
         /**
          * 播放器设置指定播放进度回调
          *
-         * @param errorCode 错误码，详情请参考常用错误码文档
+         * @param errorCode 错误码，详情请参考常用错误码文档 [https://doc-zh.zego.im/zh/308.html]
          */
         using ZegoMediaPlayerSeekToCallback = std::function<void (int errorCode)>;
 
@@ -1223,4 +1224,4 @@ namespace ZEGO {
     }
 }
 
-#endif /* __ZEGOEXPRESSDEFINE_H__ */
+#endif /* __ZEGOEXPRESSDEFINES_H__ */

@@ -2,7 +2,7 @@
 #ifndef __ZEGOEXPRESSENGINEIMP_H__
 #define __ZEGOEXPRESSENGINEIMP_H__
 
-#include "IZegoExpressEngine.h"
+#include "ZegoExpressInterfaces.h"
 #include "ZegoInternalBridge.h"
 
 namespace ZEGO
@@ -2042,7 +2042,7 @@ public:
             std::string streamID = stream_id;
             auto param = ZegoExpressConvert::I2OVideoFrameParam(_param);
             handler->onRemoteVideoFrameRawData(data, data_length, param, streamID);
-        }		
+        }
     }
 
     // CustomVideoCapture
@@ -2058,10 +2058,12 @@ public:
                 handler = pthis->mCustomVideoCaptureHandler;
             }
         }
+        auto weakHandler = std::weak_ptr<IZegoCustomVideoCaptureHandler>(handler);
+        ZEGO_SWITCH_THREAD_PRE
+        auto handler = weakHandler.lock();
         if (handler)
-        {
             handler->onStart(ZegoPublishChannel(channel));
-        }
+        ZEGO_SWITCH_THREAD_ING
     }
 
     static void zego_on_custom_video_capture_stop(enum zego_publish_channel channel, void *user_context)
@@ -2076,10 +2078,12 @@ public:
                 handler = pthis->mCustomVideoCaptureHandler;
             }
         }
+        auto weakHandler = std::weak_ptr<IZegoCustomVideoCaptureHandler>(handler);
+        ZEGO_SWITCH_THREAD_PRE
+        auto handler = weakHandler.lock();
         if (handler)
-        {
             handler->onStop(ZegoPublishChannel(channel));
-        }
+        ZEGO_SWITCH_THREAD_ING
     }
 
 private:

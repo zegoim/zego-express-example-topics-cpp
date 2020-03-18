@@ -2,6 +2,40 @@
 #include <QScrollBar>
 #include <QTime>
 #include <QDebug>
+#include "AppSupport/ZegoUtilHelper.h"
+
+QJsonArray ConvertStreamRelayCDNInfo(const std::vector<ZegoStreamRelayCDNInfo> &streamInfoList)
+{
+    QStringList ZegoStreamRelayCDNStateList =
+    {
+        "ZEGO_STREAM_RELAY_CDN_STATE_NO_RELAY",
+        "ZEGO_STREAM_RELAY_CDN_STATE_RELAY_REQUESTING",
+        "ZEGO_STREAM_RELAY_CDN_STATE_RELAYING"
+    };
+
+    QStringList ZegoStreamRelayCDNUpdateReasonList =
+    {
+        "ZEGO_STREAM_RELAY_CDN_UPDATE_REASON_NONE",
+        "ZEGO_STREAM_RELAY_CDN_UPDATE_REASON_SERVER_ERROR",
+        "ZEGO_STREAM_RELAY_CDN_UPDATE_REASON_HANDSHAKE_FAILED",
+        "ZEGO_STREAM_RELAY_CDN_UPDATE_REASON_ACCESS_POINT_ERROR",
+        "ZEGO_STREAM_RELAY_CDN_UPDATE_REASON_CREATE_STREAM_FAILED",
+        "ZEGO_STREAM_RELAY_CDN_UPDATE_REASON_BAD_NAME",
+        "ZEGO_STREAM_RELAY_CDN_UPDATE_REASON_CDN_SERVER_DISCONNECTED",
+        "ZEGO_STREAM_RELAY_CDN_UPDATE_REASON_DISCONNECTED"
+    };
+
+    QJsonArray streamInfoArray;
+        for(ZegoStreamRelayCDNInfo cdnInfo: streamInfoList){
+        QJsonObject cdnInfoObject;
+        cdnInfoObject["url"] = cdnInfo.URL.c_str();
+        cdnInfoObject["url"] = ZegoStreamRelayCDNStateList.value(cdnInfo.state);
+        cdnInfoObject["url"] = ZegoStreamRelayCDNUpdateReasonList.value(cdnInfo.updateReason);
+        streamInfoArray.append(cdnInfoObject);
+
+    }
+    return streamInfoArray;
+}
 
 ZegoEventHandlerWithLogger::ZegoEventHandlerWithLogger(QTextEdit *logView)
     :logView(logView)
@@ -113,6 +147,13 @@ void ZegoEventHandlerWithLogger::onPublisherVideoSizeChanged(int width, int heig
 
 void ZegoEventHandlerWithLogger::onPublisherRelayCDNStateUpdate(const std::string &streamID, const std::vector<ZegoStreamRelayCDNInfo> &streamInfoList)
 {
+    QJsonObject relayCDNObject;
+    relayCDNObject["streamID"] = streamID.c_str();
+    relayCDNObject["relayCNDInfoList"] = ConvertStreamRelayCDNInfo(streamInfoList);
+    auto relayCDNString = ZegoUtilHelper::jsonObjectToString(relayCDNObject);
+    QString log = QString("onPublisherRelayCDNStateUpdate: %1").arg(relayCDNString);
+    printLogToView(log);
+
     ZegoEventHandlerQt::onPublisherRelayCDNStateUpdate(streamID, streamInfoList);
 }
 
@@ -137,6 +178,16 @@ void ZegoEventHandlerWithLogger::onPlayerQualityUpdate(const std::string &stream
 
 void ZegoEventHandlerWithLogger::onPlayerMediaEvent(const std::string &streamID, ZegoPlayerMediaEvent event)
 {
+    QStringList eventExplain = {
+        "ZEGO_PLAYER_MEDIA_EVENT_AUDIO_BREAK_OCCUR",
+        "ZEGO_PLAYER_MEDIA_EVENT_AUDIO_BREAK_RESUME",
+        "ZEGO_PLAYER_MEDIA_EVENT_VIDEO_BREAK_OCCUR",
+        "ZEGO_PLAYER_MEDIA_EVENT_VIDEO_BREAK_RESUME"
+    };
+
+    QString log = QString("onPlayerMediaEvent: streamID=%1, event=%2").arg(streamID.c_str()).arg(eventExplain.value(event));
+    printLogToView(log);
+
     ZegoEventHandlerQt::onPlayerMediaEvent(streamID, event);
 }
 
@@ -177,27 +228,79 @@ void ZegoEventHandlerWithLogger::onPlayerRecvSEI(const std::string &streamID, co
 }
 
 void ZegoEventHandlerWithLogger::onAudioDeviceStateChanged(ZegoUpdateType updateType, ZegoAudioDeviceType deviceType, const ZegoDeviceInfo &deviceInfo)
-{
+{       
+    QString updateTypeString = updateType == ZEGO_UPDATE_TYPE_ADD ? "Add" : "Remove";
+    QString deviceTypeString = deviceType == ZEGO_AUDIO_DEVICE_TYPE_INPUT ? "Input": "Output";
+    QString log = QString("onAudioDeviceStateChanged: updateType=%1, deviceType=%2, deviceID=%3, deviceName=%4").arg(updateTypeString).arg(deviceTypeString).arg(deviceInfo.deviceID.c_str()).arg(deviceInfo.deviceName.c_str());
+    printLogToView(log);
+
     ZegoEventHandlerQt::onAudioDeviceStateChanged(updateType,  deviceType,deviceInfo);
 }
 
 void ZegoEventHandlerWithLogger::onVideoDeviceStateChanged(ZegoUpdateType updateType, const ZegoDeviceInfo &deviceInfo)
 {
+    QString updateTypeString = updateType == ZEGO_UPDATE_TYPE_ADD ? "Add" : "Remove";
+    QString log = QString("onVideoDeviceStateChanged: updateType=%1, deviceID=%2, deviceName=%3").arg(updateTypeString).arg(deviceInfo.deviceID.c_str()).arg(deviceInfo.deviceName.c_str());
+    printLogToView(log);
+
     ZegoEventHandlerQt::onVideoDeviceStateChanged(updateType,   deviceInfo);
 }
 
 void ZegoEventHandlerWithLogger::onDeviceError(int errorCode, const std::string &deviceName)
 {
+    QString log = QString("onDeviceError: errorCode=%1, deviceName=%2").arg(errorCode).arg(deviceName.c_str());
+    printLogToView(log);
     ZegoEventHandlerQt::onDeviceError(errorCode, deviceName);
 }
 
 void ZegoEventHandlerWithLogger::onRemoteCameraStateUpdate(const std::string &streamID, ZegoRemoteDeviceState state)
 {
+    QStringList stateExplain = {
+        "ZEGO_REMOTE_DEVICE_STATE_OPEN",
+        "ZEGO_REMOTE_DEVICE_STATE_GENERIC_ERROR",
+        "ZEGO_REMOTE_DEVICE_STATE_INVALID_ID",
+        "ZEGO_REMOTE_DEVICE_STATE_NO_AUTHORIZATION",
+        "ZEGO_REMOTE_DEVICE_STATE_ZERO_FPS",
+        "ZEGO_REMOTE_DEVICE_STATE_IN_USE_BY_OTHER",
+        "ZEGO_REMOTE_DEVICE_STATE_UNPLUGGED",
+        "ZEGO_REMOTE_DEVICE_STATE_REBOOT_REQUIRED",
+        "ZEGO_REMOTE_DEVICE_STATE_SYSTEM_MEDIA_SERVICES_LOST",
+        "ZEGO_REMOTE_DEVICE_STATE_DISABLE",
+        "ZEGO_REMOTE_DEVICE_STATE_MUTE",
+        "ZEGO_REMOTE_DEVICE_STATE_INTERRUPTION",
+        "ZEGO_REMOTE_DEVICE_STATE_IN_BACKGROUND",
+        "ZEGO_REMOTE_DEVICE_STATE_MULTI_FOREGROUND_APP",
+        "ZEGO_REMOTE_DEVICE_STATE_BY_SYSTEM_PRESSURE"
+    };
+
+    QString log = QString("onRemoteCameraStateUpdate: streamID=%1, state=%2").arg(streamID.c_str()).arg(stateExplain.value(state));
+    printLogToView(log);
+
     ZegoEventHandlerQt::onRemoteCameraStateUpdate(streamID,  state);
 }
 
 void ZegoEventHandlerWithLogger::onRemoteMicStateUpdate(const std::string &streamID, ZegoRemoteDeviceState state)
 {
+    QStringList stateExplain = {
+        "ZEGO_REMOTE_DEVICE_STATE_OPEN",
+        "ZEGO_REMOTE_DEVICE_STATE_GENERIC_ERROR",
+        "ZEGO_REMOTE_DEVICE_STATE_INVALID_ID",
+        "ZEGO_REMOTE_DEVICE_STATE_NO_AUTHORIZATION",
+        "ZEGO_REMOTE_DEVICE_STATE_ZERO_FPS",
+        "ZEGO_REMOTE_DEVICE_STATE_IN_USE_BY_OTHER",
+        "ZEGO_REMOTE_DEVICE_STATE_UNPLUGGED",
+        "ZEGO_REMOTE_DEVICE_STATE_REBOOT_REQUIRED",
+        "ZEGO_REMOTE_DEVICE_STATE_SYSTEM_MEDIA_SERVICES_LOST",
+        "ZEGO_REMOTE_DEVICE_STATE_DISABLE",
+        "ZEGO_REMOTE_DEVICE_STATE_MUTE",
+        "ZEGO_REMOTE_DEVICE_STATE_INTERRUPTION",
+        "ZEGO_REMOTE_DEVICE_STATE_IN_BACKGROUND",
+        "ZEGO_REMOTE_DEVICE_STATE_MULTI_FOREGROUND_APP",
+        "ZEGO_REMOTE_DEVICE_STATE_BY_SYSTEM_PRESSURE"
+    };
+
+    QString log = QString("onRemoteMicStateUpdate: streamID=%1, state=%2").arg(streamID.c_str()).arg(stateExplain.value(state));
+    printLogToView(log);
     ZegoEventHandlerQt::onRemoteMicStateUpdate(streamID,  state);
 }
 
@@ -223,6 +326,13 @@ void ZegoEventHandlerWithLogger::onRemoteAudioSpectrumUpdate(const std::map<std:
 
 void ZegoEventHandlerWithLogger::onMixerRelayCDNStateUpdate(const std::vector<ZegoStreamRelayCDNInfo> &infoList, const std::string &taskID)
 {
+    QJsonObject relayCDNObject;
+    relayCDNObject["taskID"] = taskID.c_str();
+    relayCDNObject["relayCNDInfoList"] = ConvertStreamRelayCDNInfo(infoList);
+    auto relayCDNString = ZegoUtilHelper::jsonObjectToString(relayCDNObject);
+    QString log = QString("onMixerRelayCDNStateUpdate: %1").arg(relayCDNString);
+    printLogToView(log);
+
     ZegoEventHandlerQt::onMixerRelayCDNStateUpdate(infoList, taskID);
 }
 

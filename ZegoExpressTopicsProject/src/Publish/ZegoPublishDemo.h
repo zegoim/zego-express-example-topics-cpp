@@ -20,6 +20,8 @@ public:
 public slots:
     void onPublisherQualityUpdate(const std::string &streamID, const ZegoPublishStreamQuality &quality);
     void onPublisherVideoSizeChanged(int width, int height);
+    void onAudioDeviceStateChanged(ZegoUpdateType updateType, ZegoAudioDeviceType deviceType, const ZegoDeviceInfo& deviceInfo);
+    void onVideoDeviceStateChanged(ZegoUpdateType updateType, const ZegoDeviceInfo& deviceInfo);
 
 private slots:
     void on_pushButton_startPublish_clicked();

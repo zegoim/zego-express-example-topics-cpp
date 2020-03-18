@@ -114,11 +114,40 @@ void ZegoPublishDemo::onPublisherVideoSizeChanged(int width, int height)
     ui->lineEdit_resolution->setText(QString("%1x%2").arg(width).arg(height));
 }
 
+void ZegoPublishDemo::onAudioDeviceStateChanged(ZegoUpdateType updateType, ZegoAudioDeviceType deviceType, const ZegoDeviceInfo &deviceInfo)
+{
+    Q_UNUSED(updateType)
+    Q_UNUSED(deviceType)
+    Q_UNUSED(deviceInfo)
+    ui->comboBox_microphone->blockSignals(true);
+    ui->comboBox_microphone->clear();
+    auto audioList = engine->getAudioDeviceList(ZEGO_AUDIO_DEVICE_TYPE_INPUT);
+    for(auto device : audioList){
+        ui->comboBox_microphone->addItem(QString::fromStdString(device.deviceID));
+    }
+    ui->comboBox_microphone->blockSignals(false);
+}
+
+void ZegoPublishDemo::onVideoDeviceStateChanged(ZegoUpdateType updateType, const ZegoDeviceInfo &deviceInfo)
+{
+    Q_UNUSED(updateType)
+    Q_UNUSED(deviceInfo)
+    ui->comboBox_camera->blockSignals(true);
+    ui->comboBox_camera->clear();
+    auto cameraList = engine->getVideoDeviceList();
+    for(auto device : cameraList){
+        ui->comboBox_camera->addItem(QString::fromStdString(device.deviceID));
+    }
+    ui->comboBox_camera->blockSignals(false);
+}
+
 void ZegoPublishDemo::bindEventHandler()
 {
     auto eventHandler = std::make_shared<ZegoEventHandlerWithLogger>(ui->textEdit_log);
     connect(eventHandler.get(), &ZegoEventHandlerWithLogger::sigPublisherQualityUpdate, this, &ZegoPublishDemo::onPublisherQualityUpdate);
     connect(eventHandler.get(), &ZegoEventHandlerWithLogger::sigPublisherVideoSizeChanged, this, &ZegoPublishDemo::onPublisherVideoSizeChanged);
+    connect(eventHandler.get(), &ZegoEventHandlerWithLogger::sigVideoDeviceStateChanged, this, &ZegoPublishDemo::onVideoDeviceStateChanged);
+    connect(eventHandler.get(), &ZegoEventHandlerWithLogger::sigAudioDeviceStateChanged, this, &ZegoPublishDemo::onAudioDeviceStateChanged);
     engine->setEventHandler(eventHandler);
 }
 
@@ -143,6 +172,8 @@ void ZegoPublishDemo::on_pushButton_stopPublish_clicked()
 {
     engine->stopPreview();
     engine->stopPublishing();
+    std::string roomID = ui->lineEdit_roomID->text().toStdString();
+    engine->logoutRoom(roomID);
 }
 
 void ZegoPublishDemo::on_comboBox_camera_currentIndexChanged(const QString &arg1)

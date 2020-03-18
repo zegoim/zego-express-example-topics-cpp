@@ -61,7 +61,21 @@ void ZegoPlayDemo::onPlayerQualityUpdate(const std::string &streamID, const Zego
 void ZegoPlayDemo::onPlayerVideoSizeChanged(const std::string& streamID, int width, int height)
 {
     Q_UNUSED(streamID)
-	ui->lineEdit_resolution->setText(QString("%1x%2").arg(width).arg(height));
+    ui->lineEdit_resolution->setText(QString("%1x%2").arg(width).arg(height));
+}
+
+void ZegoPlayDemo::onAudioDeviceStateChanged(ZegoUpdateType updateType, ZegoAudioDeviceType deviceType, const ZegoDeviceInfo &deviceInfo)
+{
+    Q_UNUSED(updateType)
+    Q_UNUSED(deviceType)
+    Q_UNUSED(deviceInfo)
+    ui->comboBox_audioOutputDevice->blockSignals(true);
+    auto audioList = engine->getAudioDeviceList(ZEGO_AUDIO_DEVICE_TYPE_OUTPUT);
+    ui->comboBox_audioOutputDevice->clear();
+    for(auto device : audioList){
+        ui->comboBox_audioOutputDevice->addItem(QString::fromStdString(device.deviceID));
+    }
+    ui->comboBox_audioOutputDevice->blockSignals(false);
 }
 
 void ZegoPlayDemo::bindEventHandler()
@@ -69,6 +83,7 @@ void ZegoPlayDemo::bindEventHandler()
     auto eventHandler = std::make_shared<ZegoEventHandlerWithLogger>(ui->textEdit_log);
     connect(eventHandler.get(), &ZegoEventHandlerWithLogger::sigPlayerQualityUpdate, this, &ZegoPlayDemo::onPlayerQualityUpdate);
 	connect(eventHandler.get(), &ZegoEventHandlerWithLogger::sigPlayerVideoSizeChanged, this, &ZegoPlayDemo::onPlayerVideoSizeChanged);
+    connect(eventHandler.get(), &ZegoEventHandlerWithLogger::sigAudioDeviceStateChanged, this, &ZegoPlayDemo::onAudioDeviceStateChanged);
     engine->setEventHandler(eventHandler);
 }
 
@@ -118,4 +133,13 @@ void ZegoPlayDemo::on_pushButton_stopPlay_clicked()
     ui->slider_playVolume->setValue(100);
     ui->checkBox_mutePlayStreamAudio->setChecked(false);
     ui->checkBox_mutePlayStreamVideo->setChecked(false);
+
+    std::string roomID = ui->lineEdit_roomID->text().toStdString();
+    engine->logoutRoom(roomID);
+}
+
+void ZegoPlayDemo::on_slider_playVolume_valueChanged(int value)
+{
+    std::string streamID = ui->lineEdit_streamID->text().toStdString();
+    engine->setPlayVolume(streamID, value);
 }
