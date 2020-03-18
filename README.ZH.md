@@ -1,6 +1,6 @@
-# ZegoExpressSDK Qt Demo
+# ZegoExpressSDK Topics - Qt Demo
 
-ZegoExpressSDK 采用标准 C++ 编写，支持跨平台开发。示例 Demo 的 UI 亦采用了跨平台框架 Qt 开发，来为 Windows、Mac 等不同平台的客户提供示例教程。不同平台的开发者可能采用不同的UI框架，但所有 UI 背后的内部逻辑却往往大同小异。在实际开发中，用户可参照 Demo 来调用 SDK 以实现不同的音视频功能逻辑。在界面绘制上，将 Demo 所用的 Qt 组件替换为自己采用的 UI 组件即可。
+ZegoExpressSDK 符合 C++11 标准，支持跨平台开发。此示例 Qt Demo 可同时运行在 Mac 和 Win 平台。在实际开发中，如果用户采用了其他 UI 框架，也可参照此示例来调用 SDK 以实现不同的音视频功能逻辑。
 
 ## 1 准备环境
 
@@ -48,5 +48,3 @@ Demo 支持跨平台开发，没有自带平台特有的 .sln 或 .xcodeproj 工
 5. 双击 `build-win/generate_vs2015_x86.bat`，将在 cmake_temp_x86 目录下生成的 sln工程
 
 > 用户需要参照上面给出的 cmake 和 Qt 路径，找到并修改为用户本机实际的路径。
->
-> 若生成的 cmake_temp 目录下没有产生sln工程文件，则可以查看 `generate_vs2015_x86.bat` 运行时的报错，以进一步解决。

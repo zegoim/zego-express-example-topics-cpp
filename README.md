@@ -1,6 +1,6 @@
 # ZegoExpressSDK Qt Demo
 
-ZegoExpressSDK is written in standard C++ and supports cross-platform development. The UI of the sample Demo is also developed using the cross-platform framework Qt to provide sample tutorials for customers on different platforms such as Windows and Mac. Developers on different platforms may use different UI frameworks, but the internal logic behind all UIs is often similar. In actual development, users can refer to the Demo to call the SDK to implement different audio and video logic. On the interface drawing, replace the Qt components used by the Demo with the UI components you use.
+ZegoExpressSDK is developed using C++11, and cross-platform development is supported. This Qt demo can be runed on both Mac and Win system.
 
 ## 1 Prepare the environment
 
