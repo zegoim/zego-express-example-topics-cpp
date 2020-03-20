@@ -135,22 +135,22 @@ namespace ZEGO {
         /** 分辨率设置 */
         enum ZegoVideoConfigPreset
         {
-            /** 设置分辨率为 180x320，默认采用 15 fps，码率 300 kbps */
+            /** 设置分辨率为 320x180，默认采用 15 fps，码率 300 kbps */
             ZEGO_VIDEO_CONFIG_PRESET_180P = 0,
 
-            /** 设置分辨率为 270x480，默认采用 15 fps，码率 400 kbps */
+            /** 设置分辨率为 480x270，默认采用 15 fps，码率 400 kbps */
             ZEGO_VIDEO_CONFIG_PRESET_270P = 1,
 
-            /** 设置分辨率为 360x640，默认采用 15 fps，码率 600 kbps */
+            /** 设置分辨率为 640x360，默认采用 15 fps，码率 600 kbps */
             ZEGO_VIDEO_CONFIG_PRESET_360P = 2,
 
-            /** 设置分辨率为 540x960，默认采用 15 fps，码率 1200 kbps */
+            /** 设置分辨率为 960x540，默认采用 15 fps，码率 1200 kbps */
             ZEGO_VIDEO_CONFIG_PRESET_540P = 3,
 
-            /** 设置分辨率为 720x1280，默认采用 15 fps，码率 1500 kbps */
+            /** 设置分辨率为 1280x720，默认采用 15 fps，码率 1500 kbps */
             ZEGO_VIDEO_CONFIG_PRESET_720P = 4,
 
-            /** 设置分辨率为 1080x1920，默认采用 15 fps，码率 3000 kbps */
+            /** 设置分辨率为 1920x1080，默认采用 15 fps，码率 3000 kbps */
             ZEGO_VIDEO_CONFIG_PRESET_1080P = 5
 
         };
@@ -218,11 +218,11 @@ namespace ZEGO {
             /** 默认编码 */
             ZEGO_VIDEO_CODEC_ID_DEFAULT = 0,
 
-            /** 分层编码 */
-            ZEGO_VIDEO_CODEC_ID_MULTI_LAYER = 1,
+            /** SVC */
+            ZEGO_VIDEO_CODEC_ID_SVC = 1,
 
             /** VP8 */
-            ZEGO_VIDEO_CODEC_IDV_P8 = 2
+            ZEGO_VIDEO_CODEC_ID_VP8 = 2
 
         };
 
@@ -611,7 +611,7 @@ namespace ZEGO {
             /** 自定义视频渲染配置，不设则默认不开启自定义视频渲染 */
             ZegoCustomVideoRenderConfig* customVideoRenderConfig;
 
-            /** 隐藏功能开关，不设则默认不使用任何隐藏功能 */
+            /** 其他特殊功能开关，不设则默认不使用任何其他特殊功能，这里所指的特殊功能不包括上述的自定义视频采集功能与自定义视频渲染等参数字段所列举的功能。 */
             std::string advancedConfig;
 
             ZegoEngineConfig(){
@@ -720,10 +720,10 @@ namespace ZEGO {
 
         struct ZegoUser
         {
-            /** 用户 ID，最大128字节的字符串 */
+            /** 用户 ID，最大 64 字节的字符串。仅支持数字，英文字符 和 '~', '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '_', '+', '=', '-', '`', ';', '’', ',', '.', '<', '>', '/', '\'。 */
             std::string userID;
 
-            /** 用户名，最大长度不超过128字节的字符串 */
+            /** 用户名，最大长度不超过 256 字节的字符串 */
             std::string userName;
 
             ZegoUser(){
@@ -739,7 +739,7 @@ namespace ZEGO {
             /** 用户对象实例 */
             ZegoUser user;
 
-            /** 流 ID，最大256字节的字符串 */
+            /** 流 ID，长度不超过256的字符串。不可以包含 URL 关键字，否则推拉流失败。仅支持数字，英文字符 和 '~', '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '_', '+', '=', '-', '`', ';', '’', ',', '.', '<', '>', '/', '\'。 */
             std::string streamID;
 
             /** 流附加信息 */
@@ -787,22 +787,22 @@ namespace ZEGO {
 
         struct ZegoPublishStreamQuality
         {
-            /** 视频采集帧率 */
+            /** 视频采集帧率，单位为 f/s */
             double videoCaptureFPS;
 
-            /** 视频编码帧率 */
+            /** 视频编码帧率，单位为 f/s */
             double videoEncodeFPS;
 
-            /** 视频发送帧率 */
+            /** 视频发送帧率，单位为 f/s */
             double videoSendFPS;
 
             /** 视频码率，单位为 kbps */
             double videoKBPS;
 
-            /** 音频采集帧率 */
+            /** 音频采集帧率，单位为 f/s */
             double audioCaptureFPS;
 
-            /** 音频发送帧率 */
+            /** 音频发送帧率，单位为 f/s */
             double audioSendFPS;
 
             /** 音频码率，单位为 kbps */
@@ -863,25 +863,25 @@ namespace ZEGO {
 
         struct ZegoPlayStreamQuality
         {
-            /** 视频接收帧率 */
+            /** 视频接收帧率，单位为 f/s */
             double videoRecvFPS;
 
-            /** 视频解码帧率 */
+            /** 视频解码帧率，单位为 f/s */
             double videoDecodeFPS;
 
-            /** 视频渲染帧率 */
+            /** 视频渲染帧率，单位为 f/s */
             double videoRenderFPS;
 
             /** 视频码率，单位为 kbps */
             double videoKBPS;
 
-            /** 音频接收帧率 */
+            /** 音频接收帧率，单位为 f/s */
             double audioRecvFPS;
 
-            /** 音频解码帧率 */
+            /** 音频解码帧率，单位为 f/s */
             double audioDecodeFPS;
 
-            /** 音频渲染帧率 */
+            /** 音频渲染帧率，单位为 f/s */
             double audioRenderFPS;
 
             /** 音频码率，单位为 kbps */
@@ -982,6 +982,12 @@ namespace ZEGO {
             /** 混流输出目标，URL 或者流 ID */
             std::string target;
 
+            /** 混流音频配置 */
+            ZegoMixerAudioConfig audioConfig;
+
+            /** 混流视频配置 */
+            ZegoMixerVideoConfig videoConfig;
+
             ZegoMixerOutput(){
             }
 
@@ -1010,12 +1016,6 @@ namespace ZEGO {
         {
             /** 混流任务 ID */
             std::string taskID;
-
-            /** 混流任务的音频配置 */
-            ZegoMixerAudioConfig audioConfig;
-
-            /** 混流任务的视频配置 */
-            ZegoMixerVideoConfig videoConfig;
 
             /** 混流任务的输入流列表 */
             std::vector<ZegoMixerInput> inputList;

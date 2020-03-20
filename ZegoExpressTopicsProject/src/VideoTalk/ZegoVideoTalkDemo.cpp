@@ -100,7 +100,7 @@ void ZegoVideoTalkDemo::on_pushButton_login_clicked()
 
     ZegoCanvas canvas(ZegoView(ui->frame_video_0->winId()));
     engine->startPreview(&canvas);
-    engine->startPublishing(user.userID);
+    engine->startPublishingStream(user.userID);
 }
 
 void ZegoVideoTalkDemo::on_pushButton_logout_clicked()

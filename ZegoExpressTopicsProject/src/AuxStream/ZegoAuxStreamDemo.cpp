@@ -67,13 +67,13 @@ void ZegoAuxStreamDemo::on_pushButton_startPublish_1_clicked()
     engine->startPreview(&canvas, ZEGO_PUBLISH_CHANNEL_MAIN);
 
     std::string streamID = ui->lineEdit_streamID_1->text().toStdString();
-    engine->startPublishing(streamID, ZEGO_PUBLISH_CHANNEL_MAIN);
+    engine->startPublishingStream(streamID, ZEGO_PUBLISH_CHANNEL_MAIN);
 }
 
 void ZegoAuxStreamDemo::on_pushButton_stopPublish_1_clicked()
 {
     engine->stopPreview(ZEGO_PUBLISH_CHANNEL_MAIN);
-    engine->stopPublishing(ZEGO_PUBLISH_CHANNEL_MAIN);
+    engine->stopPublishingStream(ZEGO_PUBLISH_CHANNEL_MAIN);
 }
 
 void ZegoAuxStreamDemo::on_pushButton_startPublish_2_clicked()
@@ -82,13 +82,13 @@ void ZegoAuxStreamDemo::on_pushButton_startPublish_2_clicked()
     engine->startPreview(&canvas, ZEGO_PUBLISH_CHANNEL_AUX);
 
     std::string streamID = ui->lineEdit_streamID_2->text().toStdString();
-    engine->startPublishing(streamID, ZEGO_PUBLISH_CHANNEL_AUX);
+    engine->startPublishingStream(streamID, ZEGO_PUBLISH_CHANNEL_AUX);
 }
 
 void ZegoAuxStreamDemo::on_pushButton_stopPublish_2_clicked()
 {
     engine->stopPreview(ZEGO_PUBLISH_CHANNEL_AUX);
-    engine->stopPublishing(ZEGO_PUBLISH_CHANNEL_AUX);
+    engine->stopPublishingStream(ZEGO_PUBLISH_CHANNEL_AUX);
 }
 
 void ZegoAuxStreamDemo::printLogToView(QString log)

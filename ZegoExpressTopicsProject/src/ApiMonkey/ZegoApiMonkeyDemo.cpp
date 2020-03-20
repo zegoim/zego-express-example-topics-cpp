@@ -131,7 +131,7 @@ void ZegoApiMonkeyDemo::on_pushButton_start_publish_clicked()
         return;
     }
 
-    engine->startPublishing(streamID);
+    engine->startPublishingStream(streamID);
 
     ZegoCanvas canvas(ZegoView(ui->frame_local_video->winId()));
     engine->startPreview(&canvas);
@@ -145,7 +145,7 @@ void ZegoApiMonkeyDemo::on_pushButton_stop_publish_clicked()
 {
     GuardEngineLoaded
     engine->stopPreview();
-    engine->stopPublishing();
+    engine->stopPublishingStream();
 }
 
 void ZegoApiMonkeyDemo::on_pushButton_setExtraInfo_clicked()
@@ -222,6 +222,12 @@ void ZegoApiMonkeyDemo::on_pushButton_start_mixer_task_clicked()
             QJsonObject outputItemObject = inputItemValue.toObject();
             output.target = outputItemObject["target"].toString().toStdString();
             outputList.push_back(output);
+            
+            ZegoMixerVideoConfig videoConfig;
+            output.videoConfig = videoConfig;
+
+            ZegoMixerAudioConfig audioConfig;
+            output.audioConfig = audioConfig;
         }
         task.outputList = outputList;
     }
@@ -244,12 +250,6 @@ void ZegoApiMonkeyDemo::on_pushButton_start_mixer_task_clicked()
     else{
         task.watermark = nullptr;
     }
-
-    ZegoMixerVideoConfig videoConfig;
-    task.videoConfig = videoConfig;
-
-    ZegoMixerAudioConfig audioConfig;
-    task.audioConfig = audioConfig;
 
     engine->startMixerTask(task, nullptr);
 }
@@ -323,7 +323,7 @@ void ZegoApiMonkeyDemo::on_pushButton_sendCustomCommand_clicked()
         toUserList.push_back(user);
     }
 
-    engine->sendCustomCommand(roomID.toStdString(),toUserList, command.toStdString(),  [=](int errorCode){
+    engine->sendCustomCommand(roomID.toStdString(), command.toStdString(), toUserList,  [=](int errorCode){
         if(errorCode==0){
             ui->textEdit_im_panel->append(QString("send custom Command: roomID=%1, command=%2").arg(roomID).arg(command));
         }

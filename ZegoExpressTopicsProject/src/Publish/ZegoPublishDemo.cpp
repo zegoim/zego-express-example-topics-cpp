@@ -161,7 +161,7 @@ void ZegoPublishDemo::on_pushButton_startPublish_clicked()
     user.userID = userID;
     user.userName = userID;
     engine->loginRoom(roomID, user);
-    engine->startPublishing(streamID);
+    engine->startPublishingStream(streamID);
 
 
     ZegoCanvas canvas(ZegoView(ui->frame_local_video->winId()));
@@ -171,7 +171,7 @@ void ZegoPublishDemo::on_pushButton_startPublish_clicked()
 void ZegoPublishDemo::on_pushButton_stopPublish_clicked()
 {
     engine->stopPreview();
-    engine->stopPublishing();
+    engine->stopPublishingStream();
     std::string roomID = ui->lineEdit_roomID->text().toStdString();
     engine->logoutRoom(roomID);
 }

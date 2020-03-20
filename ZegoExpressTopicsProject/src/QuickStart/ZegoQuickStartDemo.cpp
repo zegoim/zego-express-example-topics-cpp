@@ -76,7 +76,7 @@ void ZegoQuickStartDemo::on_pushButton_PublishStream_clicked()
     if(engine != nullptr){
         std::string streamID = ui->lineEdit_publish_streamID->text().toStdString();
 
-        engine->startPublishing(streamID);
+        engine->startPublishingStream(streamID);
 
         ZegoCanvas canvas((void*)ui->frame_local_video->winId(), ZEGO_VIEW_MODE_ASPECT_FIT);
         engine->startPreview(&canvas);

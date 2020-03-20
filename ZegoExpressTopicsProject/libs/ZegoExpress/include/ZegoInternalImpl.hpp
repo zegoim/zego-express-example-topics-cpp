@@ -218,6 +218,9 @@ public:
         zego_mixer_output _output;
         memset(_output.target, 0, sizeof(_output.target));
         strncpy(_output.target, output.target.c_str(), ZEGO_EXPRESS_MAX_URL_LEN);
+
+        _output.audio_config = O2IMixerAudioConfig(output.audioConfig);
+        _output.video_config = O2IMixerVideoConfig(output.videoConfig);
         return _output;
     }
 
@@ -627,25 +630,25 @@ public:
         ZegoCBridge->setVideoConfig(_config, zego_publish_channel(channel));
     }
 
-    void startPublishing(const std::string &streamID) override
+    void startPublishingStream(const std::string &streamID) override
     {
-        startPublishing(streamID, ZEGO_PUBLISH_CHANNEL_MAIN);
+        startPublishingStream(streamID, ZEGO_PUBLISH_CHANNEL_MAIN);
     }
 
-    void startPublishing(const std::string &streamID, ZegoPublishChannel channel) override
+    void startPublishingStream(const std::string &streamID, ZegoPublishChannel channel) override
     {
         const char *stream_id = streamID.c_str();
-        ZegoCBridge->startPublishing(stream_id, zego_publish_channel(channel));
+        ZegoCBridge->startPublishingStream(stream_id, zego_publish_channel(channel));
     }
 
-    void stopPublishing() override
+    void stopPublishingStream() override
     {
-        stopPublishing(ZEGO_PUBLISH_CHANNEL_MAIN);
+        stopPublishingStream(ZEGO_PUBLISH_CHANNEL_MAIN);
     }
 
-    void stopPublishing(ZegoPublishChannel channel) override
+    void stopPublishingStream(ZegoPublishChannel channel) override
     {
-        ZegoCBridge->stopPublishing(zego_publish_channel(channel));
+        ZegoCBridge->stopPublishingStream(zego_publish_channel(channel));
     }
 
     void setStreamExtraInfo(const std::string &extraInfo, ZegoPublisherSetStreamExtraInfoCallback callback) override
@@ -742,15 +745,7 @@ public:
     {
         if (watermark != nullptr)
         {
-            zego_watermark _watermark;
-            {
-                _watermark.layout.left = watermark->layout.x;
-                _watermark.layout.right = watermark->layout.x + watermark->layout.width;
-                _watermark.layout.top = watermark->layout.y;
-                _watermark.layout.bottom = watermark->layout.y + watermark->layout.height;
-                memset(_watermark.image, 0, sizeof(_watermark.image));
-                strncpy(_watermark.image, watermark->imageURL.c_str(), ZEGO_EXPRESS_MAX_COMMON_LEN);
-            }
+            zego_watermark _watermark = ZegoExpressConvert::O2IWatermark(*watermark);
             ZegoCBridge->setPublishWatermark(&_watermark, isPreviewVisible, zego_publish_channel(channel));
         }
         else
@@ -1030,7 +1025,7 @@ public:
         }
     }
 
-    void sendCustomCommand(const std::string &roomID, std::vector<ZegoUser> toUserList, const std::string &command, ZegoIMSendCustomCommandCallback callback) override
+    void sendCustomCommand(const std::string &roomID, const std::string &command, std::vector<ZegoUser> toUserList, ZegoIMSendCustomCommandCallback callback) override
     {
         std::vector<zego_user> _userList;
         for (auto user : toUserList)
@@ -1042,7 +1037,7 @@ public:
         const char *_roomID = roomID.c_str();
         const char *_command = command.c_str();
 
-        int seq = ZegoCBridge->sendCustomCommand(_roomID, users, u_int(_userList.size()), _command);
+        int seq = ZegoCBridge->sendCustomCommand(_roomID, _command, users, u_int(_userList.size()));
         if (callback != nullptr)
         {
             std::lock_guard<std::mutex> lock(mEngineEventHandlerMutex);
@@ -1080,15 +1075,10 @@ public:
         _task.output_list = output_list.data();
         _task.output_list_count = u_int(output_list.size());
 
-        zego_mixer_audio_config audio_config = ZegoExpressConvert::O2IMixerAudioConfig(task.audioConfig);
-        _task.audio_config = audio_config;
-
-        zego_mixer_video_config video_config = ZegoExpressConvert::O2IMixerVideoConfig(task.videoConfig);
-        _task.video_config = video_config;
-
+        zego_watermark _watermark;
         if (task.watermark != nullptr)
         {
-            zego_watermark _watermark = ZegoExpressConvert::O2IWatermark(*task.watermark);
+            _watermark = ZegoExpressConvert::O2IWatermark(*task.watermark);
             _task.watermark = &_watermark;
         }
         else

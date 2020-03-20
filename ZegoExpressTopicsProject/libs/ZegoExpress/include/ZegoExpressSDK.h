@@ -1,5 +1,5 @@
 ﻿//
-//  Version: 1.5.0.139_stable
+//  Version: 1.5.1.142_stable
 //
 //  Copyright © 2019 Zego. All rights reserved.
 //
@@ -23,7 +23,7 @@ namespace ZEGO {
              * 创建引擎单例对象
              *
              * 在调用其他 API 前需要先创建并初始化引擎；SDK 只支持创建一个 ZegoExpressEngine 实例，多次调用此接口返回的都是同一个对象。
-             * @param appID ZEGO 为开发者签发的应用 ID，请从 [ZEGO 管理控制台](https://console-express.zego.im/) 申请，取值范围为 0~4294967295。
+             * @param appID ZEGO 为开发者签发的应用 ID，请从 ZEGO 管理控制台 https://console-express.zego.im/ 申请，取值范围为 0~4294967295。
              * @param appSign 每个 AppID 对应的应用签名，请从 ZEGO 管理控制台申请。为 64 字符的字符串。每个字符范围为'0'~'9', 'a'~'z'。
              * @param isTestEnv 选择使用测试环境还是正式商用环境，正式环境需要在 ZEGO 管理控制台提交工单配置。测试环境为测试开发用，限制房间数为 30，用户数为 230。正式环境 App 正式上线用，ZEGO 会根据开发者在管理控制台提交的配置记录提供相应的服务资源。测试环境与正式环境是两套环境，不可互通。
              * @param scenario 所属的应用场景，开发者可根据所开发的 App 的场景选择其中一个，引擎会通过所设置的场景预设置一个针对具体场景的较为通用的设置。当设置具体场景后，开发者若有定制化参数设置，依然可以调用具体接口来设置具体参数。

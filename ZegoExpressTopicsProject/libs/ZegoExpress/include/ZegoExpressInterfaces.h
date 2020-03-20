@@ -51,7 +51,7 @@ namespace ZEGO {
              * 一个房间发的消息（例如 [setStreamExtraInfo], [sendBroadcastMessage], [sendBarrageMessage], [sendCustomCommand] 等）在别的房间无法收到（例如 [onRoomStreamExtraInfoUpdate], [onIMRecvBroadcastMessage], [onIMRecvBarrageMessage], [onIMRecvCustomCommand] 等），目前 ZegoExpressEngine 未提供跨房间消息的能力。开发者可以集成第三方 IM 的 SDK 来实现。
              * ZegoExpressEngine 支持拉相同 appID 下非同一个房间的流，即跨房间拉流。由于 ZegoExpressEngine 的房间信令的相关回调通知是以相同房间为单位，当开发者想要跨房间拉流时，开发者需自行维护相关的消息及信令通知。
              * 如果由于网络质量原因导致网络临时中断，SDK 内部会自动进行重连。可通过监听 [onRoomStateUpdate] 回调获取本端当前房间连接状态的变化情况，同时同房间其他用户会接收到 [onRoomUserUpdate] 回调通知。
-             * @param roomID 房间 ID，最大长度为 128 字节的字符串。
+             * @param roomID 房间 ID，最大长度为 128 字节的字符串。仅支持数字，英文字符 和 '~', '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '_', '+', '=', '-', '`', ';', '’', ',', '.', '<', '>', '/', '\'
              * @param user 用户对象实例，配置用户 ID、用户名。 注意用户 ID 需要在相同的 appID 下全局唯一，否则会出现后登陆的用户踢掉先登陆的用户的情况。
              */
             virtual void loginRoom(const std::string& roomID, ZegoUser user) = 0;
@@ -64,7 +64,7 @@ namespace ZEGO {
              * 一个房间发的消息（例如 [setStreamExtraInfo], [sendBroadcastMessage], [sendBarrageMessage], [sendCustomCommand] 等）在别的房间无法收到（例如 [onRoomStreamExtraInfoUpdate], [onIMRecvBroadcastMessage], [onIMRecvBarrageMessage], [onIMRecvCustomCommand] 等），目前 ZegoExpressEngine 未提供跨房间消息的能力。开发者可以集成第三方 IM 的 SDK 来实现。
              * ZegoExpressEngine 支持拉相同 appID 下非同一个房间的流，即跨房间拉流。由于 ZegoExpressEngine 的房间信令的相关回调通知是以相同房间为单位，当开发者想要跨房间拉流时，开发者需自行维护相关的消息及信令通知。
              * 如果由于网络质量原因导致网络临时中断，SDK 内部会自动进行重连。可通过监听 [onRoomStateUpdate] 回调获取本端当前房间连接状态的变化情况，同时同房间其他用户会接收到 [onRoomUserUpdate] 回调通知。
-             * @param roomID 房间 ID，最大长度为 128 字节的字符串。
+             * @param roomID 房间 ID，最大长度为 128 字节的字符串。仅支持数字，英文字符 和 '~', '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '_', '+', '=', '-', '`', ';', '’', ',', '.', '<', '>', '/', '\'
              * @param user 用户对象实例，配置用户 ID、用户名。 注意用户 ID 需要在相同的 appID 下全局唯一，否则会出现后登陆的用户踢掉先登陆的用户的情况。
              * @param config 房间进阶配置
              */
@@ -74,7 +74,7 @@ namespace ZEGO {
              * 退出房间
              *
              * 退出房间会停止该用户的所有推拉流并且 ZegoExpressEngine 内部会主动停止本地预览，调用该接口后会收到 [onRoomStateUpdate] 回调通知成功退出房间，同时同房间其他用户会接收到 [onRoomUserUpdate] 回调通知。
-             * @param roomID 用户已登录的房间 ID，最大长度为 128 字节的字符串。
+             * @param roomID 房间 ID，最大长度为 128 字节的字符串。仅支持数字，英文字符 和 '~', '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '_', '+', '=', '-', '`', ';', '’', ',', '.', '<', '>', '/', '\'
              */
             virtual void logoutRoom(const std::string& roomID) = 0;
 
@@ -84,9 +84,9 @@ namespace ZEGO {
              * 可通过此接口让用户将自己本地的音视频流推送到 ZEGO 实时音视频云，同一房间的其他用户通过 streamID 就可以拉取该音视频流进行互通。
              * 在开始推流前，需要先调用 [loginRoom] 加入房间，当推流成功之后，同房间内其他用户可通过监听 [onRoomStreamUpdate] 事件回调来获取该 streamID 新增。
              * 在网络质量不佳的情况下，用户推流可能出现中断，SDK 会尝试重新连接，可通过监听 [onPublisherStateUpdate] 事件来获知当前推流状态以及错误信息。
-             * @param streamID 流 ID，长度不超过256的字符串，需要在整个 AppID 内全局唯一，若出现在同一个 AppID 内，不同的用户各推了一条流且流名相同，将会导致后推流的用户推流失败
+             * @param streamID 流 ID，长度不超过256的字符串，需要在整个 AppID 内全局唯一，若出现在同一个 AppID 内，不同的用户各推了一条流且流名相同，将会导致后推流的用户推流失败。不可以包含 URL 关键字，否则推拉流失败。仅支持数字，英文字符 和 '~', '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '_', '+', '=', '-', '`', ';', '’', ',', '.', '<', '>', '/', '\'。
              */
-            virtual void startPublishing(const std::string& streamID) = 0;
+            virtual void startPublishingStream(const std::string& streamID) = 0;
 
             /**
              * 开始推流，可选择推第二路流
@@ -94,10 +94,10 @@ namespace ZEGO {
              * 可通过此接口让用户将自己本地的音视频流推送到 ZEGO 实时音视频云，同一房间的其他用户通过 streamID 就可以拉取该音视频流进行互通。
              * 在开始推流前，需要先调用 [loginRoom] 加入房间，当推流成功之后，同房间内其他用户可通过监听 [onRoomStreamUpdate] 事件回调来获取该 streamID 新增。
              * 在网络质量不佳的情况下，用户推流可能出现中断， SDK 会尝试重新连接，可通过监听 [onPublisherStateUpdate] 事件来获知当前推流状态以及错误信息。
-             * @param streamID 流 ID，长度不超过256的字符串，需要在整个 AppID 内全局唯一，若出现在同一个 AppID 内，不同的用户各推了一条流且流名相同，将会导致后推流的用户推流失败
+             * @param streamID 流 ID，长度不超过256的字符串，需要在整个 AppID 内全局唯一，若出现在同一个 AppID 内，不同的用户各推了一条流且流名相同，将会导致后推流的用户推流失败。不可以包含 URL 关键字，否则推拉流失败。仅支持数字，英文字符 和 '~', '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '_', '+', '=', '-', '`', ';', '’', ',', '.', '<', '>', '/', '\'。
              * @param channel 推流通道
              */
-            virtual void startPublishing(const std::string& streamID, ZegoPublishChannel channel) = 0;
+            virtual void startPublishingStream(const std::string& streamID, ZegoPublishChannel channel) = 0;
 
             /**
              * 停止推流
@@ -106,7 +106,7 @@ namespace ZEGO {
              * 如果用户已经启动推流，在推新流（新的 streamID）之前，必须要调用此接口停止当前流的推送，否则新流推送会返回失败。
              * 在停止推流之后，开发者应该根据业务情况是否需要而停止本地预览。
              */
-            virtual void stopPublishing() = 0;
+            virtual void stopPublishingStream() = 0;
 
             /**
              * 停止推流，可停止指定通道的音视频流
@@ -117,7 +117,7 @@ namespace ZEGO {
              * 当使用推第二路音视频流的接口推流时使用此接口进行停止推流。
              * @param channel 推流通道
              */
-            virtual void stopPublishing(ZegoPublishChannel channel) = 0;
+            virtual void stopPublishingStream(ZegoPublishChannel channel) = 0;
 
             /**
              * 设置流附加信息
@@ -302,7 +302,7 @@ namespace ZEGO {
              * 可以同时在使用 ZEGO 的 CDN 音视频流内容分发服务的同时通过调用此接口再使用开发者自身拥有 CDN 内容分发服务的开发者使用。
              * 该接口支持动态转推至 CDN 内容分发网络，因此开发者可以使用该接口来作为 CDN 内容分发服务的一个容灾方案。
              * 当调用 [enablePublishDirectToCDN] 接口设置为 true 将流直推到 CDN 时，再调用本接口将无效。
-             * @param streamID 需要转推的流 ID，最大长度不超过 256 字节的字符串。
+             * @param streamID 流 ID
              * @param targetURL CDN 转推地址，支持的转推地址格式为 rtmp。
              * @param callback 添加 CDN 转推结果通知
              */
@@ -313,7 +313,7 @@ namespace ZEGO {
              *
              * 当已经添加了某个 CDN 转推地址，需要将流停止转推至该接口时调用此接口。
              * 该接口并不会停止推往 ZEGO 音视频云的音视频流。
-             * @param streamID 需要停止转推的流 ID，最大长度不超过 256 字节的字符串。
+             * @param streamID 流 ID
              * @param targetURL CDN 转推地址，支持的转推地址格式有 rtmp，flv，hls
              * @param callback 移除 CDN 转推结果通知
              */
@@ -416,7 +416,7 @@ namespace ZEGO {
              * 在网络质量不佳的情况下，用户拉流可能出现中断， SDK 会尝试重新连接，可通过监听 [onPlayerStateUpdate] 事件来获知当前拉流状态以及错误信息。
              * 拉取不存在的流 ID，执行本接口后 SDK 持续尝试拉取，在该流 ID 被成功推送后，音视频流可以真正被拉取到。
              * 开发者可通过再次调用此接口实现更新拉流 Canvas 的操作（流 ID 必须一样）。
-             * @param streamID 流 ID，最大长度不超过 256 字节的字符串。
+             * @param streamID 流 ID，长度不超过256的字符串。不可以包含 URL 关键字，否则推拉流失败。仅支持数字，英文字符 和 '~', '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '_', '+', '=', '-', '`', ';', '’', ',', '.', '<', '>', '/', '\'。
              * @param canvas 用于显示拉流画面的视图，视图设置为 [nullptr] 则不进行显示
              */
             virtual void startPlayingStream(const std::string& streamID, ZegoCanvas* canvas) = 0;
@@ -429,7 +429,7 @@ namespace ZEGO {
              * 在网络质量不佳的情况下，用户拉流可能出现中断， SDK 会尝试重新连接，可通过监听 [onPlayerStateUpdate] 事件来获知当前拉流状态以及错误信息。
              * 拉取不存在的流 ID，执行本接口后 SDK 持续尝试拉取，在该流 ID 被成功推送后，音视频流可以真正被拉取到。
              * 开发者可通过再次调用此接口实现更新拉流 Canvas 的操作（流 ID 必须一样）。
-             * @param streamID 流 ID
+             * @param streamID 流 ID，长度不超过256的字符串。不可以包含 URL 关键字，否则推拉流失败。仅支持数字，英文字符 和 '~', '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '_', '+', '=', '-', '`', ';', '’', ',', '.', '<', '>', '/', '\'。
              * @param canvas 用于显示拉流画面的视图，视图设置为 [nullptr] 则不进行显示
              * @param config 拉流进阶配置
              */
@@ -439,7 +439,7 @@ namespace ZEGO {
              * 停止拉流
              *
              * 可通过此接口让用户停止拉取远端的音视频流。停止拉流后对此条流此前设置的属性如 [setPlayVolume]、[mutePlayStreamAudio]、[mutePlayStreamVideo] 等都会失效，需要在下次拉流时重新设置。
-             * @param streamID 流 ID，最大长度不超过 256 字节的字符串。
+             * @param streamID 流 ID
              */
             virtual void stopPlayingStream(const std::string& streamID) = 0;
 
@@ -448,7 +448,7 @@ namespace ZEGO {
              *
              * 此接口用于设置拉流的声音大小，本端用户可控制音频流的播放音量。需要在调用拉流接口后调用。
              * 在停止拉流，重新拉流之后需要重新设置。
-             * @param streamID 流 ID，最大长度不超过 256 字节的字符串。
+             * @param streamID 流 ID
              * @param volume 音量百分比，取值范围为 0 ~ 100，默认值为 100
              */
             virtual void setPlayVolume(const std::string& streamID, int volume) = 0;
@@ -458,7 +458,7 @@ namespace ZEGO {
              *
              * 拉流时可调用此接口实现不拉取远端用户的音频数据，需要在调用拉流接口后调用。
              * 该接口仅对从 ZEGO 实时音视频云(非 ZEGO CDN 或 第三方 CDN)拉流才有效果。
-             * @param streamID 流 ID，最大长度不超过 256 字节的字符串。
+             * @param streamID 流 ID
              * @param mute 禁用标识；true 表示禁止拉取；false 表示恢复拉取
              */
             virtual void mutePlayStreamAudio(const std::string& streamID, bool mute) = 0;
@@ -468,7 +468,7 @@ namespace ZEGO {
              *
              * 拉流时可调用此接口实现不拉取远端用户的视频数据，需要在调用拉流接口后调用。
              * 该接口仅对从 ZEGO 实时音视频云(非 ZEGO CDN 或 第三方 CDN)拉流才有效果。
-             * @param streamID 流 ID，最大长度不超过 256 字节的字符串。
+             * @param streamID 流 ID
              * @param mute 禁用标识；true 表示禁止拉取；false 表示恢复拉取
              */
             virtual void mutePlayStreamVideo(const std::string& streamID, bool mute) = 0;
@@ -599,6 +599,7 @@ namespace ZEGO {
              *
              * 启动监控后可通过 [onCapturedSoundLevelUpdate] 回调接收本地采集音频声浪回调，以及 [onRemoteSoundLevelUpdate] 回调接收远端拉流音频声浪回调。
              * 开发者可在进入房间之前，调用 [startPreview] 与此接口，并与 [onCapturedSoundLevelUpdate] 结合来判断音频设备是否正常工作。
+             * [onCapturedSoundLevelUpdate] 与 [onRemoteSoundLevelUpdate] 回调通知周期为 100 ms。
              */
             virtual void startSoundLevelMonitor() = 0;
 
@@ -613,6 +614,7 @@ namespace ZEGO {
              * 启动音频频谱监控
              *
              * 启动监控后可通过 [onCapturedAudioSpectrumUpdate] 回调接收本地采集音频频谱回调，以及 [onRemoteAudioSpectrumUpdate] 回调接收远端音频声浪回调。
+             * [onCapturedAudioSpectrumUpdate] 与 [onRemoteAudioSpectrumUpdate] 回调通知周期为 100 ms。
              */
             virtual void startAudioSpectrumMonitor() = 0;
 
@@ -677,16 +679,16 @@ namespace ZEGO {
              * 发送自定义信令
              *
              * @param roomID 房间 ID
-             * @param toUserList 信令的接收者
              * @param command 自定义信令内容，长度不超过256字节
+             * @param toUserList 信令的接收者
              * @param callback 发送信令结果通知
              */
-            virtual void sendCustomCommand(const std::string& roomID, std::vector<ZegoUser> toUserList, const std::string& command, ZegoIMSendCustomCommandCallback callback) = 0;
+            virtual void sendCustomCommand(const std::string& roomID, const std::string& command, std::vector<ZegoUser> toUserList, ZegoIMSendCustomCommandCallback callback) = 0;
 
             /**
              * 创建媒体播放器实例对象
              *
-             * 目前最多支持创建 4 个实例，超过后将返回 null
+             * 目前最多支持创建 4 个实例，超过后将返回 nullptr。媒体播放器的实例越多，对设备的性能开销越大。
              * @return 媒体播放器实例，超过最大数量限制后将返回 null
              */
             virtual IZegoMediaPlayer* createMediaPlayer() = 0;
@@ -701,6 +703,11 @@ namespace ZEGO {
             /**
              * 设置自定义视频渲染回调
              *
+             * 自定义视频渲染，由开发者负责把视频数据渲染到 UI 组件上。该功能一般为使用第三方美颜功能或使用第三方渲染框架的开发者使用。
+             * 当开发者使用 ZegoExpressEngine 的自定义视频渲染的高级功能时需要调用此接口来设置给开发者抛视频数据的回调对象。
+             * 当开发者调用启动预览 [startPreview]、开始推流 [startPublishingStream]、开始拉流[startPlayingStream] 时会触发向开发者抛视频数据的回调方法。
+             * 开发者可根据 ZegoExpressEngine 抛视频数据的回调进行视频画面的渲染。
+             * 自定义视频渲染功能可以与自定义视频采集功能同时使用。
              * @param handler 自定义视频渲染回调对象
              */
             virtual void setCustomVideoRenderHandler(std::shared_ptr<IZegoCustomVideoRenderHandler> handler) = 0;
@@ -708,13 +715,19 @@ namespace ZEGO {
             /**
              * 设置自定义视频采集回调
              *
+             * 自定义视频采集，即由开发者负责采集视频数据，并将采集到的视频数据发送给 ZegoExpressEngine 进行视频数据的编码与推送到 ZEGO 音视频云端。该功能一般为使用第三方美颜功能或游戏录屏直播的开发者使用。
+             * 当开发者使用 ZegoExpressEngine 的自定义视频采集的高级功能时，需要调用此接口来设置 ZegoExpressEngine 以通知开发者可以开始发送的视频数据给 ZegoExpressEngine。
+             * 当开发者调用启动预览 [startPreview]、开始推流 [startPublishingStream] 时会触发通知开发者可以开始发送视频数据的回调方法。当停止预览 [stopPreview] 且 停止推流[stopPublishingStream] 时会触发通知开发者可以停止发送视频数据的回调方法。
+             * 由于使用自定义视频采集时，ZegoExpressEngine 将不再启动摄像头去采集视频数据，开发者需自行对视频采集源进行视频数据的采集。
+             * 自定义视频采集功能可以与自定义视频渲染功能同时使用。
              * @param handler 自定义视频采集回调对象
              */
             virtual void setCustomVideoCaptureHandler(std::shared_ptr<IZegoCustomVideoCaptureHandler> handler) = 0;
 
             /**
-             * 给 SDK 发送自定义采集的视频帧裸数据
+             * 给 SDK 发送自定义采集的视频帧原始数据
              *
+             * 该接口应该在 [onStart] 通知的之后开始调用，在 [onStop] 通知之后结束调用。
              * @param data 要向 SDK 发送的视频帧数据
              * @param dataLength 视频帧数据长度
              * @param params 视频帧的参数
@@ -723,8 +736,9 @@ namespace ZEGO {
             virtual void sendCustomVideoCaptureRawData(const unsigned char* data, unsigned int dataLength, ZegoVideoFrameParam params, unsigned long long referenceTimeMillisecond) = 0;
 
             /**
-             * 给 SDK 发送自定义采集的视频帧裸数据
+             * 给 SDK 发送自定义采集的视频帧裸数据，支持其他路推流
              *
+             * 该接口应该在 [onStart] 通知的之后开始调用，在 [onStop] 通知之后结束调用。
              * @param data 要向 SDK 发送的视频帧数据
              * @param dataLength 视频帧数据长度
              * @param params 视频帧的参数
@@ -741,7 +755,7 @@ namespace ZEGO {
             virtual void setCustomVideoCaptureFillMode(ZegoViewMode mode) = 0;
 
             /**
-             * 设置自定义视频采集画面缩放填充模式
+             * 设置自定义视频采集画面缩放填充模式，支持其他路推流
              *
              * @param mode 画面填充缩放模式
              * @param channel 推流通道
@@ -835,15 +849,15 @@ namespace ZEGO {
             /**
              * 是否将播放器的声音混入正在推的流中
              *
-             * @param enable 是否混音标记
+             * @param enable 是否混音标记，默认为 false
              */
             virtual void enableAux(bool enable) = 0;
 
             /**
              * 是否静默本地播放
              *
-             * 若开启了混音入流则推的流中仍然有声音
-             * @param mute 本地静音标记
+             * 若开启了混音入流则推的流中仍然有声音，默认为 false。
+             * @param mute 本地静音标记，默认为 false。
              */
             virtual void muteLocal(bool mute) = 0;
 
@@ -857,7 +871,7 @@ namespace ZEGO {
             /**
              * 设置播放器音量
              *
-             * @param volume 范围为 0 ~ 100
+             * @param volume 范围为 0 ~ 100，默认为 100。
              */
             virtual void setVolume(int volume) = 0;
 
@@ -872,7 +886,7 @@ namespace ZEGO {
             /**
              * 获取当前音量
              *
-             * 范围为 0 ~ 100
+             * 范围为 0 ~ 100，默认为 100。
              */
             virtual int getVolume() = 0;
 

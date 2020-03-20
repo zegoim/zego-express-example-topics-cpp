@@ -30,17 +30,6 @@ ZegoMixerDemo::ZegoMixerDemo(QWidget *parent) :
 
     ui->pushButton_roomID->setText(QString("RoomID: %1").arg(roomID.c_str()));
     ui->pushButton_userID->setText(QString("UserID: %1").arg(userID.c_str()));
-
-    QStringList ZegoResolutionList = {
-        "180P" ,
-        "270P" ,
-        "360P" ,
-        "540P" ,
-        "720P",
-        "1080P"
-    };
-    ui->comboBox_mixerVideoConfig->addItems(ZegoResolutionList);
-    ui->comboBox_mixerVideoConfig->setCurrentIndex(ZEGO_VIDEO_CONFIG_PRESET_360P);
 }
 
 ZegoMixerDemo::~ZegoMixerDemo()
@@ -80,30 +69,55 @@ void ZegoMixerDemo::onRoomStreamUpdate(const std::string &roomID, ZegoUpdateType
 
 void ZegoMixerDemo::on_pushButton_start_mixer_task_clicked()
 {
+    /*  Output
+     *
+     * |-----------|-------|----------------|
+     * | watermark |       |                |
+     * |-----------|       |                |
+     * |                   |                |
+     * |      Input1       |    Input2      |
+     * |                   |                |
+     * |                   |                |
+     * |                   |                |
+     * |-------------------|----------------|
+    */
+
     // 0. MixerTask
     auto mixerTaskID = ZegoUtilHelper::getRandomString();
     ZegoMixerTask task(mixerTaskID);
 
-    // 1. MixerTask-VideoConfig
+    // 1. MixerTask-OutputList
+    ZegoMixerOutput mixerOutput;
+    std::string target = ui->lineEdit_output_streamID->text().toStdString();
+    mixerOutput.target = target;
+
+    // 1.1 Set VideoConfig for the output
     ZegoMixerVideoConfig videoConfig;
-    task.videoConfig = videoConfig;
+    mixerOutput.videoConfig = videoConfig;
 
-    // 2. MixerTask-AudioConfig
+    // 1.1 Set AudioConfig for the output
     ZegoMixerAudioConfig audioConfig;
-    task.audioConfig = audioConfig;
+    mixerOutput.audioConfig = audioConfig;
 
-    // 3. MixerTask-InputList
+    task.outputList = {mixerOutput};
+
+    // 2. MixerTask-InputList
+
+    // 2.1 Set the first Input
     ZegoMixerInput mixerInput1;
     mixerInput1.streamID = ui->comboBox_input_streamID1->currentText().toStdString();
     mixerInput1.contentType = ZEGO_MIXER_INPUT_CONTENT_TYPE_VIDEO;
+    // the first input layout the left of the output
     mixerInput1.layout.x = 0;
     mixerInput1.layout.y = 0;
     mixerInput1.layout.width = videoConfig.width/2;
     mixerInput1.layout.height = videoConfig.height;
 
+    // 2.2 Set the second Input
     ZegoMixerInput mixerInput2;
     mixerInput2.streamID = ui->comboBox_input_streamID2->currentText().toStdString();
     mixerInput2.contentType = ZEGO_MIXER_INPUT_CONTENT_TYPE_VIDEO;
+    // the second input layout the right of the output
     mixerInput2.layout.x = videoConfig.width/2;
     mixerInput2.layout.y = 0;
     mixerInput2.layout.width = videoConfig.width/2;
@@ -111,19 +125,14 @@ void ZegoMixerDemo::on_pushButton_start_mixer_task_clicked()
 
     task.inputList = {mixerInput1, mixerInput2};
 
-    // 4. MixerTask-OutputList
-    ZegoMixerOutput mixerOutput;
-    std::string target = ui->lineEdit_output_streamID->text().toStdString();
-    mixerOutput.target = target;
-    task.outputList = {mixerOutput};
-
-    // 5. MixerTask-watermark:(option)
+    // 3. MixerTask-watermark:(option)
     watermark = std::make_shared<ZegoWatermark>();
     watermark->imageURL = "preset-id://zegowp.png";
+    // the watermark layout the top-left corner of the output
     watermark->layout = ZegoRect(0, 0, 100, 100);
     task.watermark = watermark.get();
 
-    // 6. MixerTask-backgroundImage:(option)
+    // 4. MixerTask-backgroundImage:(option)
     task.backgroundImageURL = "preset-id://zegobg.png";
 
     currentTask = task;

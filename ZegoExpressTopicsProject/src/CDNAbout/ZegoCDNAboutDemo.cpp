@@ -42,7 +42,7 @@ ZegoCDNAboutDemo::~ZegoCDNAboutDemo()
 void ZegoCDNAboutDemo::on_pushButton_startPublishToZegoServer_clicked()
 {
     std::string streamID = ui->lineEdit_streamID_publish->text().toStdString();
-    engine->startPublishing(streamID);
+    engine->startPublishingStream(streamID);
 }
 
 void ZegoCDNAboutDemo::on_pushButton_addPublishToCDN_clicked()
@@ -65,7 +65,7 @@ void ZegoCDNAboutDemo::on_pushButton_removePublishToCDN_clicked()
 
 void ZegoCDNAboutDemo::on_pushButton_stopPublishToZegoServer_clicked()
 {
-    engine->stopPublishing();
+    engine->stopPublishingStream();
 }
 
 void ZegoCDNAboutDemo::on_pushButton_startPublishDirectToCDN_clicked()
@@ -76,12 +76,12 @@ void ZegoCDNAboutDemo::on_pushButton_startPublishDirectToCDN_clicked()
     ZegoCDNConfig cdnConfig;
     cdnConfig.URL = cdnUrl;
     engine->enablePublishDirectToCDN(true, &cdnConfig);
-    engine->startPublishing(streamID);
+    engine->startPublishingStream(streamID);
 }
 
 void ZegoCDNAboutDemo::on_pushButton_stopPublishDirectToCDN_clicked()
 {
-    engine->stopPublishing();
+    engine->stopPublishingStream();
     engine->enablePublishDirectToCDN(false, nullptr);
 }
 

@@ -56,7 +56,7 @@ void ZegoCustomVideoRenderDemo::on_pushButton_startPublish_clicked()
     }
 
     std::string streamID = ui->lineEdit_streamID->text().toStdString();
-    engine->startPublishing(streamID);
+    engine->startPublishingStream(streamID);
 
     ZegoCanvas canvas(ZegoView(ui->frame_local_internal_video->winId()));
     engine->startPreview(&canvas);
@@ -69,7 +69,7 @@ void ZegoCustomVideoRenderDemo::on_pushButton_stopPublish_clicked()
         return;
     }
     engine->stopPreview();
-    engine->stopPublishing();
+    engine->stopPublishingStream();
 }
 
 void ZegoCustomVideoRenderDemo::on_pushButton_startPlay_clicked()

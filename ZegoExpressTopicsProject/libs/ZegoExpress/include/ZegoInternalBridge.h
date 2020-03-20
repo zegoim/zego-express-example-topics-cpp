@@ -303,7 +303,7 @@ enum zego_audio_codec_id
 enum zego_video_codec_id
 {
     zego_video_codec_id_default,
-    zego_video_codec_id_multi_layer,
+    zego_video_codec_id_svc,
     zego_video_codec_id_vp8
 };
 
@@ -513,6 +513,27 @@ enum zego_mixer_input_content_type
     zego_mixer_input_content_type_video
 };
 
+struct zego_mixer_audio_config
+{
+    
+    int bitrate;
+    
+    
+    zego_audio_channel channel;
+    
+    
+    zego_audio_codec_id audio_codec_id;
+};
+
+struct zego_mixer_video_config
+{
+    int resolution_width;
+    int resolution_height;
+    
+    int bitrate;
+    int fps;
+};
+
 struct zego_mixer_input
 {
     enum zego_mixer_input_content_type content_type;
@@ -525,6 +546,12 @@ struct zego_mixer_output
 {
     
     char target[ZEGO_EXPRESS_MAX_URL_LEN + 1];
+    
+    
+    struct zego_mixer_video_config video_config;
+    
+    
+    struct zego_mixer_audio_config audio_config;
 };
 
 struct zego_watermark
@@ -535,46 +562,6 @@ struct zego_watermark
     struct zego_rect layout;
     
     
-};
-
-struct zego_mixer_cdn_info
-{
-    char output_stream_id[ZEGO_EXPRESS_MAX_STREAM_LEN + 1];
-    
-    char* rtmp_url_list[ZEGO_EXPRESS_MAX_URL_COUNT];        
-    unsigned int rtmp_url_count;                            
-    
-    char* flv_url_list[ZEGO_EXPRESS_MAX_URL_COUNT];
-    unsigned int flv_url_count;
-    
-    char* hls_url_list[ZEGO_EXPRESS_MAX_URL_COUNT];
-    unsigned int hls_url_count;
-};
-
-struct zego_mixer_start_result
-{
-    zego_error error_code;
-    
-    const char* extended_data;
-};
-
-struct zego_mixer_audio_config
-{
-    
-    int bitrate;
-    
-    zego_audio_channel channel;
-    
-    
-    zego_audio_codec_id audio_codec_id;
-};
-
-struct zego_mixer_video_config
-{
-    int resolution_width;
-    int resolution_height;
-    int fps;
-    int bitrate;
 };
 
 struct zego_mixer_sound_level_info
@@ -595,12 +582,6 @@ struct zego_mixer_task
     
     struct zego_mixer_output* output_list;
     unsigned int output_list_count;
-    
-    
-    struct zego_mixer_audio_config audio_config;
-    
-    
-    struct zego_mixer_video_config video_config;
     
     
     struct zego_watermark* watermark;
@@ -627,7 +608,7 @@ struct zego_auto_mixer_task
     unsigned int output_list_count;
     
     
-    struct zego_mixer_audio_config audio_config;
+
     
     
     bool enable_sound_level;
@@ -846,8 +827,8 @@ namespace ZEGO {
             void stopPreview(enum zego_publish_channel channel = zego_publish_channel_main);
             void setAudioConfig(zego_audio_config audioConfig);
             void setVideoConfig(zego_video_config videoConfig, enum zego_publish_channel channel = zego_publish_channel_main);
-            void startPublishing(const char* streamID, enum zego_publish_channel channel = zego_publish_channel_main);
-            void stopPublishing(enum zego_publish_channel channel = zego_publish_channel_main);
+            void startPublishingStream(const char* streamID, enum zego_publish_channel channel = zego_publish_channel_main);
+            void stopPublishingStream(enum zego_publish_channel channel = zego_publish_channel_main);
             int setStreamExtraInfo(const char * extraInfo, enum zego_publish_channel channel = zego_publish_channel_main);
             void mutePublishStreamAudio(bool mute, enum zego_publish_channel channel = zego_publish_channel_main);
             void mutePublishStreamVideo(bool mute, enum zego_publish_channel channel = zego_publish_channel_main);
@@ -900,7 +881,7 @@ namespace ZEGO {
             // IM
             int sendBroadcastMessage(const char* room_id, const char* content);
             int sendBarrageMessage(const char* room_id, const char* content);
-            int sendCustomCommand(const char* room_id, struct zego_user*  to_user_list, unsigned int to_user_count, const char* content);
+            int sendCustomCommand(const char* room_id, const char* content, struct zego_user*  to_user_list, unsigned int to_user_count);
 
             // Mixer
             int startMixerTask(zego_mixer_task task);

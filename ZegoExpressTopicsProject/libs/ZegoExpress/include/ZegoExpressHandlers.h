@@ -306,6 +306,7 @@ namespace ZEGO {
             /**
              * 本地采集音频声浪回调
              *
+             * 回调通知周期为 100 ms。
              * @param soundLevel 本地采集的声浪值，取值范围为 0.0 ~ 100.0
              */
             virtual void onCapturedSoundLevelUpdate(double /*soundLevel*/) {
@@ -315,6 +316,7 @@ namespace ZEGO {
             /**
              * 远端拉流音频声浪回调
              *
+             * 回调通知周期为 100 ms。
              * @param soundLevels 远端的声浪键值对，key 为流 ID，value 为对应的流的声浪值，value 取值范围为 0.0 ~ 100.0
              */
             virtual void onRemoteSoundLevelUpdate(const std::map<std::string, double>& /*soundLevels*/) {
@@ -324,6 +326,7 @@ namespace ZEGO {
             /**
              * 本地采集音频频谱回调
              *
+             * 回调通知周期为 100 ms。
              * @param audioSpectrum 本地采集的音频频谱值数组，频谱值范围为 [0-2^30]
              */
             virtual void onCapturedAudioSpectrumUpdate(const ZegoAudioSpectrum& /*audioSpectrum*/) {
@@ -333,6 +336,7 @@ namespace ZEGO {
             /**
              * 远端拉流音频频谱回调
              *
+             * 回调通知周期为 100 ms。
              * @param audioSpectrums 远端音频频谱键值对，key 是流 ID，value 为对应的流的音频频谱值数组，频谱值范围为 [0-2^30]
              */
             virtual void onRemoteAudioSpectrumUpdate(const std::map<std::string, ZegoAudioSpectrum>& /*audioSpectrums*/) {

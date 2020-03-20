@@ -29,7 +29,7 @@ ZegoSoundLevelDemo::ZegoSoundLevelDemo(QWidget *parent) :
 
     ZegoUser user(userID, userID);
     engine->loginRoom(roomID, user);
-    engine->startPublishing(userID);
+    engine->startPublishingStream(userID);
 
     soundFrameLayout = new QVBoxLayout(ui->frame_content);
     addSoundFrame(userID);

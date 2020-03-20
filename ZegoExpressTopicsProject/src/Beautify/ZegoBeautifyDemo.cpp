@@ -33,7 +33,7 @@ ZegoBeautifyDemo::ZegoBeautifyDemo(QWidget *parent) :
 
     ZegoCanvas canvas((void*)ui->frame_local_video->winId());
     engine->startPreview(&canvas);
-    engine->startPublishing(userID);
+    engine->startPublishingStream(userID);
 
 #ifndef EnableBeautify
     ui->groupBox_beautify->hide();
