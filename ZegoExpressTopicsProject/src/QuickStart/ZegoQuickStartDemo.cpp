@@ -47,9 +47,8 @@ void ZegoQuickStartDemo::on_pushButton_createEngine_clicked()
         auto appID = ui->label_appID->text().toUInt();
         auto appSign = ui->label_appSign->text().toStdString();
         auto isTestEnv = ui->radioButton_isTestEnv->isChecked();
-
-        engine = ZegoExpressSDK::createEngine(appID, appSign, isTestEnv, ZEGO_SCENARIO_GENERAL, nullptr);
-        bindEventHandler();
+		auto eventHandler = std::make_shared<ZegoEventHandlerWithLogger>(ui->textEdit_log);
+        engine = ZegoExpressSDK::createEngine(appID, appSign, isTestEnv, ZEGO_SCENARIO_GENERAL, eventHandler);
 
         QString log = QString("do createEngine: testEnv=%1").arg(isTestEnv);
         printLogToView(log);
@@ -112,12 +111,4 @@ void ZegoQuickStartDemo::printLogToView(QString log)
 {
     ui->textEdit_log->append(log);
     ui->textEdit_log->verticalScrollBar()->setValue(ui->textEdit_log->verticalScrollBar()->maximum());
-}
-
-void ZegoQuickStartDemo::bindEventHandler()
-{
-    if(engine != nullptr){
-        auto eventHandler = std::make_shared<ZegoEventHandlerWithLogger>(ui->textEdit_log);
-        engine->setEventHandler(eventHandler);
-    }
 }

@@ -47,11 +47,13 @@ private:
 template <class T>
 T *ZegoSingleton<T>::m_pInstance = nullptr;
 
+class ZegoExpressEngineImp;
 class ZegoExpressGlobalData
 {
 public:
-    std::mutex EngineMutex;
-    ZegoDestroyCompletionCallback afterDestoyed;
+    std::recursive_mutex EngineMutex;
+    std::shared_ptr<ZegoExpressEngineImp> EngineInstance = nullptr;
+    ZegoDestroyCompletionCallback afterDestoyed = nullptr;
 };
 
 class ZegoExpressConvert
@@ -1190,9 +1192,9 @@ public:
     {
         std::shared_ptr<IZegoEventHandler> handler = nullptr;
         {
-            std::lock_guard<std::mutex> lock(ZegoExpressGD->EngineMutex);
             ZegoExpressEngineImpPtr pthis = ZegoExpressEngineImpPtr(context);
-            if (pthis == ZegoSingleton<ZegoExpressEngineImp>::GetInstance())
+            std::lock_guard<std::recursive_mutex> locker(ZegoExpressGD->EngineMutex);
+            if (pthis == ZegoExpressGD->EngineInstance.get())
             {
                 std::lock_guard<std::mutex> lock(pthis->mEngineEventHandlerMutex);
                 handler = pthis->mEventHandler;
@@ -1205,9 +1207,9 @@ public:
     {
         std::shared_ptr<ZegoExpressMediaPlayerImp> mediaPlayer = nullptr;
         {
-            std::lock_guard<std::mutex> lock(ZegoExpressGD->EngineMutex);
             ZegoExpressEngineImpPtr pthis = ZegoExpressEngineImpPtr(context);
-            if (pthis == ZegoSingleton<ZegoExpressEngineImp>::GetInstance())
+            std::lock_guard<std::recursive_mutex> locker(ZegoExpressGD->EngineMutex);
+            if (pthis == ZegoExpressGD->EngineInstance.get())
             {
                 std::lock_guard<std::mutex> lock(pthis->mMediaPlayerEventMutex);
                 if (pthis->mMediaPlayers.count(instance_index) > 0)
@@ -1374,9 +1376,9 @@ public:
         ZEGO_UNUSED_VARIABLE(stream_id);
         ZegoPublisherUpdateCDNURLCallback callback = nullptr;
         {
-            std::lock_guard<std::mutex> lock(ZegoExpressGD->EngineMutex);
             ZegoExpressEngineImpPtr pthis = ZegoExpressEngineImpPtr(user_context);
-            if (pthis == ZegoSingleton<ZegoExpressEngineImp>::GetInstance())
+            std::lock_guard<std::recursive_mutex> locker(ZegoExpressGD->EngineMutex);
+            if (pthis == ZegoExpressGD->EngineInstance.get())
             {
                 std::lock_guard<std::mutex> lock(pthis->mEngineEventHandlerMutex);
                 if (pthis->CDNCallbacks.count(seq) > 0)
@@ -1422,9 +1424,9 @@ public:
     {
         ZegoPublisherSetStreamExtraInfoCallback callback = nullptr;
         {
-            std::lock_guard<std::mutex> lock(ZegoExpressGD->EngineMutex);
             ZegoExpressEngineImpPtr pthis = ZegoExpressEngineImpPtr(user_context);
-            if (pthis == ZegoSingleton<ZegoExpressEngineImp>::GetInstance())
+            std::lock_guard<std::recursive_mutex> locker(ZegoExpressGD->EngineMutex);
+            if (pthis == ZegoExpressGD->EngineInstance.get())
             {
                 std::lock_guard<std::mutex> lock(pthis->mEngineEventHandlerMutex);
                 if (pthis->StreamExtraInfoCallbacks.count(seq) > 0)
@@ -1700,9 +1702,9 @@ public:
         ZEGO_UNUSED_VARIABLE(room_id);
         ZegoIMSendBroadcastMessageCallback callback = nullptr;
         {
-            std::lock_guard<std::mutex> lock(ZegoExpressGD->EngineMutex);
             ZegoExpressEngineImpPtr pthis = ZegoExpressEngineImpPtr(user_context);
-            if (pthis == ZegoSingleton<ZegoExpressEngineImp>::GetInstance())
+            std::lock_guard<std::recursive_mutex> locker(ZegoExpressGD->EngineMutex);
+            if (pthis == ZegoExpressGD->EngineInstance.get())
             {
                 std::lock_guard<std::mutex> lock(pthis->mEngineEventHandlerMutex);
                 if (pthis->IMSendBroadcastMessageCallbacks.count(seq) > 0)
@@ -1749,9 +1751,9 @@ public:
         ZEGO_UNUSED_VARIABLE(room_id);
         ZegoIMSendBarrageMessageCallback callback = nullptr;
         {
-            std::lock_guard<std::mutex> lock(ZegoExpressGD->EngineMutex);
             ZegoExpressEngineImpPtr pthis = ZegoExpressEngineImpPtr(user_context);
-            if (pthis == ZegoSingleton<ZegoExpressEngineImp>::GetInstance())
+            std::lock_guard<std::recursive_mutex> locker(ZegoExpressGD->EngineMutex);
+            if (pthis == ZegoExpressGD->EngineInstance.get())
             {
                 std::lock_guard<std::mutex> lock(pthis->mEngineEventHandlerMutex);
                 if (pthis->IMSendBarrageMessageCallbacks.count(seq) > 0)
@@ -1799,9 +1801,9 @@ public:
         ZEGO_UNUSED_VARIABLE(room_id);
         ZegoIMSendCustomCommandCallback callback = nullptr;
         {
-            std::lock_guard<std::mutex> lock(ZegoExpressGD->EngineMutex);
             ZegoExpressEngineImpPtr pthis = ZegoExpressEngineImpPtr(user_context);
-            if (pthis == ZegoSingleton<ZegoExpressEngineImp>::GetInstance())
+            std::lock_guard<std::recursive_mutex> locker(ZegoExpressGD->EngineMutex);
+            if (pthis == ZegoExpressGD->EngineInstance.get())
             {
                 std::lock_guard<std::mutex> lock(pthis->mEngineEventHandlerMutex);
                 if (pthis->IMSendCustomCommandCallbacks.count(seq) > 0)
@@ -1839,9 +1841,9 @@ public:
     {
         ZegoMixerStartCallback callback = nullptr;
         {
-            std::lock_guard<std::mutex> lock(ZegoExpressGD->EngineMutex);
             ZegoExpressEngineImpPtr pthis = ZegoExpressEngineImpPtr(user_context);
-            if (pthis == ZegoSingleton<ZegoExpressEngineImp>::GetInstance())
+            std::lock_guard<std::recursive_mutex> locker(ZegoExpressGD->EngineMutex);
+            if (pthis == ZegoExpressGD->EngineInstance.get())
             {
                 std::lock_guard<std::mutex> lock(pthis->mEngineEventHandlerMutex);
                 if (pthis->mixerStartCallbacks.count(seq) > 0)
@@ -1864,9 +1866,9 @@ public:
     {
         ZegoMixerStopCallback callback = nullptr;
         {
-            std::lock_guard<std::mutex> lock(ZegoExpressGD->EngineMutex);
             ZegoExpressEngineImpPtr pthis = ZegoExpressEngineImpPtr(user_context);
-            if (pthis == ZegoSingleton<ZegoExpressEngineImp>::GetInstance())
+            std::lock_guard<std::recursive_mutex> locker(ZegoExpressGD->EngineMutex);
+            if (pthis == ZegoExpressGD->EngineInstance.get())
             {
                 std::lock_guard<std::mutex> lock(pthis->mEngineEventHandlerMutex);
                 if (pthis->mixerStopCallbacks.count(seq) > 0)
@@ -1999,9 +2001,9 @@ public:
     {
         std::shared_ptr<IZegoCustomVideoRenderHandler> handler;
         {
-            std::lock_guard<std::mutex> lock(ZegoExpressGD->EngineMutex);
             ZegoExpressEngineImpPtr pthis = ZegoExpressEngineImpPtr(user_context);
-            if (pthis == ZegoSingleton<ZegoExpressEngineImp>::GetInstance())
+            std::lock_guard<std::recursive_mutex> locker(ZegoExpressGD->EngineMutex);
+            if (pthis == ZegoExpressGD->EngineInstance.get())
             {
                 std::lock_guard<std::mutex> lock(pthis->mEngineRenderHandlerMutex);
                 handler = pthis->mCustomVideoRenderHandler;
@@ -2019,9 +2021,9 @@ public:
     {
         std::shared_ptr<IZegoCustomVideoRenderHandler> handler;
         {
-            std::lock_guard<std::mutex> lock(ZegoExpressGD->EngineMutex);
             ZegoExpressEngineImpPtr pthis = ZegoExpressEngineImpPtr(user_context);
-            if (pthis == ZegoSingleton<ZegoExpressEngineImp>::GetInstance())
+            std::lock_guard<std::recursive_mutex> locker(ZegoExpressGD->EngineMutex);
+            if (pthis == ZegoExpressGD->EngineInstance.get())
             {
                 std::lock_guard<std::mutex> lock(pthis->mEngineRenderHandlerMutex);
                 handler = pthis->mCustomVideoRenderHandler;
@@ -2040,9 +2042,9 @@ public:
     {
         std::shared_ptr<IZegoCustomVideoCaptureHandler> handler;
         {
-            std::lock_guard<std::mutex> lock(ZegoExpressGD->EngineMutex);
             ZegoExpressEngineImpPtr pthis = ZegoExpressEngineImpPtr(user_context);
-            if (pthis == ZegoSingleton<ZegoExpressEngineImp>::GetInstance())
+            std::lock_guard<std::recursive_mutex> locker(ZegoExpressGD->EngineMutex);
+            if (pthis == ZegoExpressGD->EngineInstance.get())
             {
                 std::lock_guard<std::mutex> lock(pthis->mEngineCaptureHandlerMutex);
                 handler = pthis->mCustomVideoCaptureHandler;
@@ -2060,9 +2062,9 @@ public:
     {
         std::shared_ptr<IZegoCustomVideoCaptureHandler> handler;
         {
-            std::lock_guard<std::mutex> lock(ZegoExpressGD->EngineMutex);
             ZegoExpressEngineImpPtr pthis = ZegoExpressEngineImpPtr(user_context);
-            if (pthis == ZegoSingleton<ZegoExpressEngineImp>::GetInstance())
+            std::lock_guard<std::recursive_mutex> locker(ZegoExpressGD->EngineMutex);
+            if (pthis == ZegoExpressGD->EngineInstance.get())
             {
                 std::lock_guard<std::mutex> lock(pthis->mEngineCaptureHandlerMutex);
                 handler = pthis->mCustomVideoCaptureHandler;
@@ -2077,30 +2079,20 @@ public:
     }
 
 private:
-    std::unordered_map<zego_seq, ZegoPublisherSetStreamExtraInfoCallback> StreamExtraInfoCallbacks;
-    std::unordered_map<zego_seq, ZegoPublisherUpdateCDNURLCallback> CDNCallbacks;
-    std::unordered_map<zego_seq, ZegoIMSendBroadcastMessageCallback> IMSendBroadcastMessageCallbacks;
-    std::unordered_map<zego_seq, ZegoIMSendBarrageMessageCallback> IMSendBarrageMessageCallbacks;
-    std::unordered_map<zego_seq, ZegoIMSendCustomCommandCallback> IMSendCustomCommandCallbacks;
-    std::unordered_map<zego_seq, ZegoMixerStartCallback> mixerStartCallbacks;
-    std::unordered_map<zego_seq, ZegoMixerStopCallback> mixerStopCallbacks;
-    std::vector<std::shared_ptr<IZegoEventHandler>> mEventHandlers;
-    std::shared_ptr<IZegoEventHandler> mEventHandler;
-    std::mutex mEngineEventHandlerMutex;
+    int initEngine()
+    {
+        return ZegoCBridge->initSDK(appID, appSign.c_str(), isTestEnvironment, zego_scenario(scenario));
+    }
 
-    std::unordered_map<int, std::shared_ptr<ZegoExpressMediaPlayerImp>> mMediaPlayers;
-    std::mutex mMediaPlayerEventMutex;
+    void uninitEngine()
+    {
+        ZegoCBridge->uninitSDKAsync();
+    }
 
-    std::mutex mEngineRenderHandlerMutex;
-    std::shared_ptr<IZegoCustomVideoRenderHandler> mCustomVideoRenderHandler;
-
-    std::mutex mEngineCaptureHandlerMutex;
-    std::shared_ptr<IZegoCustomVideoCaptureHandler> mCustomVideoCaptureHandler;
-
-private:
     void clearResources()
     {
         mEngineEventHandlerMutex.lock();
+        mEventHandler=nullptr;
         StreamExtraInfoCallbacks.clear();
         CDNCallbacks.clear();
         IMSendBroadcastMessageCallbacks.clear();
@@ -2108,7 +2100,6 @@ private:
         IMSendCustomCommandCallbacks.clear();
         mixerStartCallbacks.clear();
         mixerStopCallbacks.clear();
-        mEventHandlers.clear();
         mEngineEventHandlerMutex.unlock();
 
         mMediaPlayerEventMutex.lock();
@@ -2118,8 +2109,35 @@ private:
         // Spectial resouece
         mCustomVideoCaptureHandler.reset();
         mCustomVideoRenderHandler.reset();
+
+        ZegoCBridge->unregisterEngineCallback();
     }
 
+private:
+    unsigned int appID = 0;
+    std::string appSign = "";
+    bool isTestEnvironment = false;
+    ZegoScenario scenario = ZEGO_SCENARIO_GENERAL;
+
+    std::mutex mEngineEventHandlerMutex;
+    std::shared_ptr<IZegoEventHandler> mEventHandler;
+
+    std::unordered_map<zego_seq, ZegoPublisherSetStreamExtraInfoCallback> StreamExtraInfoCallbacks;
+    std::unordered_map<zego_seq, ZegoPublisherUpdateCDNURLCallback> CDNCallbacks;
+    std::unordered_map<zego_seq, ZegoIMSendBroadcastMessageCallback> IMSendBroadcastMessageCallbacks;
+    std::unordered_map<zego_seq, ZegoIMSendBarrageMessageCallback> IMSendBarrageMessageCallbacks;
+    std::unordered_map<zego_seq, ZegoIMSendCustomCommandCallback> IMSendCustomCommandCallbacks;
+    std::unordered_map<zego_seq, ZegoMixerStartCallback> mixerStartCallbacks;
+    std::unordered_map<zego_seq, ZegoMixerStopCallback> mixerStopCallbacks;
+
+    std::mutex mMediaPlayerEventMutex;
+    std::unordered_map<int, std::shared_ptr<ZegoExpressMediaPlayerImp>> mMediaPlayers;
+
+    std::mutex mEngineRenderHandlerMutex;
+    std::shared_ptr<IZegoCustomVideoRenderHandler> mCustomVideoRenderHandler;
+
+    std::mutex mEngineCaptureHandlerMutex;
+    std::shared_ptr<IZegoCustomVideoCaptureHandler> mCustomVideoCaptureHandler;
 public:
     ///===================================================================================================
     static std::string getVersion()
@@ -2186,7 +2204,8 @@ public:
         ZegoCBridge->setEngineConfig(_engineConfig);
     }
 
-    ZegoExpressEngineImp()
+    ZegoExpressEngineImp(unsigned int appID, std::string appSign, bool isTestEnvironment, ZegoScenario scenario, std::shared_ptr<IZegoEventHandler> eventHandler)
+        :appID(appID), appSign(appSign), isTestEnvironment(isTestEnvironment), scenario(scenario), mEventHandler(eventHandler)
     {
 #ifdef WIN32
         setZegoCommuExchangeWndFunc(ZegoCommuExchangeWndProc);
@@ -2255,22 +2274,9 @@ public:
 
     ~ZegoExpressEngineImp() override
     {
-        ZegoCBridge->unregisterEngineCallback();
         this->clearResources();
-        ZegoCBridge->uninitSDKAsync();
+        this->uninitEngine();
     }
-
-private:
-    int initEngine(unsigned int appID, std::string appSign, bool isTestEnvironment, ZegoScenario scenario, std::shared_ptr<IZegoEventHandler> eventHandler)
-    {
-        int result = ZegoCBridge->initSDK(appID, appSign.c_str(), isTestEnvironment, zego_scenario(scenario));
-        if (0 == result)
-        {
-            this->setEventHandler(eventHandler);
-        }
-        return result;
-    }
-
     friend class ZegoExpressSDKInternal;
 };
 
@@ -2279,65 +2285,49 @@ class ZegoExpressSDKInternal
 public:
     static void setEngineConfig(ZegoEngineConfig engineConfig)
     {
-        std::lock_guard<std::mutex> locker(ZegoExpressGD->EngineMutex);
+        std::lock_guard<std::recursive_mutex> locker(ZegoExpressGD->EngineMutex);
         ZegoExpressEngineImp::setEngineConfig(engineConfig);
     }
 
     static IZegoExpressEngine *createEngine(unsigned int appID, std::string appSign, bool isTestEnvironment, ZegoScenario scenario, std::shared_ptr<IZegoEventHandler> eventHandler)
     {
-        std::lock_guard<std::mutex> locker(ZegoExpressGD->EngineMutex);
-        auto engine = ZegoSingleton<ZegoExpressEngineImp>::GetInstance();
-        if (engine != nullptr)
+        ZegoCBridge->registerEngineStateCallback(ZegoVoidPtr(&ZegoExpressSDKInternal::onEngineStateUpdate), nullptr);
+        std::lock_guard<std::recursive_mutex> locker(ZegoExpressGD->EngineMutex);
+        if(ZegoExpressGD->EngineInstance == nullptr)
         {
-            return engine;
-        }
-
-        engine = ZegoSingleton<ZegoExpressEngineImp>::CreateInstance();
-        ZegoCBridge->registerEngineStateCallback(ZegoVoidPtr(&ZegoExpressSDKInternal::onEngineStateUpdate), ZegoVoidPtr(engine));
-        int initResult = engine->initEngine(appID, appSign, isTestEnvironment, scenario, eventHandler);
-        if (0 == initResult)
-        {
-            return engine;
-        }
-        else
-        {
-            if (isTestEnvironment)
+            auto newEngineInstance = std::make_shared<ZegoExpressEngineImp>(appID, appSign, isTestEnvironment, scenario, eventHandler);
+            if (0 == newEngineInstance->initEngine())
             {
-                std::this_thread::sleep_for(std::chrono::seconds(1));
+                ZegoExpressGD->EngineInstance = newEngineInstance;
             }
-            ZegoSingleton<ZegoExpressEngineImp>::DestroyInstance();
-            return nullptr;
         }
+        return ZegoExpressGD->EngineInstance.get();
     }
 
     static void destroyEngine(IZegoExpressEngine *&iEngine, ZegoDestroyCompletionCallback afterDestroyed)
     {
-        std::lock_guard<std::mutex> locker(ZegoExpressGD->EngineMutex);
-        auto engine = ZegoSingleton<ZegoExpressEngineImp>::GetInstance();
-        if (engine != nullptr && engine == iEngine)
+        std::lock_guard<std::recursive_mutex> locker(ZegoExpressGD->EngineMutex);
+        if (iEngine != nullptr && iEngine == ZegoExpressGD->EngineInstance.get())
         {
-            iEngine = nullptr;
             ZegoExpressGD->afterDestoyed = afterDestroyed;
-            ZegoSingleton<ZegoExpressEngineImp>::DestroyInstance();
+            ZegoExpressGD->EngineInstance = nullptr;
+            iEngine = nullptr;
         }
     }
 
     static void onEngineStateUpdate(enum zego_engine_state state, void *user_context)
     {
         ZEGO_UNUSED_VARIABLE(user_context);
-        if (state == zego_engine_state_uninitialized)
+        if (state == zego_engine_state_uninitialized && ZegoExpressGD->afterDestoyed)
         {
-            if (ZegoExpressGD->afterDestoyed)
-            {
-                ZegoExpressGD->afterDestoyed();
-            }
+            ZegoExpressGD->afterDestoyed();
         }
     }
 
     static IZegoExpressEngine *getEngine()
     {
-        std::lock_guard<std::mutex> locker(ZegoExpressGD->EngineMutex);
-        return ZegoSingleton<ZegoExpressEngineImp>::GetInstance();
+        std::lock_guard<std::recursive_mutex> locker(ZegoExpressGD->EngineMutex);
+        return ZegoExpressGD->EngineInstance.get();
     }
 
     static std::string getVersion()

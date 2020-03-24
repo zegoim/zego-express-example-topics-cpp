@@ -28,7 +28,6 @@ private slots:
 
 private:
     void printLogToView(QString log);
-    void bindEventHandler();
 
 private:
     Ui::ZegoQuickStartDemo *ui;
