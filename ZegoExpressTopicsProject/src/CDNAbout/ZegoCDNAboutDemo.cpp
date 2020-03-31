@@ -29,7 +29,7 @@ ZegoCDNAboutDemo::ZegoCDNAboutDemo(QWidget *parent) :
     ZegoUser user(userID, userID);
     engine->loginRoom(roomID, user);
 
-    ZegoCanvas canvas((void*)ui->frame_local_video->winId());
+    ZegoCanvas canvas(ZegoView(ui->frame_local_video->winId()));
     engine->startPreview(&canvas);
 }
 
@@ -49,8 +49,8 @@ void ZegoCDNAboutDemo::on_pushButton_addPublishToCDN_clicked()
 {
     std::string streamID = ui->lineEdit_streamID_publish->text().toStdString();
     std::string cdnUrl = ui->lineEdit_CDNUrl_publish->text().toStdString();
-    engine->addPublishCDNURL(streamID, cdnUrl, [=](int errorCode){
-        printLogToView(QString("addPublishCDNURL: streamID=%1, cdnUrl=%2, erroCode=%3").arg(streamID.c_str()).arg(cdnUrl.c_str()).arg(errorCode));
+    engine->addPublishCdnUrl(streamID, cdnUrl, [=](int errorCode){
+        printLogToView(QString("addPublishCdnUrl: streamID=%1, cdnUrl=%2, erroCode=%3").arg(streamID.c_str()).arg(cdnUrl.c_str()).arg(errorCode));
     });
 }
 
@@ -58,8 +58,8 @@ void ZegoCDNAboutDemo::on_pushButton_removePublishToCDN_clicked()
 {
     std::string streamID = ui->lineEdit_streamID_publish->text().toStdString();
     std::string cdnUrl = ui->lineEdit_CDNUrl_publish->text().toStdString();
-    engine->removePublishCDNURL(streamID, cdnUrl, [=](int errorCode){
-        printLogToView(QString("removePublishCDNURL: streamID=%1, cdnUrl=%2, erroCode=%3").arg(streamID.c_str()).arg(cdnUrl.c_str()).arg(errorCode));
+    engine->removePublishCdnUrl(streamID, cdnUrl, [=](int errorCode){
+        printLogToView(QString("removePublishCdnUrl: streamID=%1, cdnUrl=%2, erroCode=%3").arg(streamID.c_str()).arg(cdnUrl.c_str()).arg(errorCode));
     });
 }
 
@@ -74,7 +74,7 @@ void ZegoCDNAboutDemo::on_pushButton_startPublishDirectToCDN_clicked()
     std::string cdnUrl = ui->lineEdit_CDNUrl_publish->text().toStdString();
 
     ZegoCDNConfig cdnConfig;
-    cdnConfig.URL = cdnUrl;
+    cdnConfig.url = cdnUrl;
     engine->enablePublishDirectToCDN(true, &cdnConfig);
     engine->startPublishingStream(streamID);
 }
@@ -85,18 +85,17 @@ void ZegoCDNAboutDemo::on_pushButton_stopPublishDirectToCDN_clicked()
     engine->enablePublishDirectToCDN(false, nullptr);
 }
 
-
 void ZegoCDNAboutDemo::on_pushButton_startPlayFromCDN_clicked()
 {
     std::string streamID = ui->lineEdit_streamID_play->text().toStdString();
     std::string cdnUrl = ui->lineEdit_CDNUrl_play->text().toStdString();
-    ZegoCanvas canvas((void*)ui->frame_remote_video->winId());
+    ZegoCanvas canvas(ZegoView(ui->frame_remote_video->winId()));
 
     ZegoCDNConfig cdnConfig;
-    cdnConfig.URL = cdnUrl;
+    cdnConfig.url = cdnUrl;
     
     ZegoPlayerConfig config;
-    config.CDNConfig = &cdnConfig;
+    config.cdnConfig = &cdnConfig;
 
     engine->startPlayingStream(streamID, &canvas, config);
 }

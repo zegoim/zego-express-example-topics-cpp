@@ -44,7 +44,7 @@ public:
     void onCapturedAudioSpectrumUpdate(const ZegoAudioSpectrum& frequencySpectrum) override;
     void onRemoteAudioSpectrumUpdate(const std::map<std::string, ZegoAudioSpectrum>& frequencySpectrums) override;
 
-    void onMixerRelayCDNStateUpdate(const std::vector<ZegoStreamRelayCDNInfo>& infoList, const std::string& taskID) override;
+    void onMixerRelayCDNStateUpdate(const std::string& taskID, const std::vector<ZegoStreamRelayCDNInfo>& infoList) override;
 
     void onIMRecvBroadcastMessage(const std::string& roomID, std::vector<ZegoBroadcastMessageInfo> messageList) override;
     void onIMRecvBarrageMessage(const std::string& roomID, std::vector<ZegoBarrageMessageInfo> messageList) override;

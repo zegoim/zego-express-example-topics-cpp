@@ -8,15 +8,26 @@
 #include <sstream>
 #include <locale>
 #include <codecvt>
+#define ZegoStrncpy strncpy_s
+#else
+#import <Foundation/Foundation.h>
+#define ZegoStrncpy strncpy
+#endif
+
+#ifndef ZEGO_DISABLE_SWTICH_THREAD
+#ifdef WIN32
 #define ZEGO_SWITCH_THREAD_PRE  auto hCommWnd = \
         ::FindWindow(ZegoMainThreadTool::ZegoCommWndClassName, ZegoMainThreadTool::ZegoCommWndName); \
         std::function<void(void)>* pFunc = new  std::function<void(void)>;*pFunc = [=](void) {
 #define ZEGO_SWITCH_THREAD_ING }; PostMessage(hCommWnd, WM_APP+10086, WPARAM(pFunc), 0);
 #else
-#import <Foundation/Foundation.h>
 #define ZEGO_SWITCH_THREAD_PRE dispatch_async(dispatch_get_main_queue(), ^{;
 #define ZEGO_SWITCH_THREAD_ING });
-#endif // WIN32
+#endif
+#else
+#define ZEGO_SWITCH_THREAD_PRE {
+#define ZEGO_SWITCH_THREAD_ING }
+#endif
 
 #define ZegoCBridge ZegoExpressEngineBridge::GetInstance()
 #define ZegoExpressGD ZegoSingleton<ZegoExpressGlobalData>::CreateInstance()
@@ -132,7 +143,7 @@ namespace ZEGO {
 
         };
 
-        /** 分辨率设置 */
+        /** 视频配置分辨率与比特率预设枚举。预设的分辨率分别针对移动端与桌面端做了适配。在移动端上 height 长于 width，而桌面端相反。例如 1080p 在移动端上实际为 1080(w) x 1920(h)，而在桌面端上实际为 1920(w) x 1080(h) */
         enum ZegoVideoConfigPreset
         {
             /** 设置分辨率为 320x180，默认采用 15 fps，码率 300 kbps */
@@ -254,20 +265,20 @@ namespace ZEGO {
 
         };
 
-        /** 当发生流量控制时可供调节的属性 */
+        /** 当发生流量控制时可供调节的属性（位掩码枚举） */
         enum ZegoTrafficControlProperty
         {
             /** 基础属性 */
-            ZEGO_TRAFFIC_CONTROL_BASIC = 0,
+            ZEGO_TRAFFIC_CONTROL_PROPERTY_BASIC = 0,
 
             /** 调整帧率 */
-            ZEGO_TRAFFIC_CONTROL_ADAPTIVE_FPS = 1,
+            ZEGO_TRAFFIC_CONTROL_PROPERTY_ADAPTIVE_FPS = 1,
 
             /** 调整分辨率 */
-            ZEGO_TRAFFIC_CONTROL_ADAPTIVE_RESOLUTION = 1 << 1,
+            ZEGO_TRAFFIC_CONTROL_PROPERTY_ADAPTIVE_RESOLUTION = 1 << 1,
 
             /** 调整音频码率 */
-            ZEGO_TRAFFIC_CONTROL_ADAPTIVE_AUDIO_BITRATE = 1 << 2
+            ZEGO_TRAFFIC_CONTROL_PROPERTY_ADAPTIVE_AUDIO_BITRATE = 1 << 2
 
         };
 
@@ -592,7 +603,7 @@ namespace ZEGO {
             /** 自定义视频渲染视频帧数据格式 */
             ZegoVideoFrameFormatSeries frameFormatSeries;
 
-            /** 是否在自定义视频渲染的同时，引擎也渲染 */
+            /** 是否在自定义视频渲染的同时，引擎也渲染，默认为 [false] */
             bool enableEngineRender;
 
         };
@@ -825,7 +836,7 @@ namespace ZEGO {
         struct ZegoCDNConfig
         {
             /** CDN 的 URL */
-            std::string URL;
+            std::string url;
 
             /** URL 的鉴权参数 */
             std::string authParam;
@@ -835,7 +846,7 @@ namespace ZEGO {
         struct ZegoStreamRelayCDNInfo
         {
             /** CDN 推流的 URL */
-            std::string URL;
+            std::string url;
 
             /** 转推状态 */
             ZegoStreamRelayCDNState state;
@@ -851,12 +862,12 @@ namespace ZEGO {
         struct ZegoPlayerConfig
         {
             /** 拉流的 CDN 配置，若设置后，则按照 URL 拉流而不是按照 streamID 拉流，此后 streamID 仅作为 SDK 内部回调的标识 */
-            ZegoCDNConfig * CDNConfig;
+            ZegoCDNConfig * cdnConfig;
 
             /** 设置拉流的视频分层 */
             ZegoPlayerVideoLayer videoLayer;
 
-            ZegoPlayerConfig(): CDNConfig(nullptr), videoLayer(ZEGO_PLAYER_VIDEO_LAYER_AUTO){
+            ZegoPlayerConfig(): cdnConfig(nullptr), videoLayer(ZEGO_PLAYER_VIDEO_LAYER_AUTO){
             }
 
         };
@@ -957,7 +968,7 @@ namespace ZEGO {
 
         struct ZegoMixerInput
         {
-            /** 流 ID */
+            /** 流 ID，长度不超过256的字符串。不可以包含 URL 关键字，否则推拉流失败。仅支持数字，英文字符 和 '~', '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '_', '+', '=', '-', '`', ';', '’', ',', '.', '<', '>', '/', '\'。 */
             std::string streamID;
 
             /** 混流内容类型 */
@@ -1155,7 +1166,7 @@ namespace ZEGO {
          *
          * @param errorCode 错误码，详情请参考常用错误码文档 [https://doc-zh.zego.im/zh/308.html]
          */
-        using ZegoPublisherUpdateCDNURLCallback = std::function<void (int errorCode)>;
+        using ZegoPublisherUpdateCdnUrlCallback = std::function<void (int errorCode)>;
 
 
         /**

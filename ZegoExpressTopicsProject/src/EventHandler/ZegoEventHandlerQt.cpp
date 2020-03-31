@@ -148,7 +148,7 @@ void ZegoEventHandlerQt::onRemoteAudioSpectrumUpdate(const std::map<std::string,
     emit sigRemoteAudioSpectrumUpdate(frequencySpectrums);
 }
 
-void ZegoEventHandlerQt::onMixerRelayCDNStateUpdate(const std::vector<ZegoStreamRelayCDNInfo> &infoList, const std::string &taskID)
+void ZegoEventHandlerQt::onMixerRelayCDNStateUpdate(const std::string &taskID, const std::vector<ZegoStreamRelayCDNInfo> &infoList)
 {
     emit sigMixerRelayCDNStateUpdate(taskID, infoList);
 }

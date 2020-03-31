@@ -1,13 +1,8 @@
-﻿//
-//  Version: 1.5.1.146_stable
-//
-//  Copyright © 2019 Zego. All rights reserved.
-//
-
+﻿
 #ifndef __ZEGOEXPRESSSDK_H__
 #define __ZEGOEXPRESSSDK_H__
 
-#include "ZegoInternalImpl.hpp"
+#include "internal/ZegoInternalImpl.hpp"
 
 namespace ZEGO {
     namespace EXPRESS {
@@ -37,9 +32,9 @@ namespace ZEGO {
             /**
              * 异步销毁引擎单例对象
              *
-             * 用于释放 ZegoExpressEngine 使用的资源。
+             * 用于释放 SDK 使用的资源。
              * @param engine 先前调用 createEngine 方法创建的引擎实例
-             * @param callback 销毁引擎完成的通知回调，可监听此回调以确保设备硬件资源被释放完成。本回调只作为引擎内部资源释放完成的通知，开发者不可以在此回调内释放与引擎相关的资源。若开发者只使用 ZegoExpressEngine 来实现音视频功能，该参数可传 [nullptr]。
+             * @param callback 销毁引擎完成的通知回调，可监听此回调以确保设备硬件资源被释放完成。本回调只作为引擎内部资源释放完成的通知，开发者不可以在此回调内释放与引擎相关的资源。若开发者只使用 SDK 来实现音视频功能，该参数可传 [nullptr]。
              */
             static void destroyEngine(IZegoExpressEngine*& engine, ZegoDestroyCompletionCallback callback = nullptr) {
                 ZegoExpressSDKInternal::destroyEngine(engine, callback);
@@ -66,11 +61,11 @@ namespace ZEGO {
             }
 
             /**
-             * 获取 ZegoExpressEngine 版本号
+             * 获取 SDK 版本号
              *
-             * ZegoExpressEngine 在运行过程中，当开发者发现与预期情况不符时，可将问题与相关日志提交给 ZEGO 技术人员定位，ZEGO 技术人员可能需要 engine 的版本的信息来辅助定位问题。
-             * 开发者也可以收集此信息作为 App 所使用的 engine 的版本信息，以便统计线上各版本 App 对应的各版本 ZegoExpressEngine SDK。
-             * @return ZegoExpressEngine 版本号
+             * SDK 在运行过程中，当开发者发现与预期情况不符时，可将问题与相关日志提交给 ZEGO 技术人员定位，ZEGO 技术人员可能需要 engine 的版本的信息来辅助定位问题。
+             * 开发者也可以收集此信息作为 App 所使用的 engine 的版本信息，以便统计线上各版本 App 对应的各版本 SDK。
+             * @return SDK 版本号
              */
             static std::string getVersion() {
                 return ZegoExpressSDKInternal::getVersion();

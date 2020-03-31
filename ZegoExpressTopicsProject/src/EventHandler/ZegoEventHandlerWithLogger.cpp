@@ -28,11 +28,10 @@ QJsonArray ConvertStreamRelayCDNInfo(const std::vector<ZegoStreamRelayCDNInfo> &
     QJsonArray streamInfoArray;
         for(ZegoStreamRelayCDNInfo cdnInfo: streamInfoList){
         QJsonObject cdnInfoObject;
-        cdnInfoObject["url"] = cdnInfo.URL.c_str();
-        cdnInfoObject["url"] = ZegoStreamRelayCDNStateList.value(cdnInfo.state);
-        cdnInfoObject["url"] = ZegoStreamRelayCDNUpdateReasonList.value(cdnInfo.updateReason);
+        cdnInfoObject["url"] = cdnInfo.url.c_str();
+        cdnInfoObject["state"] = ZegoStreamRelayCDNStateList.value(cdnInfo.state);
+        cdnInfoObject["updateReason"] = ZegoStreamRelayCDNUpdateReasonList.value(cdnInfo.updateReason);
         streamInfoArray.append(cdnInfoObject);
-
     }
     return streamInfoArray;
 }
@@ -324,7 +323,7 @@ void ZegoEventHandlerWithLogger::onRemoteAudioSpectrumUpdate(const std::map<std:
     ZegoEventHandlerQt::onRemoteAudioSpectrumUpdate(frequencySpectrums);
 }
 
-void ZegoEventHandlerWithLogger::onMixerRelayCDNStateUpdate(const std::vector<ZegoStreamRelayCDNInfo> &infoList, const std::string &taskID)
+void ZegoEventHandlerWithLogger::onMixerRelayCDNStateUpdate(const std::string &taskID, const std::vector<ZegoStreamRelayCDNInfo> &infoList)
 {
     QJsonObject relayCDNObject;
     relayCDNObject["taskID"] = taskID.c_str();
@@ -333,7 +332,7 @@ void ZegoEventHandlerWithLogger::onMixerRelayCDNStateUpdate(const std::vector<Ze
     QString log = QString("onMixerRelayCDNStateUpdate: %1").arg(relayCDNString);
     printLogToView(log);
 
-    ZegoEventHandlerQt::onMixerRelayCDNStateUpdate(infoList, taskID);
+    ZegoEventHandlerQt::onMixerRelayCDNStateUpdate(taskID, infoList);
 }
 
 void ZegoEventHandlerWithLogger::onIMRecvBroadcastMessage(const std::string &roomID, std::vector<ZegoBroadcastMessageInfo> messageList)

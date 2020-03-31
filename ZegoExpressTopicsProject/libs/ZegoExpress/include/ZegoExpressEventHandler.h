@@ -103,7 +103,7 @@ namespace ZEGO {
              *
              * 推流成功后每3秒会收到此回调，通过该回调可以获取推送的音视频流的采集帧率，码率，RTT，丢包率等质量数据。
              * 开发者可根据该接口的质量参数实时监控推送的音视频流的健康情况，以便在设备 UI 界面上实时展示上行网络状况。
-             * 若开发者不清楚该回调接口的各个参数应该如何使用，可以只关注其中的 quality 参数的 level 字段，这是 ZegoExpressEngine 内部根据质量参数计算的一个描述上行网络的综合值。
+             * 若开发者不清楚该回调接口的各个参数应该如何使用，可以只关注其中的 quality 参数的 level 字段，这是 SDK 内部根据质量参数计算的一个描述上行网络的综合值。
              * @param streamID 推流的流 ID
              * @param quality 推流质量，包含了音视频帧率、码率、分辨率，RTT 等值
              */
@@ -115,8 +115,8 @@ namespace ZEGO {
              * 推流端音频采集首帧回调
              *
              * 调用推流接口成功后，SDK 采集到第一帧音频数据时会收到此回调。
-             * 在未推流或未预览的情况下，首次推流或首次预览，即 ZegoExpressEngine 内部的音视频模块的引擎启动时，会去采集本机设备的音频数据，会收到该回调。
-             * 开发者可根据该回调判断 ZegoExpressEngine 是否真的采集到音频数据，若未收到该回调，说明音频采集设备被占用或异常。
+             * 在未推流或未预览的情况下，首次推流或首次预览，即 SDK 内部的音视频模块的引擎启动时，会去采集本机设备的音频数据，会收到该回调。
+             * 开发者可根据该回调判断 SDK 是否真的采集到音频数据，若未收到该回调，说明音频采集设备被占用或异常。
              */
             virtual void onPublisherCapturedAudioFirstFrame() {
 
@@ -126,8 +126,8 @@ namespace ZEGO {
              * 推流端视频采集首帧回调
              *
              * 调用推流接口成功后，SDK 采集到第一帧视频数据时会收到此回调。
-             * 在未推流或未预览的情况下，首次推流或首次预览，即 ZegoExpressEngine 内部的音视频模块的引擎启动时，会去采集本机设备的视频数据，会收到该回调。
-             * 开发者可根据该回调判断 ZegoExpressEngine 是否真的采集到视频数据，若未收到该回调，说明视频采集设备被占用或异常。
+             * 在未推流或未预览的情况下，首次推流或首次预览，即 SDK 内部的音视频模块的引擎启动时，会去采集本机设备的视频数据，会收到该回调。
+             * 开发者可根据该回调判断 SDK 是否真的采集到视频数据，若未收到该回调，说明视频采集设备被占用或异常。
              * @param channel 推流通道，如果只推一路音视频流，可以不关注该参数。
              */
             virtual void onPublisherCapturedVideoFirstFrame(ZegoPublishChannel /*channel*/) {
@@ -138,7 +138,7 @@ namespace ZEGO {
              * 采集视频大小变更回调
              *
              * 推流成功后，在推流中途如果有改变视频采集分辨率发生变化将会收到此回调。
-             * 当在未推流或未预览的情况下，首次推流或首次预览，即 ZegoExpressEngine 内部的音视频模块的引擎启动时，会去采集本机设备的视频数据，此时采集分辨率会改变。
+             * 当在未推流或未预览的情况下，首次推流或首次预览，即 SDK 内部的音视频模块的引擎启动时，会去采集本机设备的视频数据，此时采集分辨率会改变。
              * 开发者可以根据此回调来去除本地预览的 UI 的遮盖等类似操作。也可以根据该回调的分辨率来动态调整预览视图的比例等。
              * @param width 视频采集分辨率宽
              * @param height 视频采集分辨率宽
@@ -155,9 +155,9 @@ namespace ZEGO {
              * 开发者可根据该回调判断转推 CDN 的音视频流是否正常，若不正常根据异常原因进一步定位转推 CDN 的音视频流异常的原因，以及做对应的容灾策略。
              * 若对异常的原因不了解，可联系 ZEGO 技术人员分析具体异常的原因。
              * @param streamID 推流的流 ID
-             * @param streamInfoList 当前 CDN 正在转推的信息列表
+             * @param infoList 当前 CDN 正在转推的信息列表
              */
-            virtual void onPublisherRelayCDNStateUpdate(const std::string& /*streamID*/, const std::vector<ZegoStreamRelayCDNInfo>& /*streamInfoList*/) {
+            virtual void onPublisherRelayCDNStateUpdate(const std::string& /*streamID*/, const std::vector<ZegoStreamRelayCDNInfo>& /*infoList*/) {
 
             }
 
@@ -180,7 +180,7 @@ namespace ZEGO {
              *
              * 拉流成功后每3秒会收到此回调，通过该回调可以获取拉取的音视频流的帧率，码率，RTT，丢包率等质量数据，实时监控拉取流的健康情况。
              * 开发者可根据该接口的质量参数实时监控拉取的音视频流的健康情况，以便在设备 UI 界面上实时展示下行网络状况。
-             * 若开发者不清楚该回调接口的各个参数应该如何使用，可以只关注其中的 quality 参数的 level 字段，这是 ZegoExpressEngine 内部根据质量参数计算的一个描述下行网络的综合值。
+             * 若开发者不清楚该回调接口的各个参数应该如何使用，可以只关注其中的 quality 参数的 level 字段，这是 SDK 内部根据质量参数计算的一个描述下行网络的综合值。
              * @param streamID 拉流的流 ID
              * @param quality 拉流质量，包含了音视频帧率、码率、分辨率，RTT 等值
              */
@@ -235,7 +235,7 @@ namespace ZEGO {
              * 拉流分辨率变更通知
              *
              * 拉流成功后，在拉流中途如果有视频分辨率发生变化将会收到此回调，用户可根据流的最终分辨率调整显示。
-             * 若推流端由于网络问题触发 ZegoExpressEngine 内部的流量控制时，可能会动态减小推流端的编码分辨率，此时也会收到此回调。
+             * 若推流端由于网络问题触发 SDK 内部的流量控制时，可能会动态减小推流端的编码分辨率，此时也会收到此回调。
              * 若拉的是流只有音频数据，会收不到该回调。
              * 所拉的音视频流真正渲染到所设置 UI 播放界面时会触发此回调。开发者可利用该回调通知来更新或切换真正播放流的 UI 组件。
              * @param streamID 拉流的流 ID
@@ -263,10 +263,10 @@ namespace ZEGO {
              * 混流转推 CDN 状态更新通知
              *
              * 在 ZEGO 音视频云的混流任务的一般情况会以 rtmp 协议将输出流向 CDN 推送，推送过程中出现的状态的变化会从该回调接口通知出来。
-             * @param infoList 当前 CDN 正在混流的信息列表
              * @param taskID 混流任务 ID
+             * @param infoList 当前 CDN 正在混流的信息列表
              */
-            virtual void onMixerRelayCDNStateUpdate(const std::vector<ZegoStreamRelayCDNInfo>& /*infoList*/, const std::string& /*taskID*/) {
+            virtual void onMixerRelayCDNStateUpdate(const std::string& /*taskID*/, const std::vector<ZegoStreamRelayCDNInfo>& /*infoList*/) {
 
             }
 

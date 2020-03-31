@@ -3,7 +3,7 @@
 #define __ZEGOEXPRESSINTERFACE_H__
 
 #include "ZegoExpressDefines.h"
-#include "ZegoExpressHandlers.h"
+#include "ZegoExpressEventHandler.h"
 
 namespace ZEGO {
     namespace EXPRESS {
@@ -23,15 +23,15 @@ namespace ZEGO {
              * 设置事件通知回调，传 [nullptr] 则清空已设置的回调
              *
              * 调用此接口将覆盖 [createEngine] 时传入的回调
-             * @param eventHandler 事件通知回调。开发者应根据自身业务场景，重写回调的相关方法以关注特定的通知。ZegoExpressEngine 主要的回调方法都在 [IZegoEventHandler] 里。
+             * @param eventHandler 事件通知回调。开发者应根据自身业务场景，重写回调的相关方法以关注特定的通知。SDK 主要的回调方法都在 [IZegoEventHandler] 里。
              */
             virtual void setEventHandler(std::shared_ptr<IZegoEventHandler> eventHandler) = 0;
 
             /**
              * 上传日志到 ZEGO 服务器
              *
-             * 默认情况下，ZegoExpressEngine 会在 App 默认目录创建日志文件并打印，每个日志文件默认最大 5MB，三个日志文件循环覆盖写入。当调用此接口时 ZegoExpressEngine 会自动将日志文件打包并上传到 ZEGO 服务器。
-             * 开发者可在 App 提供业务上的”反馈“渠道，当用户反馈问题时可调用此接口将 ZegoExpressEngine 的本地日志信息上传以协助定位用户问题。
+             * 默认情况下，SDK 会在 App 默认目录创建日志文件并打印，每个日志文件默认最大 5MB，三个日志文件循环覆盖写入。当调用此接口时 SDK 会自动将日志文件打包并上传到 ZEGO 服务器。
+             * 开发者可在 App 提供业务上的”反馈“渠道，当用户反馈问题时可调用此接口将 SDK 的本地日志信息上传以协助定位用户问题。
              */
             virtual void uploadLog() = 0;
 
@@ -48,8 +48,8 @@ namespace ZEGO {
              * 登录房间，推拉流前必须登录房间
              *
              * 登录同一个房间的不同用户可以得到以相同房间为单位的房间信令通知（例如：[onRoomUserUpdate], [onRoomStreamUpdate] 等），一个房间内的用户收不到另一个房间房间信令的通知。
-             * 一个房间发的消息（例如 [setStreamExtraInfo], [sendBroadcastMessage], [sendBarrageMessage], [sendCustomCommand] 等）在别的房间无法收到（例如 [onRoomStreamExtraInfoUpdate], [onIMRecvBroadcastMessage], [onIMRecvBarrageMessage], [onIMRecvCustomCommand] 等），目前 ZegoExpressEngine 未提供跨房间消息的能力。开发者可以集成第三方 IM 的 SDK 来实现。
-             * ZegoExpressEngine 支持拉相同 appID 下非同一个房间的流，即跨房间拉流。由于 ZegoExpressEngine 的房间信令的相关回调通知是以相同房间为单位，当开发者想要跨房间拉流时，开发者需自行维护相关的消息及信令通知。
+             * 一个房间发的消息（例如 [setStreamExtraInfo], [sendBroadcastMessage], [sendBarrageMessage], [sendCustomCommand] 等）在别的房间无法收到（例如 [onRoomStreamExtraInfoUpdate], [onIMRecvBroadcastMessage], [onIMRecvBarrageMessage], [onIMRecvCustomCommand] 等），目前 SDK 未提供跨房间消息的能力。开发者可以集成第三方 IM 的 SDK 来实现。
+             * SDK 支持拉相同 appID 下非同一个房间的流，即跨房间拉流。由于 SDK 的房间信令的相关回调通知是以相同房间为单位，当开发者想要跨房间拉流时，开发者需自行维护相关的消息及信令通知。
              * 如果由于网络质量原因导致网络临时中断，SDK 内部会自动进行重连。可通过监听 [onRoomStateUpdate] 回调获取本端当前房间连接状态的变化情况，同时同房间其他用户会接收到 [onRoomUserUpdate] 回调通知。
              * @param roomID 房间 ID，最大长度为 128 字节的字符串。仅支持数字，英文字符 和 '~', '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '_', '+', '=', '-', '`', ';', '’', ',', '.', '<', '>', '/', '\'
              * @param user 用户对象实例，配置用户 ID、用户名。 注意用户 ID 需要在相同的 appID 下全局唯一，否则会出现后登陆的用户踢掉先登陆的用户的情况。
@@ -61,8 +61,8 @@ namespace ZEGO {
              *
              * 为了防止 App 被恶意用户模拟登录，可以在登录房间之前加上鉴权验证，即 [config] 参数传入的 ZegoRoomConfig 对象中的 [token] 参数
              * 登录同一个房间的不同用户可以得到以相同房间为单位的房间信令通知（例如：[onRoomUserUpdate], [onRoomStreamUpdate] 等），一个房间内的用户收不到另一个房间房间信令的通知。
-             * 一个房间发的消息（例如 [setStreamExtraInfo], [sendBroadcastMessage], [sendBarrageMessage], [sendCustomCommand] 等）在别的房间无法收到（例如 [onRoomStreamExtraInfoUpdate], [onIMRecvBroadcastMessage], [onIMRecvBarrageMessage], [onIMRecvCustomCommand] 等），目前 ZegoExpressEngine 未提供跨房间消息的能力。开发者可以集成第三方 IM 的 SDK 来实现。
-             * ZegoExpressEngine 支持拉相同 appID 下非同一个房间的流，即跨房间拉流。由于 ZegoExpressEngine 的房间信令的相关回调通知是以相同房间为单位，当开发者想要跨房间拉流时，开发者需自行维护相关的消息及信令通知。
+             * 一个房间发的消息（例如 [setStreamExtraInfo], [sendBroadcastMessage], [sendBarrageMessage], [sendCustomCommand] 等）在别的房间无法收到（例如 [onRoomStreamExtraInfoUpdate], [onIMRecvBroadcastMessage], [onIMRecvBarrageMessage], [onIMRecvCustomCommand] 等），目前 SDK 未提供跨房间消息的能力。开发者可以集成第三方 IM 的 SDK 来实现。
+             * SDK 支持拉相同 appID 下非同一个房间的流，即跨房间拉流。由于 SDK 的房间信令的相关回调通知是以相同房间为单位，当开发者想要跨房间拉流时，开发者需自行维护相关的消息及信令通知。
              * 如果由于网络质量原因导致网络临时中断，SDK 内部会自动进行重连。可通过监听 [onRoomStateUpdate] 回调获取本端当前房间连接状态的变化情况，同时同房间其他用户会接收到 [onRoomUserUpdate] 回调通知。
              * @param roomID 房间 ID，最大长度为 128 字节的字符串。仅支持数字，英文字符 和 '~', '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '_', '+', '=', '-', '`', ';', '’', ',', '.', '<', '>', '/', '\'
              * @param user 用户对象实例，配置用户 ID、用户名。 注意用户 ID 需要在相同的 appID 下全局唯一，否则会出现后登陆的用户踢掉先登陆的用户的情况。
@@ -73,7 +73,7 @@ namespace ZEGO {
             /**
              * 退出房间
              *
-             * 退出房间会停止该用户的所有推拉流并且 ZegoExpressEngine 内部会主动停止本地预览，调用该接口后会收到 [onRoomStateUpdate] 回调通知成功退出房间，同时同房间其他用户会接收到 [onRoomUserUpdate] 回调通知。
+             * 退出房间会停止该用户的所有推拉流并且 SDK 内部会主动停止本地预览，调用该接口后会收到 [onRoomStateUpdate] 回调通知成功退出房间，同时同房间其他用户会接收到 [onRoomUserUpdate] 回调通知。
              * @param roomID 房间 ID，最大长度为 128 字节的字符串。仅支持数字，英文字符 和 '~', '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '_', '+', '=', '-', '`', ';', '’', ',', '.', '<', '>', '/', '\'
              */
             virtual void logoutRoom(const std::string& roomID) = 0;
@@ -137,18 +137,18 @@ namespace ZEGO {
              * 流附加信息是流 ID 的附加信息标识，不同于流 ID 在推流过程中不可修改，流附加信息可以在对应流 ID 的推流中途修改。
              * 开发者可根据流附加信息来实现流 ID 相关的可变内容的同步。
              * @param extraInfo 流附加信息，长度不超过1024的字符串
-             * @param callback 更新流附加信息执行结果通知
              * @param channel 推流通道
+             * @param callback 更新流附加信息执行结果通知
              */
-            virtual void setStreamExtraInfo(const std::string& extraInfo, ZegoPublisherSetStreamExtraInfoCallback callback, ZegoPublishChannel channel) = 0;
+            virtual void setStreamExtraInfo(const std::string& extraInfo, ZegoPublishChannel channel, ZegoPublisherSetStreamExtraInfoCallback callback) = 0;
 
             /**
              * 启动/更新本地预览
              *
-             * 用户通过调用此接口可以看到自己本地的画面。预览功能不需要先登陆房间或推流。但是在退出房间之后 ZegoExpressEngine 内部默认会主动停止预览。
+             * 用户通过调用此接口可以看到自己本地的画面。预览功能不需要先登陆房间或推流。但是在退出房间之后 SDK 内部默认会主动停止预览。
              * 可以通过再次调用该接口来更新本地视图和视图预览模式。
              * 可以通过调用 [setVideoMirrorMode] 接口来设置预览的镜像模式，默认为开启预览镜像。
-             * 当调用此接口后 ZegoExpressEngine 内部的音视频引擎模块会启动，会开始尝试开始采集音频与视频。开发者除了正常调用此接口以便预览本端画面之外，还可以传 [nullptr] 给 canvas 参数，配合 ZegoExpressEngine 音浪的功能以便达到在登录房间之前检测音频设备是否正常工作的目的。
+             * 当调用此接口后 SDK 内部的音视频引擎模块会启动，会开始尝试开始采集音频与视频。开发者除了正常调用此接口以便预览本端画面之外，还可以传 [nullptr] 给 canvas 参数，配合 SDK 音浪的功能以便达到在登录房间之前检测音频设备是否正常工作的目的。
              * @param canvas 启动预览时用于显示画面的视图，视图设置为 nullptr 则不进行预览
              */
             virtual void startPreview(ZegoCanvas* canvas) = 0;
@@ -156,10 +156,10 @@ namespace ZEGO {
             /**
              * 启动/更新本地预览，支持设置其他通道的推流
              *
-             * 用户通过调用此接口可以看到自己本地的画面。预览功能不需要先登陆房间或推流。但是在退出房间之后 ZegoExpressEngine 内部默认会主动停止预览。
+             * 用户通过调用此接口可以看到自己本地的画面。预览功能不需要先登陆房间或推流。但是在退出房间之后 SDK 内部默认会主动停止预览。
              * 可以通过再次调用该接口来更新本地视图和视图预览模式。
              * 可以通过调用 [setVideoMirrorMode] 接口来设置预览的镜像模式，默认为开启预览镜像。
-             * 当调用此接口后 ZegoExpressEngine 内部的音视频引擎模块会启动，会开始尝试开始采集音频与视频。开发者除了正常调用此接口以便预览本端画面之外，还可以传 [nullptr] 给 canvas 参数，配合 ZegoExpressEngine 音浪的功能以便达到在登录房间之前检测音频设备是否正常工作的目的。
+             * 当调用此接口后 SDK 内部的音视频引擎模块会启动，会开始尝试开始采集音频与视频。开发者除了正常调用此接口以便预览本端画面之外，还可以传 [nullptr] 给 canvas 参数，配合 SDK 音浪的功能以便达到在登录房间之前检测音频设备是否正常工作的目的。
              * @param canvas 启动预览时用于显示画面的视图，视图设置为 nullptr 则不进行预览
              * @param channel 推流通道
              */
@@ -186,9 +186,9 @@ namespace ZEGO {
              * 可通过此接口设置视频帧率、码率，视频采集分辨率，视频编码输出分辨率。如果不调用此接口，默认分辨率为 360p，码率为 600 kbps，帧率为 15 fps。
              * 需要在推流前设置好相关视频配置，在推流后仅支持编码分辨率和码率的修改。
              * 开发者应该注意的是，移动端的宽高分辨率与 PC 端的宽高分辨率是相反的，例如移动端的 360p 的分辨率，移动端的分辨率为 360x640，而 PC 端 360p 的分辨率为 640x360。
-             * @param videoConfig 视频配置，ZegoExpressEngine 提供常用的分辨率、帧率和码率的组合值，也可自定义分辨率、帧率和码率
+             * @param config 视频配置，SDK 提供常用的分辨率、帧率和码率的组合值，也可自定义分辨率、帧率和码率
              */
-            virtual void setVideoConfig(ZegoVideoConfig videoConfig) = 0;
+            virtual void setVideoConfig(ZegoVideoConfig config) = 0;
 
             /**
              * 设置视频配置，支持设置其他推流
@@ -196,10 +196,10 @@ namespace ZEGO {
              * 可通过此接口设置视频帧率、码率，视频采集分辨率，视频编码输出分辨率。如果不调用此接口，默认分辨率为 360p，码率为 600 kbps，帧率为 15 fps。
              * 需要在推流前设置好相关视频配置，在推流后仅支持编码分辨率和码率的修改。
              * 开发者应该注意的是，移动端的宽高分辨率与 PC 端的宽高分辨率是相反的，例如移动端的 360p 的分辨率，移动端的分辨率为 360x640，而 PC 端 360p 的分辨率为 640x360。
-             * @param videoConfig 视频配置，ZegoExpressEngine 提供常用的分辨率、帧率和码率的组合值，也可自定义分辨率、帧率和码率
+             * @param config 视频配置，SDK 提供常用的分辨率、帧率和码率的组合值，也可自定义分辨率、帧率和码率
              * @param channel 推流通道
              */
-            virtual void setVideoConfig(ZegoVideoConfig videoConfig, ZegoPublishChannel channel) = 0;
+            virtual void setVideoConfig(ZegoVideoConfig config, ZegoPublishChannel channel) = 0;
 
             /**
              * 设置镜像模式
@@ -221,7 +221,7 @@ namespace ZEGO {
             /**
              * 设置音频质量配置
              *
-             * 可通过此接口设置音频编码类型、码率，音频声道的组合值。如果不调用此接口，默认为“普通延迟-标准音质”模式。仅支持推流前设置。
+             * 可通过此接口设置音频编码类型、码率，音频声道的组合值。如果不调用此接口，默认为标准音质模式。仅支持推流前设置。
              * 若预设的值无法满足开发者的场景，开发者可自行根据业务要求设置符合的参数。
              * @param config 音频质量配置
              */
@@ -231,7 +231,7 @@ namespace ZEGO {
              * 停止或恢复发送音频流
              *
              * 推流时可调用此接口实现只推视频流不推音频，本地仍会采集和处理音频，但不向网络发送音频数据。可以在推流前设置。
-             * 如果在本地设置了停止发送音频流，拉本地流的用户可以通过监听 [onRemoteMicStateUpdate] 回调收到 ZEGO_REMOTE_DEVICE_STATE_MUTE 的状态变更通知。
+             * 如果在本地设置了停止发送音频流，拉本地流的用户可以通过监听 [onRemoteMicStateUpdate] 回调收到 `Mute` 的状态变更通知。
              * @param mute 是否停止发送音频流；true 表示只发送视频流不发送音频流；false 表示同时发送音频和视频流；默认为 false
              */
             virtual void mutePublishStreamAudio(bool mute) = 0;
@@ -240,7 +240,7 @@ namespace ZEGO {
              * 停止或恢复发送音频流，支持设置其他路推流
              *
              * 推流时可调用此接口实现只推视频流不推音频，本地仍会采集和处理音频，但不向网络发送音频数据。可以在推流前设置。
-             * 如果在本地设置了停止发送音频流，拉本地流的用户可以通过监听 [onRemoteMicStateUpdate] 回调收到 ZEGO_REMOTE_DEVICE_STATE_MUTE 的状态变更通知。
+             * 如果在本地设置了停止发送音频流，拉本地流的用户可以通过监听 [onRemoteMicStateUpdate] 回调收到 `Mute` 的状态变更通知。
              * @param mute 是否停止发送音频流；true 表示只发送视频流不发送音频流；false 表示同时发送音频和视频流；默认为 false
              * @param channel 推流通道
              */
@@ -250,7 +250,7 @@ namespace ZEGO {
              * 停止或恢复发送视频流
              *
              * 推流时可调用此接口实现只推音频流不推视频流，本地摄像头仍能正常工作，能正常采集，预览和处理视频画面，但不向网络发送视频数据。可以在推流前设置。
-             * 如果在本地设置了停止发送视频流，拉本地流的用户可以通过监听 [onRemoteCameraStateUpdate] 回调收到 ZEGO_REMOTE_DEVICE_STATE_MUTE 的状态变更通知。
+             * 如果在本地设置了停止发送视频流，拉本地流的用户可以通过监听 [onRemoteCameraStateUpdate] 回调收到 `Mute` 的状态变更通知。
              * @param mute 是否停止发送视频流；true 表示只发送音频流不发送视频流；false 表示同时发送音频和视频流；默认为 false
              */
             virtual void mutePublishStreamVideo(bool mute) = 0;
@@ -259,7 +259,7 @@ namespace ZEGO {
              * 停止或恢复发送视频流，支持设置其他路推流
              *
              * 推流时可调用此接口实现只推音频流不推视频流，本地摄像头仍能正常工作，能正常采集，预览和处理视频画面，但不向网络发送视频数据。可以在推流前设置。
-             * 如果在本地设置了停止发送视频流，拉本地流的用户可以通过监听 [onRemoteCameraStateUpdate] 回调收到 ZEGO_REMOTE_DEVICE_STATE_MUTE 的状态变更通知。
+             * 如果在本地设置了停止发送视频流，拉本地流的用户可以通过监听 [onRemoteCameraStateUpdate] 回调收到 `Mute` 的状态变更通知。
              * @param mute 是否停止发送视频流；true 表示只发送音频流不发送视频流；false 表示同时发送音频和视频流；默认为 false
              * @param channel 推流通道
              */
@@ -268,10 +268,10 @@ namespace ZEGO {
             /**
              * 开始或停止流量控制
              *
-             * 流量控制可以使 ZegoExpressEngine SDK 根据自己以及拉本地流的用户当前网络环境状态来动态调整音视频推流的码率。
+             * 流量控制可以使 SDK 根据自己以及拉本地流的用户当前网络环境状态来动态调整音视频推流的码率。
              * 自动适应当前网络环境及网络波动，从而保证直播的流畅发布
              * @param enable 是否使用流量控制；true 表示开启流控；false 表示关闭流控；默认为 true
-             * @param property 流量控制的可调节的属性。具体可设置为 ZegoTrafficControlProperty 的属性的一个或多个枚举组合。默认为 AdaptiveFPS
+             * @param property 流量控制的可调节的属性，位掩码格式。具体可设置为 [ZegoTrafficControlProperty] 的属性的一个或多个枚举组合。默认为 AdaptiveFPS
              */
             virtual void enableTrafficControl(bool enable, int property) = 0;
 
@@ -279,7 +279,7 @@ namespace ZEGO {
              * 设置流量控制视频码率最低值
              *
              * 当网络不足以发送这个码率最低值，可选择视频发送模式。
-             * 不调用此接口时，默认情况 ZegoExpressEngine SDK 会根据当前网络上行情况自动调整所发送的视频数据帧。
+             * 不调用此接口时，默认情况 SDK 会根据当前网络上行情况自动调整所发送的视频数据帧。
              * @param bitrate 最低视频码率，单位为 kbps
              * @param mode 低于最低码率时的视频发送模式
              */
@@ -306,7 +306,7 @@ namespace ZEGO {
              * @param targetURL CDN 转推地址，支持的转推地址格式为 rtmp。
              * @param callback 添加 CDN 转推结果通知
              */
-            virtual void addPublishCDNURL(const std::string& streamID, const std::string& targetURL, ZegoPublisherUpdateCDNURLCallback callback) = 0;
+            virtual void addPublishCdnUrl(const std::string& streamID, const std::string& targetURL, ZegoPublisherUpdateCdnUrlCallback callback) = 0;
 
             /**
              * 删除转推至 CDN 的 URL
@@ -317,13 +317,13 @@ namespace ZEGO {
              * @param targetURL CDN 转推地址，支持的转推地址格式有 rtmp，flv，hls
              * @param callback 移除 CDN 转推结果通知
              */
-            virtual void removePublishCDNURL(const std::string& streamID, const std::string& targetURL, ZegoPublisherUpdateCDNURLCallback callback) = 0;
+            virtual void removePublishCdnUrl(const std::string& streamID, const std::string& targetURL, ZegoPublisherUpdateCdnUrlCallback callback) = 0;
 
             /**
              * 是否不经过 Zego 实时视频云服务器直接推流到 CDN
              *
              * 此接口需要推流前设置。
-             * 调用此接口将音视频流直接推往 CDN 之后，调用 [addPublishCDNURL] 与 [removePublishCDNURL] 动态转推至 CDN 不再生效，因为这两个接口是从 ZEGO 实时音视频云将音视频流转推或停止转推到 CDN，若直接音视频流直接推往 CDN 将无法通过 ZEGO 实时音视频云将音视频流再动态转推至 CDN。
+             * 调用此接口将音视频流直接推往 CDN 之后，调用 [addPublishCdnUrl] 与 [removePublishCdnUrl] 动态转推至 CDN 不再生效，因为这两个接口是从 ZEGO 实时音视频云将音视频流转推或停止转推到 CDN，若直接音视频流直接推往 CDN 将无法通过 ZEGO 实时音视频云将音视频流再动态转推至 CDN。
              * @param enable 是否开启直推 CDN；true 表示开启直推 CDN；false 表示不开启直推 CDN；默认为 false
              * @param config CDN 配置，若为 nullptr 则使用 Zego 的后台配置
              */
@@ -333,7 +333,7 @@ namespace ZEGO {
              * 是否不经过 Zego 实时视频云服务器直接推流到 CDN，支持设置其他路推流
              *
              * 此接口需要推流前设置。
-             * 调用此接口将音视频流直接推往 CDN 之后，调用 [addPublishCDNURL] 与 [removePublishCDNURL] 动态转推至 CDN 不再生效，因为这两个接口是从 ZEGO 实时音视频云将音视频流转推或停止转推到 CDN，若直接音视频流直接推往 CDN 将无法通过 ZEGO 实时音视频云将音视频流再动态转推至 CDN。
+             * 调用此接口将音视频流直接推往 CDN 之后，调用 [addPublishCdnUrl] 与 [removePublishCdnUrl] 动态转推至 CDN 不再生效，因为这两个接口是从 ZEGO 实时音视频云将音视频流转推或停止转推到 CDN，若直接音视频流直接推往 CDN 将无法通过 ZEGO 实时音视频云将音视频流再动态转推至 CDN。
              * @param enable 是否开启直推 CDN；true 表示开启直推 CDN；false 表示不开启直推 CDN；默认为 false
              * @param config CDN 配置，若为 nullptr 则使用 Zego 的后台配置
              * @param channel 推流通道
@@ -394,7 +394,7 @@ namespace ZEGO {
              * 开/关硬件编码
              *
              * 推流时是否采用硬件编码的开关，开启硬解编码后会使用 GPU 进行编码，降低 CPU 使用率。在推流前设置才能生效，如果在推流后设置，停推后重新推流可以生效。
-             * 由于少部分机型设备硬编支持不是特别好，ZegoExpressEngine 默认使用软件编码的方式。若开发者在某些机型测试时发现推大分辨率音视频流时设备发热严重，可考虑调用此接口开启硬编的方式。
+             * 由于少部分机型设备硬编支持不是特别好，SDK 默认使用软件编码的方式。若开发者在某些机型测试时发现推大分辨率音视频流时设备发热严重，可考虑调用此接口开启硬编的方式。
              * @param enable 是否开启硬件编码；true 表示开启硬编；false 表示关闭硬编；默认为 false
              */
             virtual void enableHardwareEncoder(bool enable) = 0;
@@ -477,7 +477,7 @@ namespace ZEGO {
              * 开/关硬件解码
              *
              * 拉流时是否使用硬件解码，开启硬件解码后 SDK 会使用 GPU 进行解码，降低 CPU 使用率。在拉流前设置才能生效，如果在拉流后设置，停止拉流后重新拉流可以生效。
-             * 由于少部分机型设备硬解支持不是特别好，ZegoExpressEngine 默认使用软件解码的方式。若开发者在某些机型测试时发现拉大分辨率音视频流时设备发热严重，可考虑调用此接口开启解编的方式。
+             * 由于少部分机型设备硬解支持不是特别好，SDK 默认使用软件解码的方式。若开发者在某些机型测试时发现拉大分辨率音视频流时设备发热严重，可考虑调用此接口开启解编的方式。
              * @param enable 是否开启硬解开关；true 表示开启硬解；false 表示关闭硬解；默认为 false
              */
             virtual void enableHardwareDecoder(bool enable) = 0;
@@ -492,8 +492,8 @@ namespace ZEGO {
             /**
              * 开始混流任务
              *
-             * 由于客户端设备的性能考虑，ZegoExpressEngine 的混流是在 ZEGO 音视频云的服务端开启混流任务进行混流。
-             * 调用此接口后 ZegoExpressEngine 向 ZEGO 音视频云发起混流请求，ZEGO 音视频云会寻找当前正在推得流，并根据 ZegoExpressEngine 请求的混流任务的参数进行图层混合。
+             * 由于客户端设备的性能考虑，SDK 的混流是在 ZEGO 音视频云的服务端开启混流任务进行混流。
+             * 调用此接口后 SDK 向 ZEGO 音视频云发起混流请求，ZEGO 音视频云会寻找当前正在推得流，并根据 SDK 请求的混流任务的参数进行图层混合。
              * 若请求开启混流任务发生异常，例如最常见的混流的输入流不存在，将会从 callback 回调的错误码给出。具体错误码请参考常见错误码文档 [https://doc-zh.zego.im/zh/308.html]
              * 若中途某条输入流不存在了，混流任务会自动重试拉这条输入流 90 秒，90 秒之后不再重试。
              * @param task 混流任务对象
@@ -504,7 +504,7 @@ namespace ZEGO {
             /**
              * 停止混流任务
              *
-             * 与 [startMixerTask] 类似，调用该接口之后 ZegoExpressEngine 向 ZEGO 音视频云的服务端发起结束混流的请求。
+             * 与 [startMixerTask] 类似，调用该接口之后 SDK 向 ZEGO 音视频云的服务端发起结束混流的请求。
              * 若开发者在未停止上一个混流任务的情况下启动下一个混流任务，上一个混流任务不会自动停止，直到上一个混流任务的输入流都不存在之后 90 秒之后，上一个混流任务才会自动结束。
              * 开发者在使用 ZEGO 音视频云的服务的混流功能时应该注意再启动下一个混流任务时，应该停止上一个混流任务，以免造成主播已经开启下一个混流任务与其他主播混流，观众依然在一直拉上一个混流任务的输出流的情况。
              * @param task 混流任务对象
@@ -513,22 +513,23 @@ namespace ZEGO {
             virtual void stopMixerTask(ZegoMixerTask task, ZegoMixerStopCallback callback) = 0;
 
             /**
-             * 开/关麦克风
+             * 是否关闭麦克风输入
              *
              * 此接口用于控制是否使用采集到的音频数据，关闭麦克风即采集到数据后就丢弃，此时仍然会占用麦克风。
-             * 依然占用麦克风是因为硬件上关闭或打开麦克风是比较重的操作，且真实用户存在频繁操作的可能。为了权衡性能原因，此接口仅是简单的丢弃采集到的数据。
-             * 若想要真正让 ZegoExpressEngine 放弃占用麦克风，可调用 [enableAudioCaptureDevice] 接口。
+             * 依然占用麦克风是因为硬件上关闭或打开麦克风是比较重的操作，有一定的性能开销，且真实用户存在频繁操作的可能。为了权衡性能原因，此接口仅是简单的丢弃采集到的数据。
+             * 若想要真正让 SDK 放弃占用麦克风，如实现退到后台释放麦克风占用等场景，可调用 [enableAudioCaptureDevice] 接口。
+             * 开发者若想在 UI 上控制是否使用麦克风采集，应使用此接口，避免使用 [enableAudioCaptureDevice] 而带来不必要的性能开销。
              * @param mute 是否关闭麦克风；true 表示关闭麦克风；false 表示开启麦克风，默认为 true。
              */
             virtual void muteMicrophone(bool mute) = 0;
 
             /**
-             * 开/关音频输出至设备
+             * 是否关闭音频输出
              *
-             * 关闭后 ZegoExpressEngine 将不会再传递音频数据给输出设备，以达到静音的效果
-             * @param mute 是否关闭音频输出到设备；true 表示关闭音频输出；false 表示开启音频输出
+             * 关闭后 SDK 所有声音都不会播放，包括拉流、媒体播放器等。但 SDK 仍会占用输出设备。
+             * @param mute 是否关闭音频输出；true 表示关闭音频输出；false 表示开启音频输出。默认为 false
              */
-            virtual void muteAudioOutput(bool mute) = 0;
+            virtual void muteSpeaker(bool mute) = 0;
 
             /**
              * 选择使用某个音频设备
@@ -660,7 +661,9 @@ namespace ZEGO {
             /**
              * 发送房间广播消息
              *
-             * @param roomID 房间 ID
+             * 广播消息 与 自定义信令 消息的合计的发送频率限制默认为每分钟 600 次。
+             * 同房间内的最多前 500 个先进房间的用户能收到，一般用于在直播房间人数小于 500 时使用。
+             * @param roomID 房间 ID，最大长度为 128 字节的字符串。仅支持数字，英文字符 和 '~', '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '_', '+', '=', '-', '`', ';', '’', ',', '.', '<', '>', '/', '\'
              * @param message 消息内容，长度不超过256字节
              * @param callback 发送广播消息结果通知
              */
@@ -669,7 +672,9 @@ namespace ZEGO {
             /**
              * 发送房间弹幕消息
              *
-             * @param roomID 房间 ID
+             * 没有发送次数限制，但如果发送太频繁服务端会主动丢消息。
+             * 支持同房间内大于 500 人的用户能收到，但不可靠，即房间内用户很多或者用户间发送消息很频繁时，接收消息的用户不一定能收到。一般用于直播弹幕的发送。
+             * @param roomID 房间 ID，最大长度为 128 字节的字符串。仅支持数字，英文字符 和 '~', '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '_', '+', '=', '-', '`', ';', '’', ',', '.', '<', '>', '/', '\'
              * @param message 消息内容，长度不超过256字节
              * @param callback 发送弹幕消息结果通知
              */
@@ -678,7 +683,9 @@ namespace ZEGO {
             /**
              * 发送自定义信令
              *
-             * @param roomID 房间 ID
+             * 广播消息 与 自定义信令 消息的合计的发送频率限制默认为每分钟 600 次。
+             * 同房间内点对点的信令类型，一般用于远程控制信令或用户与用户之间的消息发送。
+             * @param roomID 房间 ID，最大长度为 128 字节的字符串。仅支持数字，英文字符 和 '~', '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '_', '+', '=', '-', '`', ';', '’', ',', '.', '<', '>', '/', '\'
              * @param command 自定义信令内容，长度不超过256字节
              * @param toUserList 信令的接收者
              * @param callback 发送信令结果通知
@@ -704,9 +711,9 @@ namespace ZEGO {
              * 设置自定义视频渲染回调
              *
              * 自定义视频渲染，由开发者负责把视频数据渲染到 UI 组件上。该功能一般为使用第三方美颜功能或使用第三方渲染框架的开发者使用。
-             * 当开发者使用 ZegoExpressEngine 的自定义视频渲染的高级功能时需要调用此接口来设置给开发者抛视频数据的回调对象。
+             * 当开发者使用 SDK 的自定义视频渲染的高级功能时需要调用此接口来设置给开发者抛视频数据的回调对象。
              * 当开发者调用启动预览 [startPreview]、开始推流 [startPublishingStream]、开始拉流[startPlayingStream] 时会触发向开发者抛视频数据的回调方法。
-             * 开发者可根据 ZegoExpressEngine 抛视频数据的回调进行视频画面的渲染。
+             * 开发者可根据 SDK 抛视频数据的回调进行视频画面的渲染。
              * 自定义视频渲染功能可以与自定义视频采集功能同时使用。
              * @param handler 自定义视频渲染回调对象
              */
@@ -715,10 +722,10 @@ namespace ZEGO {
             /**
              * 设置自定义视频采集回调
              *
-             * 自定义视频采集，即由开发者负责采集视频数据，并将采集到的视频数据发送给 ZegoExpressEngine 进行视频数据的编码与推送到 ZEGO 音视频云端。该功能一般为使用第三方美颜功能或游戏录屏直播的开发者使用。
-             * 当开发者使用 ZegoExpressEngine 的自定义视频采集的高级功能时，需要调用此接口来设置 ZegoExpressEngine 以通知开发者可以开始发送的视频数据给 ZegoExpressEngine。
+             * 自定义视频采集，即由开发者负责采集视频数据，并将采集到的视频数据发送给 SDK 进行视频数据的编码与推送到 ZEGO 音视频云端。该功能一般为使用第三方美颜功能或游戏录屏直播的开发者使用。
+             * 当开发者使用 SDK 的自定义视频采集的高级功能时，需要调用此接口来设置 SDK 以通知开发者可以开始发送的视频数据给 ZegoExpressEngine。
              * 当开发者调用启动预览 [startPreview]、开始推流 [startPublishingStream] 时会触发通知开发者可以开始发送视频数据的回调方法。当停止预览 [stopPreview] 且 停止推流[stopPublishingStream] 时会触发通知开发者可以停止发送视频数据的回调方法。
-             * 由于使用自定义视频采集时，ZegoExpressEngine 将不再启动摄像头去采集视频数据，开发者需自行对视频采集源进行视频数据的采集。
+             * 由于使用自定义视频采集时，SDK 将不再启动摄像头去采集视频数据，开发者需自行对视频采集源进行视频数据的采集。
              * 自定义视频采集功能可以与自定义视频渲染功能同时使用。
              * @param handler 自定义视频采集回调对象
              */
@@ -761,6 +768,15 @@ namespace ZEGO {
              * @param channel 推流通道
              */
             virtual void setCustomVideoCaptureFillMode(ZegoViewMode mode, ZegoPublishChannel channel) = 0;
+
+            /**
+             * 开/关音频输出至设备
+             *
+             * 关闭后 SDK 将不会再传递音频数据给输出设备，以达到静音的效果
+             * @deprecated 该接口已废弃，请使用 [muteSpeaker]
+             * @param mute 是否关闭音频输出到设备；true 表示关闭音频输出；false 表示开启音频输出
+             */
+            virtual void muteAudioOutput(bool mute) = 0;
 
         };
         class IZegoMediaPlayer
@@ -808,7 +824,7 @@ namespace ZEGO {
             /**
              * 开始播放
              *
-             * 播放前需要先加载资源
+             * 必须在加载资源完成后才能调用
              */
             virtual void start() = 0;
 
@@ -842,7 +858,7 @@ namespace ZEGO {
             /**
              * 是否重复播放
              *
-             * @param enable 重复播放标记
+             * @param enable 重复播放标记，默认为 false
              */
             virtual void enableRepeat(bool enable) = 0;
 
@@ -871,14 +887,15 @@ namespace ZEGO {
             /**
              * 设置播放器音量
              *
-             * @param volume 范围为 0 ~ 100，默认为 100。
+             * @param volume 范围为 0 ~ 100，默认为 50。
              */
             virtual void setVolume(int volume) = 0;
 
             /**
              * 设置播放进度回调间隔
              *
-             * 可通过此接口控制 [onMediaPlayerPlayingProgress] 的回调频率
+             * 可通过此接口控制 [onMediaPlayerPlayingProgress] 的回调频率，当设置回调间隔为 0 时，停止回调。默认回调间隔为 1s
+             * 回调不会严格按照设定的回调间隔值返回，而是以处理音频帧或者视频帧的频率来判断是否需要回调
              * @param millisecond 播放进度回调间隔时间，单位为毫秒
              */
             virtual void setProgressInterval(unsigned long long millisecond) = 0;
@@ -886,13 +903,14 @@ namespace ZEGO {
             /**
              * 获取当前音量
              *
-             * 范围为 0 ~ 100，默认为 100。
+             * 范围为 0 ~ 100，默认为 50
              */
             virtual int getVolume() = 0;
 
             /**
              * 获取媒体资源的总进度
              *
+             * 必须在加载资源完成后才能调用，否则返回值为 0
              * @return 单位为毫秒
              */
             virtual unsigned long long getTotalDuration() = 0;
@@ -900,6 +918,7 @@ namespace ZEGO {
             /**
              * 获取当前播放进度
              *
+             * 必须在加载资源完成后才能调用，否则返回值为 0
              */
             virtual unsigned long long getCurrentProgress() = 0;
 

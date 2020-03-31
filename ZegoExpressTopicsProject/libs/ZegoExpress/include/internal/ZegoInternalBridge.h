@@ -18,8 +18,10 @@
         #ifdef WIN32
             #ifdef ZEGO_EXPORTS
                 #define ZEGOEXP_API __declspec(dllexport)
+                #define EXP_CALL __cdecl
             #else
                 #define ZEGOEXP_API __declspec(dllimport)
+                #define EXP_CALL __cdecl
             #endif
         #else
             #define ZEGOEXP_API __attribute__((visibility("default")))
@@ -67,36 +69,36 @@
 #define zego_error int
 #define zego_seq int
 
-#define ZEGO_EXPRESS_MAX_COMMON_LEN         (512)
-#define ZEGO_EXPRESS_MAX_APPSIGN_LEN        (64)
-#define ZEGO_EXPRESS_MAX_USERID_LEN         (64)
-#define ZEGO_EXPRESS_MAX_USERNAME_LEN       (256)
-#define ZEGO_EXPRESS_MAX_ROOMID_LEN         (128)
-#define ZEGO_EXPRESS_MAX_TOKEN_LEN          (512)
-#define ZEGO_EXPRESS_MAX_MIX_INPUT_COUNT    (12)
-#define ZEGO_EXPRESS_MAX_STREAM_LEN         (256)
-#define ZEGO_EXPRESS_MAX_MIXER_TASK_LEN     (256)
-#define ZEGO_EXPRESS_MAX_EXTRA_INFO_LEN     (1024)
-#define ZEGO_EXPRESS_MAX_DEVICE_ID_LEN      (256)
-#define ZEGO_EXPRESS_MAX_URL_COUNT          (10)
-#define ZEGO_EXPRESS_MAX_URL_LEN            (1024)
-#define ZEGO_EXPRESS_MAX_IMAGE_PATH         (512)
-#define ZEGO_EXPRESS_MAX_MESSAGE_LEN        (512)
-#define ZEGO_EXPRESS_MAX_CUSTOM_CMD_LEN     (1024)
-#define ZEGO_EXPRESS_MAX_MEDIAPLAYER_INSTANCE_COUNT (4)
+#define ZEGO_EXPRESS_MAX_COMMON_LEN                         (512)
+#define ZEGO_EXPRESS_MAX_APPSIGN_LEN                        (64)
+#define ZEGO_EXPRESS_MAX_USERID_LEN                         (64)
+#define ZEGO_EXPRESS_MAX_USERNAME_LEN                       (256)
+#define ZEGO_EXPRESS_MAX_ROOMID_LEN                         (128)
+#define ZEGO_EXPRESS_MAX_TOKEN_LEN                          (512)
+#define ZEGO_EXPRESS_MAX_MIX_INPUT_COUNT                    (12)
+#define ZEGO_EXPRESS_MAX_STREAM_LEN                         (256)
+#define ZEGO_EXPRESS_MAX_MIXER_TASK_LEN                     (256)
+#define ZEGO_EXPRESS_MAX_EXTRA_INFO_LEN                     (1024)
+#define ZEGO_EXPRESS_MAX_DEVICE_ID_LEN                      (256)
+#define ZEGO_EXPRESS_MAX_URL_COUNT                          (10)
+#define ZEGO_EXPRESS_MAX_URL_LEN                            (1024)
+#define ZEGO_EXPRESS_MAX_IMAGE_PATH                         (512)
+#define ZEGO_EXPRESS_MAX_MESSAGE_LEN                        (512)
+#define ZEGO_EXPRESS_MAX_CUSTOM_CMD_LEN                     (1024)
+#define ZEGO_EXPRESS_MAX_MEDIAPLAYER_INSTANCE_COUNT         (4)
 
 
 struct zego_user
 {
-    char userId[ZEGO_EXPRESS_MAX_USERID_LEN + 1];
-    char userName[ZEGO_EXPRESS_MAX_USERNAME_LEN + 1];
+    char userId[ZEGO_EXPRESS_MAX_USERID_LEN];
+    char userName[ZEGO_EXPRESS_MAX_USERNAME_LEN];
 };
 
 struct zego_stream
 {
     struct zego_user user;
-    char streamId[ZEGO_EXPRESS_MAX_STREAM_LEN + 1];
-    char extraInfo[ZEGO_EXPRESS_MAX_EXTRA_INFO_LEN + 1];
+    char streamId[ZEGO_EXPRESS_MAX_STREAM_LEN];
+    char extraInfo[ZEGO_EXPRESS_MAX_EXTRA_INFO_LEN];
 };
 
 
@@ -123,7 +125,7 @@ enum zego_engine_state {
 
 struct zego_log_config
 {
-    char log_path[ZEGO_EXPRESS_MAX_COMMON_LEN + 1];
+    char log_path[ZEGO_EXPRESS_MAX_COMMON_LEN];
     unsigned long long log_size;
 };
 
@@ -169,7 +171,7 @@ struct zego_engine_config {
     struct zego_custom_video_render_config* custom_video_render_config;
     
     
-    char advanced_config[ZEGO_EXPRESS_MAX_COMMON_LEN + 1];
+    char advanced_config[ZEGO_EXPRESS_MAX_COMMON_LEN];
 };
 
 
@@ -363,28 +365,16 @@ enum zego_stream_relay_cdn_update_reason
 
 struct zego_stream_relay_cdn_info
 {
-    char url[ZEGO_EXPRESS_MAX_URL_LEN + 1];
+    char url[ZEGO_EXPRESS_MAX_URL_LEN];
     enum zego_stream_relay_cdn_state cdn_state;
     enum zego_stream_relay_cdn_update_reason update_reason;
     unsigned int state_time;
 };
 
-struct zego_publish_stream_info
-{
-    char* arrRtmpURLs[ZEGO_EXPRESS_MAX_URL_COUNT];      
-    unsigned int uiRtmpURLCount;                
-    
-    char* arrFlvRULs[ZEGO_EXPRESS_MAX_URL_COUNT];
-    unsigned int uiFlvURLCount;
-    
-    char* arrHlsURLs[ZEGO_EXPRESS_MAX_URL_COUNT];
-    unsigned int uiHlsURLCount;
-};
-
 struct zego_cdn_config
 {
-    char url[ZEGO_EXPRESS_MAX_URL_LEN + 1];
-    char auth_param[ZEGO_EXPRESS_MAX_COMMON_LEN + 1];
+    char url[ZEGO_EXPRESS_MAX_URL_LEN];
+    char auth_param[ZEGO_EXPRESS_MAX_COMMON_LEN];
 };
 
 enum zego_publish_channel
@@ -537,7 +527,7 @@ struct zego_mixer_video_config
 struct zego_mixer_input
 {
     enum zego_mixer_input_content_type content_type;
-    char stream_id[ZEGO_EXPRESS_MAX_STREAM_LEN + 1];
+    char stream_id[ZEGO_EXPRESS_MAX_STREAM_LEN];
     struct zego_rect layout;
     unsigned int sound_level_id;
 };
@@ -545,7 +535,7 @@ struct zego_mixer_input
 struct zego_mixer_output
 {
     
-    char target[ZEGO_EXPRESS_MAX_URL_LEN + 1];
+    char target[ZEGO_EXPRESS_MAX_URL_LEN];
     
     
     struct zego_mixer_video_config video_config;
@@ -557,7 +547,7 @@ struct zego_mixer_output
 struct zego_watermark
 {
     
-    char image[ZEGO_EXPRESS_MAX_COMMON_LEN + 1];
+    char image[ZEGO_EXPRESS_MAX_COMMON_LEN];
     
     struct zego_rect layout;
     
@@ -643,19 +633,19 @@ enum zego_aec_mode
 
 struct zego_device_info
 {
-    char device_id[ZEGO_EXPRESS_MAX_COMMON_LEN + 1];
-    char device_name[ZEGO_EXPRESS_MAX_COMMON_LEN + 1];
+    char device_id[ZEGO_EXPRESS_MAX_COMMON_LEN];
+    char device_name[ZEGO_EXPRESS_MAX_COMMON_LEN];
 };
 
 struct zego_sound_level_info
 {
-    char stream_id[ZEGO_EXPRESS_MAX_STREAM_LEN + 1];
+    char stream_id[ZEGO_EXPRESS_MAX_STREAM_LEN];
     double sound_level;
 };
 
 struct zego_audio_spectrum_info
 {
-    char stream_id[ZEGO_EXPRESS_MAX_STREAM_LEN + 1];
+    char stream_id[ZEGO_EXPRESS_MAX_STREAM_LEN];
     float* spectrum_list;
     unsigned int spectrum_count;
 };
@@ -677,7 +667,7 @@ enum zego_audio_capture_channel_type
 
 struct zego_broadcast_message_info
 {
-    char message[ZEGO_EXPRESS_MAX_MESSAGE_LEN + 1];
+    char message[ZEGO_EXPRESS_MAX_MESSAGE_LEN];
     unsigned long long message_id;
     unsigned long long send_time;
     struct zego_user from_user;
@@ -685,7 +675,7 @@ struct zego_broadcast_message_info
 
 struct zego_barrage_message_info
 {
-    char message[ZEGO_EXPRESS_MAX_MESSAGE_LEN + 1];
+    char message[ZEGO_EXPRESS_MAX_MESSAGE_LEN];
     char message_id[64];
     unsigned long long send_time;
     struct zego_user from_user;
@@ -722,6 +712,8 @@ struct zego_video_frame_param
     int strides[4];
     int width;
     int height;
+    
+    int rotation;
 };
 
 struct zego_video_encoded_frame_param
@@ -833,8 +825,8 @@ namespace ZEGO {
             void mutePublishStreamAudio(bool mute, enum zego_publish_channel channel = zego_publish_channel_main);
             void mutePublishStreamVideo(bool mute, enum zego_publish_channel channel = zego_publish_channel_main);
             void setCaptureVolume(int volume);
-            int addPublishCNDURL(const char * streamID, const char *  targetURL);
-            int removePublishCNDURL(const char * streamID, const char *  targetURL);
+            int addPublishCdnUrl(const char * streamID, const char *  targetURL);
+            int removePublishCdnUrl(const char * streamID, const char *  targetURL);
             void enablePublishDirectToCDN(bool enable, zego_cdn_config* config, enum zego_publish_channel channel = zego_publish_channel_main);
             void setPublishWatermark(zego_watermark* watermark, bool isPreviewVisible, enum zego_publish_channel channel =  zego_publish_channel_main);
             void enableHardwareEncoder(bool enable);
@@ -854,7 +846,8 @@ namespace ZEGO {
             void enableCheckPoc(bool enable);
 
             // device
-            void muteMicrophone(bool enable);
+            void muteMicrophone(bool mute);
+            void muteSpeaker(bool mute);
             void muteAudioOutput(bool mute);
             void enableCamera(bool enable, enum zego_publish_channel channel = zego_publish_channel_main);
             void enableAudioCaptureDevice(bool enable);
@@ -932,7 +925,7 @@ namespace ZEGO {
             void registerPublisherRecvVideoCapturedFirstFrameCallback(void* callback_func, void* user_context);
             void registerPublisherVideoSizeChangedCallback(void* callback_func, void* user_context);
             void registerPublisherRelayCDNStateUpdateCallback(void *callback_func, void *user_context);
-            void registerPublisherUpdatePublishCDNUrlCallback(void* callback_func, void* user_context);
+            void registerPublisherUpdatePublishCdnUrlCallback(void* callback_func, void* user_context);
             void registerPublisherUpdateStreamExtraInfoResultCallback(void* callback_func, void* user_context);
 
             void registerPlayerStateUpdateCallback(void* callback_func, void* user_context);
@@ -1007,6 +1000,7 @@ namespace ZEGO {
             zego_language debugVerboseLanguage = zego_language_english;
             bool debugVerboseEnabled = true;
             bool isTestEnv = false;
+            bool enableErrorMessageBox = true;
         };
 
     }

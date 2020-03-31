@@ -2,7 +2,7 @@
 #ifndef __ZEGOEXPRESSENGINEIMP_H__
 #define __ZEGOEXPRESSENGINEIMP_H__
 
-#include "ZegoExpressInterfaces.h"
+#include "../ZegoExpressInterface.h"
 #include "ZegoInternalBridge.h"
 
 namespace ZEGO
@@ -72,8 +72,8 @@ public:
         zego_user _user;
         memset(_user.userId, 0, sizeof(_user.userId));
         memset(_user.userName, 0, sizeof(_user.userName));
-        strncpy(_user.userId, user.userID.c_str(), ZEGO_EXPRESS_MAX_USERID_LEN);
-        strncpy(_user.userName, user.userName.c_str(), ZEGO_EXPRESS_MAX_USERNAME_LEN);
+        ZegoStrncpy(_user.userId, user.userID.c_str(), ZEGO_EXPRESS_MAX_USERID_LEN);
+        ZegoStrncpy(_user.userName, user.userName.c_str(), ZEGO_EXPRESS_MAX_USERNAME_LEN);
         return _user;
     }
 
@@ -83,7 +83,7 @@ public:
         _config.max_member_count = config.maxMemberCount;
         _config.is_user_status_notify = config.isUserStatusNotify;
         memset(_config.thrid_token, 0, sizeof(_config.thrid_token));
-        strncpy(_config.thrid_token, config.token.c_str(), ZEGO_EXPRESS_MAX_COMMON_LEN);
+        ZegoStrncpy(_config.thrid_token, config.token.c_str(), ZEGO_EXPRESS_MAX_COMMON_LEN);
         return _config;
     }
 
@@ -196,8 +196,8 @@ public:
         zego_cdn_config _config;
         memset(_config.url, 0, sizeof(_config.url));
         memset(_config.auth_param, 0, sizeof(_config.auth_param));
-        strncpy(_config.url, config.URL.c_str(), ZEGO_EXPRESS_MAX_URL_LEN);
-        strncpy(_config.auth_param, config.authParam.c_str(), ZEGO_EXPRESS_MAX_COMMON_LEN);
+        ZegoStrncpy(_config.url, config.url.c_str(), ZEGO_EXPRESS_MAX_URL_LEN);
+        ZegoStrncpy(_config.auth_param, config.authParam.c_str(), ZEGO_EXPRESS_MAX_COMMON_LEN);
         return _config;
     }
 
@@ -211,7 +211,7 @@ public:
         _input.layout.bottom = input.layout.y + input.layout.height;
         _input.sound_level_id = input.soundLevelID;
         memset(_input.stream_id, 0, sizeof(_input.stream_id));
-        strncpy(_input.stream_id, input.streamID.c_str(), ZEGO_EXPRESS_MAX_STREAM_LEN);
+        ZegoStrncpy(_input.stream_id, input.streamID.c_str(), ZEGO_EXPRESS_MAX_STREAM_LEN);
         return _input;
     }
 
@@ -219,7 +219,7 @@ public:
     {
         zego_mixer_output _output;
         memset(_output.target, 0, sizeof(_output.target));
-        strncpy(_output.target, output.target.c_str(), ZEGO_EXPRESS_MAX_URL_LEN);
+        ZegoStrncpy(_output.target, output.target.c_str(), ZEGO_EXPRESS_MAX_URL_LEN);
 
         _output.audio_config = O2IMixerAudioConfig(output.audioConfig);
         _output.video_config = O2IMixerVideoConfig(output.videoConfig);
@@ -253,7 +253,7 @@ public:
         _watermark.layout.top = watermark.layout.y;
         _watermark.layout.bottom = watermark.layout.y + watermark.layout.height;
         memset(_watermark.image, 0, sizeof(_watermark.image));
-        strncpy(_watermark.image, watermark.imageURL.c_str(), ZEGO_EXPRESS_MAX_COMMON_LEN);
+        ZegoStrncpy(_watermark.image, watermark.imageURL.c_str(), ZEGO_EXPRESS_MAX_COMMON_LEN);
         return _watermark;
     }
 };
@@ -655,10 +655,10 @@ public:
 
     void setStreamExtraInfo(const std::string &extraInfo, ZegoPublisherSetStreamExtraInfoCallback callback) override
     {
-        setStreamExtraInfo(extraInfo, callback, ZEGO_PUBLISH_CHANNEL_MAIN);
+        setStreamExtraInfo(extraInfo, ZEGO_PUBLISH_CHANNEL_MAIN, callback);
     }
 
-    void setStreamExtraInfo(const std::string &extraInfo, ZegoPublisherSetStreamExtraInfoCallback callback, ZegoPublishChannel channel) override
+    void setStreamExtraInfo(const std::string &extraInfo, ZegoPublishChannel channel, ZegoPublisherSetStreamExtraInfoCallback callback) override
     {
         const char *_extraInfo = extraInfo.c_str();
         int seq = ZegoCBridge->setStreamExtraInfo(_extraInfo, zego_publish_channel(channel));
@@ -694,12 +694,12 @@ public:
         ZegoCBridge->setCaptureVolume(volume);
     }
 
-    void addPublishCDNURL(const std::string &streamID, const std::string &targetURL, ZegoPublisherUpdateCDNURLCallback callback) override
+    void addPublishCdnUrl(const std::string &streamID, const std::string &targetURL, ZegoPublisherUpdateCdnUrlCallback callback) override
     {
         const char *stream_id = streamID.c_str();
         const char *target_url = targetURL.c_str();
 
-        int seq = ZegoCBridge->addPublishCNDURL(stream_id, target_url);
+        int seq = ZegoCBridge->addPublishCdnUrl(stream_id, target_url);
         if (callback != nullptr)
         {
             std::lock_guard<std::mutex> lock(mEngineEventHandlerMutex);
@@ -707,12 +707,12 @@ public:
         }
     }
 
-    void removePublishCDNURL(const std::string &streamID, const std::string &targetURL, ZegoPublisherUpdateCDNURLCallback callback) override
+    void removePublishCdnUrl(const std::string &streamID, const std::string &targetURL, ZegoPublisherUpdateCdnUrlCallback callback) override
     {
         const char *stream_id = streamID.c_str();
         const char *target_url = targetURL.c_str();
 
-        int seq = ZegoCBridge->removePublishCNDURL(stream_id, target_url);
+        int seq = ZegoCBridge->removePublishCdnUrl(stream_id, target_url);
         if (callback != nullptr)
         {
             std::lock_guard<std::mutex> lock(mEngineEventHandlerMutex);
@@ -812,9 +812,9 @@ public:
         }
         zego_player_config _config;
         zego_cdn_config cdn_cofig;
-        if (config.CDNConfig)
+        if (config.cdnConfig)
         {
-            cdn_cofig = ZegoExpressConvert::O2ICDNConfig(*config.CDNConfig);
+            cdn_cofig = ZegoExpressConvert::O2ICDNConfig(*config.cdnConfig);
             _config.cdn_config = &cdn_cofig;
         }
         else
@@ -836,9 +836,9 @@ public:
         const char *stream_id = streamID.c_str();
         zego_player_config _config;
         zego_cdn_config cdn_cofig;
-        if (config.CDNConfig)
+        if (config.cdnConfig)
         {
-            cdn_cofig = ZegoExpressConvert::O2ICDNConfig(*config.CDNConfig);
+            cdn_cofig = ZegoExpressConvert::O2ICDNConfig(*config.cdnConfig);
             _config.cdn_config = &cdn_cofig;
         }
         else
@@ -890,9 +890,9 @@ public:
         ZegoCBridge->muteMicrophone(enable);
     }
 
-    void muteAudioOutput(bool mute) override
+    void muteSpeaker(bool mute) override
     {
-        ZegoCBridge->muteAudioOutput(mute);
+        ZegoCBridge->muteSpeaker(mute);
     }
 
     void enableCamera(bool enable) override
@@ -1053,7 +1053,7 @@ public:
         zego_mixer_task _task;
 
         memset(_task.task_id, 0, sizeof(_task.task_id));
-        strncpy(_task.task_id, task.taskID.c_str(), ZEGO_EXPRESS_MAX_MIXER_TASK_LEN);
+        ZegoStrncpy(_task.task_id, task.taskID.c_str(), ZEGO_EXPRESS_MAX_MIXER_TASK_LEN);
 
         std::vector<zego_mixer_input> input_list;
         {
@@ -1089,7 +1089,7 @@ public:
         }
 
         memset(_task.background_image_url, 0, sizeof(_task.background_image_url));
-        strncpy(_task.background_image_url, task.backgroundImageURL.c_str(), ZEGO_EXPRESS_MAX_URL_LEN);
+        ZegoStrncpy(_task.background_image_url, task.backgroundImageURL.c_str(), ZEGO_EXPRESS_MAX_URL_LEN);
 
         _task.enable_sound_level = task.enableSoundLevel;
 
@@ -1185,6 +1185,12 @@ public:
     {
         std::lock_guard<std::mutex> locker(mEngineRenderHandlerMutex);
         mCustomVideoRenderHandler = videoRenderHandler;
+    }
+
+    //===================================================================================================
+    void muteAudioOutput(bool mute) override
+    {
+        ZegoCBridge->muteAudioOutput(mute);
     }
 
 public:
@@ -1374,7 +1380,7 @@ public:
     static void zego_on_publisher_update_cdn_url_result(const char *stream_id, zego_error error_code, zego_seq seq, void *user_context)
     {
         ZEGO_UNUSED_VARIABLE(stream_id);
-        ZegoPublisherUpdateCDNURLCallback callback = nullptr;
+        ZegoPublisherUpdateCdnUrlCallback callback = nullptr;
         {
             ZegoExpressEngineImpPtr pthis = ZegoExpressEngineImpPtr(user_context);
             std::lock_guard<std::recursive_mutex> locker(ZegoExpressGD->EngineMutex);
@@ -1405,7 +1411,7 @@ public:
         {
             zego_stream_relay_cdn_info _info = state_info_list[i];
             ZegoStreamRelayCDNInfo info;
-            info.URL = _info.url;
+            info.url = _info.url;
             info.stateTime = _info.state_time;
             info.state = ZegoStreamRelayCDNState(_info.cdn_state);
             info.updateReason = ZegoStreamRelayCDNUpdateReason(_info.update_reason);
@@ -1917,7 +1923,7 @@ public:
         {
             zego_stream_relay_cdn_info _info = cdn_info_list[i];
             ZegoStreamRelayCDNInfo info;
-            info.URL = _info.url;
+            info.url = _info.url;
             info.stateTime = _info.state_time;
             info.state = ZegoStreamRelayCDNState(_info.cdn_state);
             info.updateReason = ZegoStreamRelayCDNUpdateReason(_info.update_reason);
@@ -1928,7 +1934,7 @@ public:
         ZEGO_SWITCH_THREAD_PRE
         auto handler = weakHandler.lock();
         if (handler)
-            handler->onMixerRelayCDNStateUpdate(streamInfoList, taskID);
+            handler->onMixerRelayCDNStateUpdate(taskID, streamInfoList);
         ZEGO_SWITCH_THREAD_ING
     }
 
@@ -2123,7 +2129,7 @@ private:
     std::shared_ptr<IZegoEventHandler> mEventHandler;
 
     std::unordered_map<zego_seq, ZegoPublisherSetStreamExtraInfoCallback> StreamExtraInfoCallbacks;
-    std::unordered_map<zego_seq, ZegoPublisherUpdateCDNURLCallback> CDNCallbacks;
+    std::unordered_map<zego_seq, ZegoPublisherUpdateCdnUrlCallback> CDNCallbacks;
     std::unordered_map<zego_seq, ZegoIMSendBroadcastMessageCallback> IMSendBroadcastMessageCallbacks;
     std::unordered_map<zego_seq, ZegoIMSendBarrageMessageCallback> IMSendBarrageMessageCallbacks;
     std::unordered_map<zego_seq, ZegoIMSendCustomCommandCallback> IMSendCustomCommandCallbacks;
@@ -2158,7 +2164,7 @@ public:
         else
         {
             memset(_logConfig.log_path, 0, sizeof(_logConfig.log_path));
-            strncpy(_logConfig.log_path, engineConfig.logConfig->logPath.c_str(), ZEGO_EXPRESS_MAX_USERID_LEN);
+            ZegoStrncpy(_logConfig.log_path, engineConfig.logConfig->logPath.c_str(), ZEGO_EXPRESS_MAX_USERID_LEN);
             _logConfig.log_size = engineConfig.logConfig->logSize;
             _engineConfig.log_config = &_logConfig;
         }
@@ -2199,7 +2205,7 @@ public:
         }
 
         memset(_engineConfig.advanced_config, 0, sizeof(_engineConfig.advanced_config));
-        strncpy(_engineConfig.advanced_config, engineConfig.advancedConfig.c_str(), ZEGO_EXPRESS_MAX_USERID_LEN);
+        ZegoStrncpy(_engineConfig.advanced_config, engineConfig.advancedConfig.c_str(), ZEGO_EXPRESS_MAX_USERID_LEN);
 
         ZegoCBridge->setEngineConfig(_engineConfig);
     }
@@ -2222,7 +2228,7 @@ public:
         ZegoCBridge->registerPublisherRecvAudioCapturedFirstFrameCallback(ZegoVoidPtr(&ZegoExpressEngineImp::zego_on_publisher_recv_audio_captured_first_frame), ZegoVoidPtr(this));
         ZegoCBridge->registerPublisherRecvVideoCapturedFirstFrameCallback(ZegoVoidPtr(&ZegoExpressEngineImp::zego_on_publisher_recv_video_captured_first_frame), ZegoVoidPtr(this));
         ZegoCBridge->registerPublisherVideoSizeChangedCallback(ZegoVoidPtr(&ZegoExpressEngineImp::zego_on_publisher_video_size_changed), ZegoVoidPtr(this));
-        ZegoCBridge->registerPublisherUpdatePublishCDNUrlCallback(ZegoVoidPtr(&ZegoExpressEngineImp::zego_on_publisher_update_cdn_url_result), ZegoVoidPtr(this));
+        ZegoCBridge->registerPublisherUpdatePublishCdnUrlCallback(ZegoVoidPtr(&ZegoExpressEngineImp::zego_on_publisher_update_cdn_url_result), ZegoVoidPtr(this));
         ZegoCBridge->registerPublisherRelayCDNStateUpdateCallback(ZegoVoidPtr(&ZegoExpressEngineImp::zego_on_publisher_relay_cdn_state_update), ZegoVoidPtr(this));
         ZegoCBridge->registerPublisherUpdateStreamExtraInfoResultCallback(ZegoVoidPtr(&ZegoExpressEngineImp::zego_on_publisher_update_stream_extra_info_result), ZegoVoidPtr(this));
 
