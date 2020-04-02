@@ -538,10 +538,10 @@ struct zego_mixer_output
     char target[ZEGO_EXPRESS_MAX_URL_LEN];
     
     
-    struct zego_mixer_video_config video_config;
     
     
-    struct zego_mixer_audio_config audio_config;
+    
+    
 };
 
 struct zego_watermark
@@ -572,6 +572,10 @@ struct zego_mixer_task
     
     struct zego_mixer_output* output_list;
     unsigned int output_list_count;
+
+    struct zego_mixer_video_config video_config;
+
+    struct zego_mixer_audio_config audio_config;
     
     
     struct zego_watermark* watermark;

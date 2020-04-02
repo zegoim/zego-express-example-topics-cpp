@@ -220,9 +220,6 @@ public:
         zego_mixer_output _output;
         memset(_output.target, 0, sizeof(_output.target));
         ZegoStrncpy(_output.target, output.target.c_str(), ZEGO_EXPRESS_MAX_URL_LEN);
-
-        _output.audio_config = O2IMixerAudioConfig(output.audioConfig);
-        _output.video_config = O2IMixerVideoConfig(output.videoConfig);
         return _output;
     }
 
@@ -1076,6 +1073,9 @@ public:
         }
         _task.output_list = output_list.data();
         _task.output_list_count = u_int(output_list.size());
+
+        _task.audio_config = ZegoExpressConvert::O2IMixerAudioConfig(task.audioConfig);
+        _task.video_config = ZegoExpressConvert::O2IMixerVideoConfig(task.videoConfig);
 
         zego_watermark _watermark;
         if (task.watermark != nullptr)

@@ -983,7 +983,7 @@ namespace ZEGO {
             ZegoMixerInput() : contentType(ZEGO_MIXER_INPUT_CONTENT_TYPE_VIDEO), soundLevelID(0){
             }
 
-            ZegoMixerInput(std::string streamID, ZegoMixerInputContentType contentType, ZegoRect layout, int soundLevelID): streamID(streamID), contentType(contentType), layout(layout), soundLevelID(soundLevelID){
+            ZegoMixerInput(std::string streamID, ZegoMixerInputContentType contentType, ZegoRect layout, unsigned int soundLevelID): streamID(streamID), contentType(contentType), layout(layout), soundLevelID(soundLevelID){
             }
 
         };
@@ -992,12 +992,6 @@ namespace ZEGO {
         {
             /** 混流输出目标，URL 或者流 ID */
             std::string target;
-
-            /** 混流音频配置 */
-            ZegoMixerAudioConfig audioConfig;
-
-            /** 混流视频配置 */
-            ZegoMixerVideoConfig videoConfig;
 
             ZegoMixerOutput(){
             }
@@ -1027,6 +1021,12 @@ namespace ZEGO {
         {
             /** 混流任务 ID */
             std::string taskID;
+
+            /** 混流任务的音频配置 */
+            ZegoMixerAudioConfig audioConfig;
+
+            /** 混流任务的视频配置 */
+            ZegoMixerVideoConfig videoConfig;
 
             /** 混流任务的输入流列表 */
             std::vector<ZegoMixerInput> inputList;

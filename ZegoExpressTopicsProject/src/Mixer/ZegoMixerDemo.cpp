@@ -86,24 +86,23 @@ void ZegoMixerDemo::on_pushButton_start_mixer_task_clicked()
     auto mixerTaskID = ZegoUtilHelper::getRandomString();
     ZegoMixerTask task(mixerTaskID);
 
-    // 1. MixerTask-OutputList
+    // 1 Set VideoConfig for the output
+    ZegoMixerVideoConfig videoConfig;
+    task.videoConfig = videoConfig;
+
+    // 2 Set AudioConfig for the output
+    ZegoMixerAudioConfig audioConfig;
+    task.audioConfig = audioConfig;
+
+    // 3. MixerTask-OutputList
     ZegoMixerOutput mixerOutput;
     std::string target = ui->lineEdit_output_streamID->text().toStdString();
     mixerOutput.target = target;
-
-    // 1.1 Set VideoConfig for the output
-    ZegoMixerVideoConfig videoConfig;
-    mixerOutput.videoConfig = videoConfig;
-
-    // 1.1 Set AudioConfig for the output
-    ZegoMixerAudioConfig audioConfig;
-    mixerOutput.audioConfig = audioConfig;
-
     task.outputList = {mixerOutput};
 
-    // 2. MixerTask-InputList
+    // 4. MixerTask-InputList
 
-    // 2.1 Set the first Input
+    // 4.1 Set the first Input
     ZegoMixerInput mixerInput1;
     mixerInput1.streamID = ui->comboBox_input_streamID1->currentText().toStdString();
     mixerInput1.contentType = ZEGO_MIXER_INPUT_CONTENT_TYPE_VIDEO;
@@ -113,7 +112,7 @@ void ZegoMixerDemo::on_pushButton_start_mixer_task_clicked()
     mixerInput1.layout.width = videoConfig.width/2;
     mixerInput1.layout.height = videoConfig.height;
 
-    // 2.2 Set the second Input
+    // 4.2 Set the second Input
     ZegoMixerInput mixerInput2;
     mixerInput2.streamID = ui->comboBox_input_streamID2->currentText().toStdString();
     mixerInput2.contentType = ZEGO_MIXER_INPUT_CONTENT_TYPE_VIDEO;
@@ -125,14 +124,14 @@ void ZegoMixerDemo::on_pushButton_start_mixer_task_clicked()
 
     task.inputList = {mixerInput1, mixerInput2};
 
-    // 3. MixerTask-watermark:(option)
+    // 5. MixerTask-watermark:(option)
     watermark = std::make_shared<ZegoWatermark>();
     watermark->imageURL = "preset-id://zegowp.png";
     // the watermark layout the top-left corner of the output
     watermark->layout = ZegoRect(0, 0, 100, 100);
     task.watermark = watermark.get();
 
-    // 4. MixerTask-backgroundImage:(option)
+    // 6. MixerTask-backgroundImage:(option)
     task.backgroundImageURL = "preset-id://zegobg.png";
 
     currentTask = task;

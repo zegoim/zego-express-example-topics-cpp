@@ -222,12 +222,6 @@ void ZegoApiMonkeyDemo::on_pushButton_start_mixer_task_clicked()
             QJsonObject outputItemObject = inputItemValue.toObject();
             output.target = outputItemObject["target"].toString().toStdString();
             outputList.push_back(output);
-            
-            ZegoMixerVideoConfig videoConfig;
-            output.videoConfig = videoConfig;
-
-            ZegoMixerAudioConfig audioConfig;
-            output.audioConfig = audioConfig;
         }
         task.outputList = outputList;
     }

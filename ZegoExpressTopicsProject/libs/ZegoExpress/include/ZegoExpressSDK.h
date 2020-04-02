@@ -1,4 +1,9 @@
-﻿
+﻿//
+//  Version: 1.5.5.153_stable
+//
+//  Copyright © 2019 Zego. All rights reserved.
+//
+
 #ifndef __ZEGOEXPRESSSDK_H__
 #define __ZEGOEXPRESSSDK_H__
 
