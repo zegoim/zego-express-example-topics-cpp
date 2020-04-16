@@ -48,9 +48,9 @@ source_group_by_dir(All_SOURCES)
 
 
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
-include_directories(${CMAKE_CURRENT_LIST_DIR}/../libs/ZegoExpress/include
+include_directories(${CMAKE_CURRENT_LIST_DIR}/../libs/ZegoExpress/win/include
                     ${CMAKE_CURRENT_LIST_DIR})
-link_directories(${CMAKE_CURRENT_LIST_DIR}/../libs/ZegoExpress/lib/${WINDOWS_PLATFORM})
+link_directories(${CMAKE_CURRENT_LIST_DIR}/../libs/ZegoExpress/win/lib/${WINDOWS_PLATFORM})
 
 set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /MD")
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MDd")
@@ -68,7 +68,7 @@ qt5_use_modules(${PROJECT_NAME} Core)
 qt5_use_modules(${PROJECT_NAME} Gui)
 qt5_use_modules(${PROJECT_NAME} Widgets)
 
-set(ZegoExpressEnginedll ${CMAKE_CURRENT_LIST_DIR}/../libs/ZegoExpress/lib/${WINDOWS_PLATFORM}/ZegoExpressEngine.dll)
+set(ZegoExpressEnginedll ${CMAKE_CURRENT_LIST_DIR}/../libs/ZegoExpress/win/lib/${WINDOWS_PLATFORM}/ZegoExpressEngine.dll)
 add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD 
                    COMMAND ${CMAKE_COMMAND} -E copy ${ZegoExpressEnginedll} ${CMAKE_CURRENT_LIST_DIR}/../bin/$(CONFIGURATION)
                    )

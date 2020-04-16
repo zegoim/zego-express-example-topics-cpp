@@ -1,0 +1,13 @@
+{
+    "sdk_path_on_oss": "https://storage.zego.im/express/video/windows/en/zego-express-video-windows-en-1.6.0.zip",
+    "copy_file_dirs": [
+        {
+          "src": "include",
+          "dst": "../libs/ZegoExpress/win/include"
+        },
+        {
+          "src": "lib",
+          "dst": "../libs/ZegoExpress/win/lib"
+        }
+      ]
+}
