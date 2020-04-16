@@ -39,8 +39,8 @@ public:
     void onDeviceError(int errorCode, const std::string& deviceName) override;
     void onRemoteCameraStateUpdate(const std::string& streamID, ZegoRemoteDeviceState state) override;
     void onRemoteMicStateUpdate(const std::string& streamID, ZegoRemoteDeviceState state) override;
-    void onCapturedSoundLevelUpdate(double soundLevel) override;
-    void onRemoteSoundLevelUpdate(const std::map<std::string, double>& soundLevels) override;
+    void onCapturedSoundLevelUpdate(float soundLevel) override;
+    void onRemoteSoundLevelUpdate(const std::map<std::string, float>& soundLevels) override;
     void onCapturedAudioSpectrumUpdate(const ZegoAudioSpectrum& frequencySpectrum) override;
     void onRemoteAudioSpectrumUpdate(const std::map<std::string, ZegoAudioSpectrum>& frequencySpectrums) override;
 
@@ -79,8 +79,8 @@ signals:
     void sigDeviceError(int errorCode, const std::string& deviceName);
     void sigRemoteCameraStateUpdate(const std::string& streamID, ZegoRemoteDeviceState state);
     void sigRemoteMicStateUpdate(const std::string& streamID, ZegoRemoteDeviceState state);
-    void sigCapturedSoundLevelUpdate(double soundLevel);
-    void sigRemoteSoundLevelUpdate(const std::map<std::string, double>& soundLevels);
+    void sigCapturedSoundLevelUpdate(float soundLevel);
+    void sigRemoteSoundLevelUpdate(const std::map<std::string, float>& soundLevels);
     void sigCapturedAudioSpectrumUpdate(const ZegoAudioSpectrum& frequencySpectrum);
     void sigRemoteAudioSpectrumUpdate(const std::map<std::string, ZegoAudioSpectrum>& frequencySpectrums);
 

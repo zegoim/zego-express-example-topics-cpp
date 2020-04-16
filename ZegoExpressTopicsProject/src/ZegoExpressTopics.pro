@@ -101,9 +101,6 @@ qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
-INCLUDEPATH += $$PWD/../libs/ZegoExpress/include
-DEPENDPATH  += $$PWD/../libs/ZegoExpress/include
-
 debug {
     DESTDIR = $$PWD/../bin/debug
 }
@@ -112,10 +109,13 @@ release {
 }
 
 msvc {
+    INCLUDEPATH += $$PWD/../libs/ZegoExpress/win/include
+    DEPENDPATH  += $$PWD/../libs/ZegoExpress/win/include
+
     contains(QT_ARCH, i386) {
-        LIBS += -L$$PWD/../libs/ZegoExpress/lib/x86 -lZegoExpressEngine
+        LIBS += -L$$PWD/../libs/ZegoExpress/win/lib/x86 -lZegoExpressEngine
     } else {
-        LIBS += -L$$PWD/../libs/ZegoExpress/lib/x64 -lZegoExpressEngine
+        LIBS += -L$$PWD/../libs/ZegoExpress/win/lib/x64 -lZegoExpressEngine
     }
 
     LIBS +=  \
@@ -124,8 +124,11 @@ msvc {
 }
 
 macx {
+    INCLUDEPATH += $$PWD/../libs/ZegoExpress/mac/include
+    DEPENDPATH  += $$PWD/../libs/ZegoExpress/mac/include
+
     QMAKE_CXXFLAGS += -x objective-c++
     LIBS += -framework Foundation
-    LIBS += -L$$PWD/../libs/ZegoExpress/lib/ -lZegoExpressEngine
+    LIBS += -L$$PWD/../libs/ZegoExpress/mac/lib/ -lZegoExpressEngine
 }
 

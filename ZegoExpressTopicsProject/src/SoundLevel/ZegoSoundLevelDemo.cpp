@@ -70,7 +70,7 @@ void ZegoSoundLevelDemo::onRoomStreamUpdate(const std::string &roomID, ZegoUpdat
     });
 }
 
-void ZegoSoundLevelDemo::onCapturedSoundLevelUpdate(double soundLevel)
+void ZegoSoundLevelDemo::onCapturedSoundLevelUpdate(float soundLevel)
 {
     if(!soundFrameMap.contains(userID)){
         return;
@@ -80,7 +80,7 @@ void ZegoSoundLevelDemo::onCapturedSoundLevelUpdate(double soundLevel)
     soundFrame->updateSoundLevel(soundLevel);
 }
 
-void ZegoSoundLevelDemo::onPlayerSoundLevelUpdate(const std::map<std::string, double> &soundLevels)
+void ZegoSoundLevelDemo::onPlayerSoundLevelUpdate(const std::map<std::string, float> &soundLevels)
 {
     for(auto iter=soundLevels.begin(); iter!=soundLevels.end(); iter++){
         if(!soundFrameMap.contains(iter->first)){

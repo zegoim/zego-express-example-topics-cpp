@@ -303,12 +303,12 @@ void ZegoEventHandlerWithLogger::onRemoteMicStateUpdate(const std::string &strea
     ZegoEventHandlerQt::onRemoteMicStateUpdate(streamID,  state);
 }
 
-void ZegoEventHandlerWithLogger::onCapturedSoundLevelUpdate(double soundLevel)
+void ZegoEventHandlerWithLogger::onCapturedSoundLevelUpdate(float soundLevel)
 {
     ZegoEventHandlerQt::onCapturedSoundLevelUpdate(soundLevel);
 }
 
-void ZegoEventHandlerWithLogger::onRemoteSoundLevelUpdate(const std::map<std::string, double> &soundLevels)
+void ZegoEventHandlerWithLogger::onRemoteSoundLevelUpdate(const std::map<std::string, float> &soundLevels)
 {
     ZegoEventHandlerQt::onRemoteSoundLevelUpdate(soundLevels);
 }

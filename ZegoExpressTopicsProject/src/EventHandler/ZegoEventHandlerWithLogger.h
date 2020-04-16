@@ -39,8 +39,8 @@ public:
     void onDeviceError(int errorCode, const std::string& deviceName) override;
     void onRemoteCameraStateUpdate(const std::string& streamID, ZegoRemoteDeviceState state) override;
     void onRemoteMicStateUpdate(const std::string& streamID, ZegoRemoteDeviceState state) override;
-    void onCapturedSoundLevelUpdate(double soundLevel) override;
-    void onRemoteSoundLevelUpdate(const std::map<std::string, double>& soundLevels) override;
+    void onCapturedSoundLevelUpdate(float soundLevel) override;
+    void onRemoteSoundLevelUpdate(const std::map<std::string, float> &soundLevels) override;
     void onCapturedAudioSpectrumUpdate(const ZegoAudioSpectrum& frequencySpectrum) override;
     void onRemoteAudioSpectrumUpdate(const std::map<std::string, ZegoAudioSpectrum>& frequencySpectrums) override;
 

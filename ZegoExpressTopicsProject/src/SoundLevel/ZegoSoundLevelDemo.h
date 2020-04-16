@@ -24,8 +24,8 @@ public:
 
 public slots:
      void onRoomStreamUpdate(const std::string& roomID, ZegoUpdateType updateType, const std::vector<ZegoStream>& streamList);
-     void onCapturedSoundLevelUpdate(double soundLevel);
-     void onPlayerSoundLevelUpdate(const std::map<std::string, double>& soundLevels);
+     void onCapturedSoundLevelUpdate(float soundLevel);
+     void onPlayerSoundLevelUpdate(const std::map<std::string, float>& soundLevels);
      void onCapturedAudioSpectrumUpdate(const ZegoAudioSpectrum& audioSpectrum);
      void onRemoteAudioSpectrumUpdate(const std::map<std::string, ZegoAudioSpectrum>& audioSpectrums);
 

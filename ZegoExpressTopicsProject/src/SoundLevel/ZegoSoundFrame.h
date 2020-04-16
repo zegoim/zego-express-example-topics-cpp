@@ -13,13 +13,13 @@ class ZegoBarChart : public QWidget
 
 public:
     explicit ZegoBarChart(QWidget *parent = nullptr);
-    void updateBarData(std::vector<double> data);
+    void updateBarData(std::vector<float> data);
 
 protected:
     void paintEvent(QPaintEvent *e);
 
 private:
-    QVector<double> barData;
+    QVector<float> barData;
 };
 
 class ZegoSoundFrame: public QFrame{
@@ -27,8 +27,8 @@ class ZegoSoundFrame: public QFrame{
 public:
     explicit ZegoSoundFrame(QWidget *parent = nullptr, std::string streamID="");
 
-    void updateAudioSpectrum(std::vector<double> audioSpectrum);
-    void updateSoundLevel(double level);
+    void updateAudioSpectrum(std::vector<float> audioSpectrum);
+    void updateSoundLevel(float level);
 
 private:
     ZegoBarChart *audioSpectrumChart;

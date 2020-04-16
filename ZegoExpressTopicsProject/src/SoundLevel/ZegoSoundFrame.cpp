@@ -10,11 +10,11 @@ ZegoBarChart::ZegoBarChart(QWidget *parent) : QWidget(parent)
     this->setMinimumSize(100, 150);
 }
 
-void ZegoBarChart::updateBarData(std::vector<double> data)
+void ZegoBarChart::updateBarData(std::vector<float> data)
 {
     this->barData.clear();
     this->barData.reserve(int(data.size()));
-    for(const double&d: data){
+    for(const float&d: data){
         this->barData.append(d);
     }
     this->repaint();
@@ -78,12 +78,12 @@ ZegoSoundFrame::ZegoSoundFrame(QWidget *parent, std::string streamID): QFrame(pa
     vLayout->addLayout(hboxLevel);
 }
 
-void ZegoSoundFrame::updateAudioSpectrum(std::vector<double> audioSpectrum)
+void ZegoSoundFrame::updateAudioSpectrum(std::vector<float> audioSpectrum)
 {
-    std::vector<double> adjustedData;
+    std::vector<float> adjustedData;
     for(double valueTemp: audioSpectrum){
         // to dB
-        double dBValue = 0.0;
+        float dBValue = 0.0;
         if(valueTemp > 10){
             dBValue = 10.0 * log10(valueTemp);
         } else {
@@ -95,7 +95,7 @@ void ZegoSoundFrame::updateAudioSpectrum(std::vector<double> audioSpectrum)
     audioSpectrumChart->updateBarData(adjustedData);
 }
 
-void ZegoSoundFrame::updateSoundLevel(double level)
+void ZegoSoundFrame::updateSoundLevel(float level)
 {
     soundLevelChart->setValue(int(level));
 }
