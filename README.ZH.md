@@ -1,21 +1,45 @@
 # ZegoExpressSDK Topics - Qt Demo
 
-ZegoExpressSDK 符合 C++11 标准，支持跨平台开发。此示例 Qt Demo 可同时运行在 Mac 和 Win 平台。在实际开发中，如果用户采用了其他 UI 框架，也可参照此示例来调用 SDK 以实现不同的音视频功能逻辑。
+ZegoExpressSDK 采用 C++11 标准，支持跨平台开发。此示例 Qt Demo 可同时运行在 Win 和 Mac 平台。在实际开发中，如果用户采用了其他 UI 框架，也可参照此示例来调用 SDK 以实现不同的音视频功能逻辑。
 
 ## 1 准备环境
 
 请确保开发环境满足以下技术要求：
 
-* 操作系统 Windows7 或以上版本
-* 麦克风、摄像头等支持音视频功能的外部设备, 确保电脑网络连接正常
-* 安装 Visual Studio 2015 或以上版本
-* 安装 Qt5.9 及以上版本 [下载地址](http://download.qt.io/official_releases/qt/5.9/5.9.9/)
+windows:
 
-> 运行 Qt 安装程序，在选择组件页面里，请注意勾选您本机安装的 VS 对应版本的组件
+* 操作系统 Windows7 或以上版本
+* 安装了 Visual Studio 2015 或以上版本
+
+macOS:
+
+* 安装了 Xcode
+
+windows和macOS都需满足：
+
+* 确保电脑网络连接正常
+* 麦克风、摄像头等支持音视频功能的外部设备正常
+* 安装了 Qt5.9 及以上版本
+
+> Qt 的[下载地址](http://download.qt.io/official_releases/qt/5.9/5.9.9/)，首次使用 Qt 的开发者可阅读其官方教程 [Get Started](https://doc.qt.io/qt-5/gettingstarted.html)
 
 ## 2 运行示例代码
 
-### 2.1 填写 AppID 和 AppSign
+### 2.1 下载SDK
+
+windows: 双击 `ZegoExpressTopicsProject/DownloadSDK.bat` 即可
+
+macOS: 打开新的终端并执行：
+
+```bash
+    cd ZegoExpressTopicsProject
+    sudo chmod +x DownloadSDK.sh
+    ./DownloadSDK.sh
+```
+
+SDK 会被下载到 `ZegoExpressTopicsProject/deps/ZegoExpress` 目录里。如果下载过程中出错，可查看 `ZegoExpressTopicsProject/scripts/zpm.log` 以定位问题。
+
+### 2.2 填写 AppID 和 AppSign
 
 示例代码中缺少 SDK 创建引擎必须的 AppID 和 AppSign，请参考 [获取 AppID 和 AppSign 指引 \|_blank](https://doc.zego.im/API/HideDoc/GetExpressAppIDGuide/GetAppIDGuideline.html) 获取，并将 AppID 和 AppSign 填写进 `ZegoExpressTopicsProject/src/AppSupport/ZegoConfigManager.cpp` 文件。
 
@@ -31,7 +55,7 @@ std::string ZegoConfigManager::getAppSign()
 }
 ```
 
-### 2.2 编译运行
+### 2.3 编译运行
 
 #### 2.2.1 使用 Qt Creator 打开项目
 
@@ -39,7 +63,7 @@ std::string ZegoConfigManager::getAppSign()
 
 #### 2.2.2 生成 sln 工程文件 并使用 Visual Studio 打开
 
-Demo 支持跨平台开发，没有自带平台特有的 .sln 或 .xcodeproj 工程文件。可利用 cmake 生成对应工程。Windows 系统生成 sln 工程的具体步骤如下：
+Demo 没有自带平台特有的 .sln 或 .xcodeproj 工程文件。可利用 cmake 生成对应工程。Windows 系统生成 sln 工程的具体步骤如下：
 
 1. 安装 cmake ： [下载地址](https://cmake.org/download/)
 2. 设置 Path 环境变量：将 cmake 安装目录 `C:\Program Files\CMake\bin` 添加到 Path 环境变量中

@@ -1,21 +1,47 @@
 # ZegoExpressSDK Qt Demo
 
-ZegoExpressSDK is developed using C++11, and cross-platform development is supported. This Qt demo can be runed on both Mac and Win system.
+ZegoExpressSDK is developed using C++11, and cross-platform development is supported. This Qt demo can be run under windows and macOS system.
 
 ## 1 Prepare the environment
 
 Please ensure that the development environment meets the following technical requirements:
 
-* Operating system Windows7 or above
-* External devices that support audio and video functions such as microphones and cameras, and make sure the network is available.
-* Install Visual Studio 2015 or above
-* Install Qt 5.9.0 or above [Download here](http://download.qt.io/official_releases/qt/5.9/5.9.0/)
+windows:
+
+* windows7 or above
+* Visual Studio 2015 or above installed
+
+macOS:
+
+* Xcode installed
+
+Both windows and macOS:
+
+* Make sure the network available
+* Make sure audio and video Devices available
+* Qt 5.9.0 or above installed
+
+> you can [Download](http://download.qt.io/official_releases/qt/5.9/5.9.0/) Qt here and Read [Get Started](https://doc.qt.io/qt-5/gettingstarted.html) if you are new to Qt
 
 ## 2 Running the sample code
 
-### 2.1 Fill in AppID and AppSign
+### 2.1 Download SDK
 
-The AppID and AppSign required by the SDK are missing in the sample code, please refer to [Get AppID and AppSign Guidelines \| _blank](https://doc.zego.im/API/HideDoc/GetExpressAppIDGuide/GetAppIDGuideline.html) to obtain AppID and AppSign, and then fill the `ZegoExpressTopicsProject/src/AppSupport/ZegoConfigManager.cpp` file.
+windows: double click `ZegoExpressTopicsProject/DownloadSDK.bat`
+
+macOS: open a terminal and run command below
+
+```bash
+    cd ZegoExpressTopicsProject
+    sudo chmod +x DownloadSDK.sh
+    ./DownloadSDK.sh
+```
+
+ater that you will see the sdk downloaded under `ZegoExpressTopicsProject/deps/ZegoExpress`. More information can be found in `ZegoExpressTopicsProject/scripts/zpm.log` if error occurred.
+
+### 2.2 Fill in AppID and AppSign
+
+The AppID and AppSign required by SDK initialization are missing in the sample code, please refer to [Get AppID and AppSign Guidelines \| _blank](https://doc.zego.im/API/HideDoc/GetExpressAppIDGuide/GetAppIDGuideline.html) to obtain AppID and AppSign, and then fill the `ZegoExpressTopicsProject/src/AppSupport/ZegoConfigManager.cpp` file.
 
 ```c++
 unsigned int ZegoConfigManager::getAppID()
@@ -29,7 +55,7 @@ std::string ZegoConfigManager::getAppSign()
 }
 ```
 
-### 2.2 Build & Run
+### 2.3 Build & Run
 
 #### 2.2.1 Open project with Qt Creator
 
@@ -37,7 +63,7 @@ Use Qt Creator to open the `ZegoExpressTopicsProject/src/ZegoExpressTopics.pro` 
 
 #### 2.2.2 Generate sln project file and open it with Visual Studio
 
-Demo supports cross-platform development. There is no platform-specific .sln or .xcodeproj project file. CMake Can be used to generate the corresponding project. The specific steps for generating sln projects on Windows systems are as follows:
+There is no platform-specific .sln or .xcodeproj project file. CMake Can be used to generate the corresponding project. The specific steps for generating sln projects on Windows systems are as follows:
 
 1. Install cmake: [download address](https://cmake.org/download/)
 2. Set the Path environment variable: add the cmake installation directory `C:\Program Files\CMake\bin` to the Path environment variable
