@@ -109,6 +109,11 @@ release {
 }
 
 msvc {
+    MOC_DIR = $$PWD/../build-win/qmake_temp
+    RCC_DIR = $$PWD/../build-win/qmake_temp
+    UI_DIR = $$PWD/../build-win/qmake_temp
+    OBJECTS_DIR = $$PWD/../build-win/qmake_temp
+
     INCLUDEPATH += $$PWD/../libs/ZegoExpress/win/include
     DEPENDPATH  += $$PWD/../libs/ZegoExpress/win/include
 
@@ -124,11 +129,18 @@ msvc {
 }
 
 macx {
+    MOC_DIR = $$PWD/../build-mac/qmake_temp
+    RCC_DIR = $$PWD/../build-mac/qmake_temp
+    UI_DIR = $$PWD/../build-mac/qmake_temp
+    OBJECTS_DIR = $$PWD/../build-mac/qmake_temp
+
     INCLUDEPATH += $$PWD/../libs/ZegoExpress/mac/include
     DEPENDPATH  += $$PWD/../libs/ZegoExpress/mac/include
 
     QMAKE_CXXFLAGS += -x objective-c++
     LIBS += -framework Foundation
     LIBS += -L$$PWD/../libs/ZegoExpress/mac/lib/ -lZegoExpressEngine
+
+    QMAKE_INFO_PLIST = Info.plist
 }
 

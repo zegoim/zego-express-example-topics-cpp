@@ -7,6 +7,9 @@
 
 int main(int argc, char *argv[])
 {
+    setbuf(stderr, nullptr);
+    setbuf(stdout, nullptr);
+
 #ifdef WIN32
    SetUnhandledExceptionFilter(ExceptionFilter);
 #endif

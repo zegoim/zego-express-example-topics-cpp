@@ -15,7 +15,7 @@ unsigned int ZegoConfigManager::getAppID()
 
 std::string ZegoConfigManager::getAppSign()
 {
-    return "";    // input AppSign here
+    return "";  // input AppSign here
 }
 
 bool ZegoConfigManager::isTestEnviroment()

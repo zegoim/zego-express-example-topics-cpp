@@ -1,47 +1,44 @@
-# ZegoExpressSDK Topics - Qt Demo
+# ZegoExpressSDK Topics - cpp
 
-ZegoExpressSDK 采用 C++11 标准，支持跨平台开发。此示例 Qt Demo 可同时运行在 Win 和 Mac 平台。在实际开发中，如果用户采用了其他 UI 框架，也可参照此示例来调用 SDK 以实现不同的音视频功能逻辑。
+Zego Express CPP (windows/Mac) 示例专题 Demo
 
-## 1 准备环境
+## 准备环境
 
 请确保开发环境满足以下技术要求：
 
-windows:
-
-* 操作系统 Windows7 或以上版本
-* 安装了 Visual Studio 2015 或以上版本
-
-macOS:
-
-* 安装了 Xcode
-
-windows和macOS都需满足：
-
-* 确保电脑网络连接正常
-* 麦克风、摄像头等支持音视频功能的外部设备正常
+* Win系统：win7 及以上版本，安装了Visual Studio 2015 及以上版本
+* Mac系统：安装了 XCode
 * 安装了 Qt5.9 及以上版本
+* 麦克风、摄像头等支持音视频功能的外部设备正常
 
 > Qt 的[下载地址](http://download.qt.io/official_releases/qt/5.9/5.9.9/)，首次使用 Qt 的开发者可阅读其官方教程 [Get Started](https://doc.qt.io/qt-5/gettingstarted.html)
 
-## 2 运行示例代码
+## 下载SDK
 
-### 2.1 下载SDK
+如下所示是 demo 的文件目录。如果当前的工程目录中缺少对应平台的 SDK，请先手动下载SDK；如果当前工程目录中已经有了对应的 SDK，则请跳过此步。
 
-windows: 双击 `ZegoExpressTopicsProject/DownloadSDK.bat` 即可
-
-macOS: 打开新的终端并执行：
-
-```bash
-    cd ZegoExpressTopicsProject
-    sudo chmod +x DownloadSDK.sh
-    ./DownloadSDK.sh
+```c++
+|-------------------------------------------项目根目录
+    | README.md
+    | README.ZH.md
+    | ZegoExpressTopicsProject
+        | libs
+            | ZegoExpress
+                | win-----------------------win版本的sdk
+                    | include
+                    | lib
+                | mac-----------------------mac版本的sdk
+                    | include
+                    | lib
 ```
 
-SDK 会被下载到 `ZegoExpressTopicsProject/deps/ZegoExpress` 目录里。如果下载过程中出错，可查看 `ZegoExpressTopicsProject/scripts/zpm.log` 以定位问题。
+请从 [Zego开发者中心](https://doc-zh.zego.im/download/sdk) 下载对应平台的 SDK 解压后放到 `/ZegoExpressTopicsProject/deps/ZegoExpress` 目录里，如上所示。
 
-### 2.2 填写 AppID 和 AppSign
+## 运行
 
-示例代码中缺少 SDK 创建引擎必须的 AppID 和 AppSign，请参考 [获取 AppID 和 AppSign 指引 \|_blank](https://doc.zego.im/API/HideDoc/GetExpressAppIDGuide/GetAppIDGuideline.html) 获取，并将 AppID 和 AppSign 填写进 `ZegoExpressTopicsProject/src/AppSupport/ZegoConfigManager.cpp` 文件。
+### 填写 AppID 和 AppSign
+
+示例代码中缺少 SDK 创建引擎必须的 AppID 和 AppSign，请参考 [获取 AppID 和 AppSign 指引 \|_blank](https://doc.zego.im/API/HideDoc/GetExpressAppIDGuide/GetAppIDGuideline.html) 获取，并将 AppID 和 AppSign 填写进 `/ZegoExpressTopicsProject/src/AppSupport/ZegoConfigManager.cpp` 文件。
 
 ```c++
 unsigned int ZegoConfigManager::getAppID()
@@ -55,20 +52,30 @@ std::string ZegoConfigManager::getAppSign()
 }
 ```
 
-### 2.3 编译运行
+### 打开工程
 
-#### 2.2.1 使用 Qt Creator 打开项目
+ZegoExpressSDK 支持跨平台开发，示例自带了 Qt 工程文件，支持在 Win 和 Mac 上使用 Qt Creator 打开。
+对于需要使用 visual studio 或 XCode 的用户，示例提供了 cmakelist.txt 文件，用户可利用 CMake 生成平台特有的 .sln 或 .xcodeproj 工程文件
 
-使用 Qt Creator 打开 `ZegoExpressTopicsProject/src/ZegoExpressTopics.pro` 工程文件，点击构建、运行即可。
+#### 使用 Qt Creater 打开项目
 
-#### 2.2.2 生成 sln 工程文件 并使用 Visual Studio 打开
+1. 菜单栏/文件/打开文件或项目，选中 `/ZegoExpressTopicsProject/src/ZegoExpressTopics.pro` 工程文件
+2. 点击运行
 
-Demo 没有自带平台特有的 .sln 或 .xcodeproj 工程文件。可利用 cmake 生成对应工程。Windows 系统生成 sln 工程的具体步骤如下：
+#### 生成 .sln 工程文件
 
-1. 安装 cmake ： [下载地址](https://cmake.org/download/)
-2. 设置 Path 环境变量：将 cmake 安装目录 `C:\Program Files\CMake\bin` 添加到 Path 环境变量中
-3. 设置 Path 环境变量：将 Qt 安装目录 `C:\Qt\Qt5.9.8\5.9.8\msvc2015\bin` 添加到 Path 环境变量中
-4. 设置 `QT_DIR` 环境变量：设置 `QT_DIR` 环境变量为 `C:\Qt\Qt5.9.8\5.9.8\msvc2015` 目录
-5. 双击 `build-win/generate_vs2015_x86.bat`，将在 cmake_temp_x86 目录下生成的 sln工程
+下面给出的 CMake 和 Qt 路径供参考，用户需要填入自己机器上的实际路径。
 
-> 用户需要参照上面给出的 cmake 和 Qt 路径，找到并修改为用户本机实际的路径。
+1. 安装 CMake ： [下载地址](https://cmake.org/download/)
+2. 修改环境变量：给 Path 中添加 `C:\Program Files\CMake\bin`
+3. 修改环境变量：给 Path 中添加 `C:\Qt\Qt5.9.8\5.9.8\msvc2015\bin`
+4. 修改环境变量：给 Path 中添加 `C:\Qt\Qt5.9.8\5.9.8\msvc2015_64\bin`
+5. 添加用户变量：添加 `QT_DIR` 用户变量为 `C:\Qt\Qt5.9.8\5.9.8\msvc2015`
+6. 添加用户变量：添加 `QT_DIR_x64` 用户变量为 `C:\Qt\Qt5.9.8\5.9.8\msvc2015_64`
+7. 双击 `ZegoExpressTopicsProject\build-win\generate_vs2015_x86.bat`，将在 `ZegoExpressTopicsProject\build-win\cmake_temp_x86` 目录下生成的 32 位sln工程
+8. 双击 `ZegoExpressTopicsProject\build-win\generate_vs2015_x64.bat`，将在 `ZegoExpressTopicsProject\build-win\cmake_temp_x64` 目录下生成的 64 位sln工程
+
+#### 生成 .xcodeproj 工程文件
+
+1. 安装 CMake: [下载地址](https://cmake.org/download/)
+2. 执行 `ZegoExpressTopicsProject/build-mac/generate_mac.sh` 脚本, 将在 `ZegoExpressTopicsProject/build-mac/cmake_temp` 目录下生成xcode工程
