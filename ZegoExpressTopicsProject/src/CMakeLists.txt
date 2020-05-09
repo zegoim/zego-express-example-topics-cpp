@@ -101,16 +101,3 @@ if(WIN32)
             COMMAND ${CMAKE_COMMAND} -E copy ${ZegoExpressEnginedll} ${EXECUTABLE_OUTPUT_PATH}/$(CONFIGURATION)
     )
 endif(WIN32)
-
-if(APPLE)
-    set(ZegoExpressEnginedll ${CMAKE_CURRENT_LIST_DIR}/../libs/ZegoExpress/mac/lib/libZegoExpressEngine.dylib)
-    add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD 
-            COMMAND mkdir ${EXECUTABLE_OUTPUT_PATH}/$(CONFIGURATION)/${PROJECT_NAME}.app/Contents/Frameworks
-            COMMAND cp ${ZegoExpressEnginedll} ${EXECUTABLE_OUTPUT_PATH}/$(CONFIGURATION)/${PROJECT_NAME}.app/Contents/Frameworks
-    )
-endif(APPLE)
-
-
-
-
-
