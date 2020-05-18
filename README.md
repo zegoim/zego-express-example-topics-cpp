@@ -33,7 +33,7 @@ The Demo's directory is showed blow. If the SDK for your platform whether win or
                     | lib
 ```
 
-Download SDK From [Zego Developer Center](https://doc-en.zego.im/download/sdk) and unzip to `/ZegoExpressTopicsProject/deps/ZegoExpress` like above.
+Download SDK according to your os system: [windows SDK](https://storage.zego.im/express/video/windows/en/zego-express-video-windows-en.zip) | [mac SDK](https://storage.zego.im/express/video/mac-cpp/en/zego-express-video-mac-cpp-en.zip) and unzip to `/ZegoExpressTopicsProject/deps/ZegoExpress` like above.
 
 ## Run
 

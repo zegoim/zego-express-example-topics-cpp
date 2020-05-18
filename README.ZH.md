@@ -32,7 +32,7 @@ Zego Express CPP (windows/Mac) 示例专题 Demo
                     | lib
 ```
 
-请从 [Zego开发者中心](https://doc-zh.zego.im/download/sdk) 下载对应平台的 SDK 解压后放到 `/ZegoExpressTopicsProject/deps/ZegoExpress` 目录里，如上所示。
+下载对应平台的 SDK: [windows SDK](https://storage.zego.im/express/video/windows/en/zego-express-video-windows-en.zip) | [mac SDK](https://storage.zego.im/express/video/mac-cpp/en/zego-express-video-mac-cpp-en.zip), 并解压后放到 `/ZegoExpressTopicsProject/deps/ZegoExpress` 目录里，如上所示。
 
 ## 运行
 
