@@ -2,7 +2,6 @@
 #include "ui_ZegoAuxStreamDemo.h"
 
 #include "AppSupport/ZegoUtilHelper.h"
-#include "AppSupport/ZegoConfigManager.h"
 #include "EventHandler/ZegoEventHandlerWithLogger.h"
 
 ZegoAuxStreamDemo::ZegoAuxStreamDemo(QWidget *parent) :
@@ -36,28 +35,23 @@ ZegoAuxStreamDemo::ZegoAuxStreamDemo(QWidget *parent) :
     ui->comboBox_videoConfig->setCurrentIndex(ZEGO_VIDEO_CONFIG_PRESET_360P);
     ui->comboBox_videoConfig->blockSignals(false);
 
-    ZegoEngineConfig engineConfig;
-    ZegoExpressSDK::setEngineConfig(engineConfig);
 
-    auto appID = ZegoConfigManager::instance()->getAppID();
-    auto appSign = ZegoConfigManager::instance()->getAppSign();
-    auto isTestEnv = ZegoConfigManager::instance()->isTestEnviroment();
-
-    engine = ZegoExpressSDK::createEngine(appID, appSign, isTestEnv, ZEGO_SCENARIO_GENERAL, nullptr);
+    engine = ZegoExpressSDK::getEngine();
     bindEventHandler();
 
-    roomID = "AuxStreamRoom-1";
+    currentRoomID = "AuxStreamRoom-1";
     userID = ZegoUtilHelper::getRandomString();
-    ui->pushButton_roomID->setText(QString("RoomID: %1").arg(roomID.c_str()));
+    ui->pushButton_roomID->setText(QString("RoomID: %1").arg(currentRoomID.c_str()));
     ui->pushButton_userID->setText(QString("UserID: %1").arg(userID.c_str()));
 
     ZegoUser user(userID, userID);
-    engine->loginRoom(roomID, user);
+    engine->loginRoom(currentRoomID, user);
 }
 
 ZegoAuxStreamDemo::~ZegoAuxStreamDemo()
 {
-    ZegoExpressSDK::destroyEngine(engine);
+    engine->logoutRoom(currentRoomID);
+    engine->setEventHandler(nullptr);
     delete ui;
 }
 

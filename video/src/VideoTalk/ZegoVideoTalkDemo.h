@@ -18,7 +18,7 @@ public:
     ~ZegoVideoTalkDemo();
 
 public slots:
-     void onRoomStreamUpdate(const std::string& roomID, ZegoUpdateType updateType, const std::vector<ZegoStream>& streamList);
+     void onRoomStreamUpdate(const std::string& currentRoomID, ZegoUpdateType updateType, const std::vector<ZegoStream>& streamList);
 
 private slots:
     void on_pushButton_login_clicked();
@@ -30,11 +30,11 @@ private:
 
 private:
     Ui::ZegoVideoTalkDemo *ui;
-    ZEGO::EXPRESS::IZegoExpressEngine *engine = nullptr;
+    IZegoExpressEngine *engine = nullptr;
+    std::string currentRoomID;
 
     std::vector<ZegoStream> zegoStreamList;
     QList<QWidget*> videoList;
-    std::string roomID;
     std::string userID;
 };
 

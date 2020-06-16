@@ -1,7 +1,6 @@
 #include "ZegoRoomMessageDemo.h"
 #include "ui_ZegoRoomMessageDemo.h"
 
-#include "AppSupport/ZegoConfigManager.h"
 #include "AppSupport/ZegoUtilHelper.h"
 #include "EventHandler/ZegoEventHandlerWithLogger.h"
 
@@ -12,33 +11,26 @@ ZegoRoomMessageDemo::ZegoRoomMessageDemo(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    ZegoEngineConfig engineConfig;
-    ZegoExpressSDK::setEngineConfig(engineConfig);
-    
-    auto appID = ZegoConfigManager::instance()->getAppID();
-    auto appSign = ZegoConfigManager::instance()->getAppSign();
-    auto isTestEnv = ZegoConfigManager::instance()->isTestEnviroment();
-
-    engine = ZegoExpressSDK::createEngine(appID, appSign, isTestEnv, ZEGO_SCENARIO_GENERAL, nullptr);
+    engine = ZegoExpressSDK::getEngine();
     bindEventHandler();
 
-    roomID = "ChatRoom-1";
+    currentRoomID = "ChatRoom-1";
     userID = ZegoUtilHelper::getRandomString();
-    ui->pushButton_roomID->setText(QString("RoomID: %1").arg(roomID.c_str()));
+    ui->pushButton_roomID->setText(QString("RoomID: %1").arg(currentRoomID.c_str()));
     ui->pushButton_userID->setText(QString("UserID: %1").arg(userID.c_str()));
 
     ZegoUser user(userID, userID);
     ZegoRoomConfig roomConfig;
     roomConfig.isUserStatusNotify = true;
-    engine->loginRoom(roomID, user, roomConfig);
+    engine->loginRoom(currentRoomID, user, roomConfig);
 }
 
 ZegoRoomMessageDemo::~ZegoRoomMessageDemo()
 {
-    ZegoExpressSDK::destroyEngine(engine);
+    engine->logoutRoom(currentRoomID);
+    engine->setEventHandler(nullptr);
     delete ui;
 }
-
 
 void ZegoRoomMessageDemo::onRoomUserUpdate(const std::string &roomID, ZegoUpdateType updateType, const std::vector<ZegoUser> &userList)
 {
@@ -94,11 +86,11 @@ void ZegoRoomMessageDemo::on_pushButton_send_broadcast_message_clicked()
 {
     std::string message = ui->lineEdit_broadcast_message->text().toStdString();
 
-    engine->sendBroadcastMessage(roomID, message,  [=](int errorCode, unsigned long long messageID){
+    engine->sendBroadcastMessage(currentRoomID, message,  [=](int errorCode, unsigned long long messageID){
         if(errorCode==0){
-            ui->textEdit_IM_panel->append(QString("[send broadcast]\t: roomID=%1, message=%2, messageID=%3").arg(roomID.c_str()).arg(message.c_str()).arg(messageID));
+            ui->textEdit_IM_panel->append(QString("[send broadcast]\t: roomID=%1, message=%2, messageID=%3").arg(currentRoomID.c_str()).arg(message.c_str()).arg(messageID));
         }
-        QString log = QString("[send message]\t: roomID=%1, message=%2, errorCode=%3").arg(roomID.c_str()).arg(message.c_str()).arg(errorCode);
+        QString log = QString("[send message]\t: roomID=%1, message=%2, errorCode=%3").arg(currentRoomID.c_str()).arg(message.c_str()).arg(errorCode);
         printLogToView(log);
     });
 }
@@ -107,11 +99,11 @@ void ZegoRoomMessageDemo::on_pushButton_send_barrage_message_clicked()
 {
     std::string message = ui->lineEdit_barrage_message->text().toStdString();
 
-    engine->sendBarrageMessage(roomID, message,  [=](int errorCode, std::string messageID){
+    engine->sendBarrageMessage(currentRoomID, message,  [=](int errorCode, std::string messageID){
         if(errorCode==0){
-            ui->textEdit_IM_panel->append(QString("[send barrage]\t: roomID=%1, message=%2, messageID=%3").arg(roomID.c_str()).arg(message.c_str()).arg(messageID.c_str()));
+            ui->textEdit_IM_panel->append(QString("[send barrage]\t: roomID=%1, message=%2, messageID=%3").arg(currentRoomID.c_str()).arg(message.c_str()).arg(messageID.c_str()));
         }
-        QString log = QString("[send message]\t: roomID=%1, message=%2, errorCode=%3").arg(roomID.c_str()).arg(message.c_str()).arg(errorCode);
+        QString log = QString("[send message]\t: roomID=%1, message=%2, errorCode=%3").arg(currentRoomID.c_str()).arg(message.c_str()).arg(errorCode);
         printLogToView(log);
     });
 }
@@ -134,11 +126,11 @@ void ZegoRoomMessageDemo::on_pushButton_send_custom_command_clicked()
     ZegoUser user(*it);
     std::string command = ui->lineEdit_custom_command->text().toStdString();
 
-    engine->sendCustomCommand(roomID, command, {user},  [=](int errorCode){
+    engine->sendCustomCommand(currentRoomID, command, {user},  [=](int errorCode){
         if(errorCode==0){
-            ui->textEdit_IM_panel->append(QString("[send command]\t: roomID=%1, command=%2, toUser=%3").arg(roomID.c_str()).arg(command.c_str()).arg(user.userID.c_str()));
+            ui->textEdit_IM_panel->append(QString("[send command]\t: roomID=%1, command=%2, toUser=%3").arg(currentRoomID.c_str()).arg(command.c_str()).arg(user.userID.c_str()));
         }
-        QString log = QString("[send command]\t: roomID=%1,command=%2, toUser=%3,  errorCode=%4").arg(roomID.c_str()).arg(command.c_str()).arg(user.userID.c_str()).arg(errorCode);
+        QString log = QString("[send command]\t: roomID=%1,command=%2, toUser=%3,  errorCode=%4").arg(currentRoomID.c_str()).arg(command.c_str()).arg(user.userID.c_str()).arg(errorCode);
         printLogToView(log);
     });
 }

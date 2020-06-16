@@ -124,9 +124,11 @@ private:
 private:
     Ui::ZegoMediaPlayerDemo *ui;
 
-    ZEGO::EXPRESS::IZegoExpressEngine *engine = nullptr;
-    ZEGO::EXPRESS::IZegoMediaPlayer *mediaPlayer1 = nullptr;
-    ZEGO::EXPRESS::IZegoMediaPlayer *mediaPlayer2 = nullptr;
+    IZegoExpressEngine *engine = nullptr;
+    std::string currentRoomID;
+
+    IZegoMediaPlayer *mediaPlayer1 = nullptr;
+    IZegoMediaPlayer *mediaPlayer2 = nullptr;
 };
 
 #endif // ZEGOMEDIAPLAYERDEMO_H

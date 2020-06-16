@@ -17,7 +17,6 @@ public:
     ~ZegoExpressDemo();
 
 public slots:
-    void on_pushButton_ReadDocument_clicked();
     void onAdvanceUseCaseItemChanged(QListWidgetItem *item);
     void onBasicUseCaseItemChanged(QListWidgetItem *item);
     void doChangeTopic(QString itemText);

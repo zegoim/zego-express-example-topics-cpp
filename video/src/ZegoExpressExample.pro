@@ -49,7 +49,8 @@ SOURCES += \
     CustomVideoCapture/ZegoCustomVideoSourceMedia.cpp \
     CustomVideoCapture/ZegoCustomVideoSourceContext.cpp \
     CDNAbout/ZegoCDNAboutDemo.cpp \
-    AuxStream/ZegoAuxStreamDemo.cpp
+    AuxStream/ZegoAuxStreamDemo.cpp \
+    AudioMixing/ZegoAudioMixingDemo.cpp
 
 HEADERS += \
     ExpressDemo/ZegoExpressDemo.h \
@@ -76,7 +77,9 @@ HEADERS += \
     CustomVideoCapture/ZegoCustomVideoSourceMedia.h \
     CustomVideoCapture/ZegoCustomVideoSourceContext.h \
     CDNAbout/ZegoCDNAboutDemo.h \
-    AuxStream/ZegoAuxStreamDemo.h
+    AuxStream/ZegoAuxStreamDemo.h \
+    AudioMixing/ZegoAudioMixingDemo.h
+
 
 FORMS += \
     ExpressDemo/ZegoExpressDemo.ui \
@@ -93,7 +96,8 @@ FORMS += \
     CustomVideoRender/ZegoCustomVideoRenderDemo.ui \
     CustomVideoCapture/ZegoCustomVideoCaptureDemo.ui \
     CDNAbout/ZegoCDNAboutDemo.ui \
-    AuxStream/ZegoAuxStreamDemo.ui
+    AuxStream/ZegoAuxStreamDemo.ui \
+    AudioMixing/ZegoAudioMixingDemo.ui
 
 
 # Default rules for deployment.
@@ -109,6 +113,9 @@ release {
 }
 
 msvc {
+    # QMAKE_CFLAGS += /utf-8
+    # QMAKE_CXXFLAGS += /utf-8
+
     MOC_DIR = $$PWD/../build-win/qmake_temp
     RCC_DIR = $$PWD/../build-win/qmake_temp
     UI_DIR = $$PWD/../build-win/qmake_temp

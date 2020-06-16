@@ -23,7 +23,7 @@ public:
     ~ZegoSoundLevelDemo();
 
 public slots:
-     void onRoomStreamUpdate(const std::string& roomID, ZegoUpdateType updateType, const std::vector<ZegoStream>& streamList);
+     void onRoomStreamUpdate(const std::string& currentRoomID, ZegoUpdateType updateType, const std::vector<ZegoStream>& streamList);
      void onCapturedSoundLevelUpdate(float soundLevel);
      void onPlayerSoundLevelUpdate(const std::unordered_map<std::string, float>& soundLevels);
      void onCapturedAudioSpectrumUpdate(const ZegoAudioSpectrum& audioSpectrum);
@@ -45,7 +45,7 @@ private:
     std::vector<ZegoStream> zegoStreamList;
     ZEGO::EXPRESS::IZegoExpressEngine *engine = nullptr;
 
-    std::string roomID;
+    std::string currentRoomID;
     std::string userID;
 
     QMap<std::string, ZegoSoundFrame*> soundFrameMap;

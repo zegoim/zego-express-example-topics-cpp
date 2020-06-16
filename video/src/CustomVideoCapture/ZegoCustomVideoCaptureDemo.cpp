@@ -53,90 +53,66 @@ ZegoCustomVideoCaptureDemo::ZegoCustomVideoCaptureDemo(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    roomID = "CustomVideoRender-1";
+    currentRoomID = "CustomVideoRender-1";
     userID = ZegoUtilHelper::getRandomString();
-    ui->pushButton_roomID->setText(QString("RoomID: %1").arg(roomID.c_str()));
+    ui->pushButton_roomID->setText(QString("RoomID: %1").arg(currentRoomID.c_str()));
     ui->pushButton_userID->setText(QString("UserID: %1").arg(userID.c_str()));
 
     ui->pushButton_cameraSource->hide();
     ui->pushButton_screenSource->hide();
+
+    engine = ZegoExpressSDK::getEngine();
+    bindEventHandler();
+
+    mCustomVideoCapture = std::make_shared<CustomVideoCapturer>();
 }
 
 ZegoCustomVideoCaptureDemo::~ZegoCustomVideoCaptureDemo()
 {
-    if(mCustomVideoCapture){
-        mCustomVideoCapture->onStop(ZEGO_PUBLISH_CHANNEL_MAIN);
-    }
-    if(engine){
-        engine->setCustomVideoCaptureHandler(nullptr);
-        ZegoExpressSDK::destroyEngine(engine);
-    }
+    mCustomVideoCapture->onStop(ZEGO_PUBLISH_CHANNEL_MAIN);
+    mCustomVideoCapture = nullptr;
+
+    engine->logoutRoom(currentRoomID);
+    engine->enableCustomVideoCapture(false, nullptr);
+    engine->setCustomVideoCaptureHandler(nullptr);
+    engine->setEventHandler(nullptr);
+
     delete ui;
 }
 
+void ZegoCustomVideoCaptureDemo::on_pushButton_enableCustomVideoCapture_clicked()
+{
+    // call enableCustomVideoRender outside room
+    engine->logoutRoom(currentRoomID);
 
-void ZegoCustomVideoCaptureDemo::createCustomCaptureEngine(){
     ZegoCustomVideoCaptureConfig customVideoCaptureConfig;
     customVideoCaptureConfig.bufferType = ZEGO_VIDEO_BUFFER_TYPE_RAW_DATA;
-
-    ZegoEngineConfig engineConfig;
-    engineConfig.customVideoCaptureMainConfig = &customVideoCaptureConfig;
-    ZegoExpressSDK::setEngineConfig(engineConfig);
-
-    auto appID = ZegoConfigManager::instance()->getAppID();
-    auto appSign = ZegoConfigManager::instance()->getAppSign();
-    auto isTestEnv = ZegoConfigManager::instance()->isTestEnviroment();
-    engine = ZegoExpressSDK::createEngine(appID, appSign, isTestEnv, ZEGO_SCENARIO_GENERAL, nullptr);
-
-    mCustomVideoCapture = std::make_shared<CustomVideoCapturer>();
+    engine->enableCustomVideoCapture(true, &customVideoCaptureConfig);
     engine->setCustomVideoCaptureHandler(mCustomVideoCapture);
 
-    bindEventHandler();
-
     ZegoUser user(userID, userID);
-    engine->loginRoom(roomID, user);
-}
-
-void ZegoCustomVideoCaptureDemo::on_pushButton_setEngineConfig_clicked()
-{
-    if(engine){
-        if(mCustomVideoCapture){
-            mCustomVideoCapture->onStop(ZEGO_PUBLISH_CHANNEL_MAIN);
-        }
-        ZegoExpressSDK::destroyEngine(engine, [=](){
-            createCustomCaptureEngine();
-        });
-    } else {
-        createCustomCaptureEngine();
-    }
+    engine->loginRoom(currentRoomID, user);
 }
 
 void ZegoCustomVideoCaptureDemo::on_pushButton_startPublish_clicked()
 {
-    if(engine == nullptr){
-        return;
-    }
-
     std::string streamID = ui->lineEdit_streamID->text().toStdString();
     ZegoCanvas canvas(ZegoView(ui->frame_local_video->winId()));
     engine->startPreview(&canvas);
+
+    // set video config (reslution) according to the video data sending to SDK
+    engine->setVideoConfig(ZegoVideoConfig(ZEGO_VIDEO_CONFIG_PRESET_540P));
     engine->startPublishingStream(streamID);
 }
 
 void ZegoCustomVideoCaptureDemo::on_pushButton_stopPublish_clicked()
 {
-    if(engine == nullptr){
-        return;
-    }
     engine->stopPreview();
     engine->stopPublishingStream();
 }
 
 void ZegoCustomVideoCaptureDemo::on_pushButton_startPlay_clicked()
 {
-    if(engine == nullptr){
-        return;
-    }
     std::string streamID = ui->lineEdit_streamID->text().toStdString();
     ZegoCanvas canvas(ZegoView(ui->frame_remote_video->winId()));
     engine->startPlayingStream(streamID, &canvas);
@@ -144,19 +120,12 @@ void ZegoCustomVideoCaptureDemo::on_pushButton_startPlay_clicked()
 
 void ZegoCustomVideoCaptureDemo::on_pushButton_stopPlay_clicked()
 {
-    if(engine == nullptr){
-        return;
-    }
     std::string streamID = ui->lineEdit_streamID->text().toStdString();
     engine->stopPlayingStream(streamID);
 }
 
 void ZegoCustomVideoCaptureDemo::on_pushButton_imageSource_clicked()
 {
-    if(engine == nullptr){
-        return;
-    }
-
     QString path = QFileDialog::getOpenFileName(this, "Select image file", ".", "pic (*.png *jpg)");
     if(path.isEmpty()){
         return;
@@ -169,10 +138,6 @@ void ZegoCustomVideoCaptureDemo::on_pushButton_imageSource_clicked()
 
 void ZegoCustomVideoCaptureDemo::on_pushButton_videoSource_clicked()
 {
-    if(engine == nullptr){
-        return;
-    }
-
     QString path = QFileDialog::getOpenFileName(this, "Select file to play", ".", "Video (*.mp4)");
     if(path.isEmpty()){
         return;

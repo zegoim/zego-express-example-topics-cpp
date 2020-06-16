@@ -109,7 +109,7 @@
          <item>
           <widget class="QGroupBox" name="groupBox_3">
            <property name="title">
-            <string>Step 1:</string>
+            <string/>
            </property>
            <layout class="QGridLayout" name="gridLayout">
             <item row="2" column="0">
@@ -119,10 +119,24 @@
               </property>
              </widget>
             </item>
+            <item row="1" column="0">
+             <widget class="QLabel" name="label_2">
+              <property name="text">
+               <string>AppSign:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="1">
+             <widget class="QLabel" name="label_appID">
+              <property name="text">
+               <string>TextLabel</string>
+              </property>
+             </widget>
+            </item>
             <item row="2" column="1">
              <widget class="QRadioButton" name="radioButton_isTestEnv">
               <property name="enabled">
-               <bool>true</bool>
+               <bool>false</bool>
               </property>
               <property name="sizePolicy">
                <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
@@ -148,27 +162,6 @@
               </property>
              </widget>
             </item>
-            <item row="3" column="0" colspan="2">
-             <widget class="QPushButton" name="pushButton_createEngine">
-              <property name="text">
-               <string>CreateEngine</string>
-              </property>
-             </widget>
-            </item>
-            <item row="0" column="1">
-             <widget class="QLabel" name="label_appID">
-              <property name="text">
-               <string>TextLabel</string>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="0">
-             <widget class="QLabel" name="label_2">
-              <property name="text">
-               <string>AppSign:</string>
-              </property>
-             </widget>
-            </item>
             <item row="0" column="0">
              <widget class="QLabel" name="label">
               <property name="text">
@@ -182,7 +175,7 @@
          <item>
           <widget class="QGroupBox" name="groupBox_4">
            <property name="title">
-            <string>Step 2:</string>
+            <string>Step 1:</string>
            </property>
            <layout class="QFormLayout" name="formLayout_2">
             <item row="0" column="0">
@@ -240,7 +233,7 @@
          <item>
           <widget class="QGroupBox" name="groupBox_5">
            <property name="title">
-            <string>Step 3:</string>
+            <string>Step 2:</string>
            </property>
            <layout class="QFormLayout" name="formLayout">
             <item row="0" column="0">
@@ -266,7 +259,7 @@
          <item>
           <widget class="QGroupBox" name="groupBox_7">
            <property name="title">
-            <string>Step 4:</string>
+            <string>Step 3:</string>
            </property>
            <layout class="QFormLayout" name="formLayout_3">
             <item row="0" column="0">
@@ -283,22 +276,6 @@
              <widget class="QPushButton" name="pushButton_PlayStream">
               <property name="text">
                <string>PlaySteam</string>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </widget>
-         </item>
-         <item>
-          <widget class="QGroupBox" name="groupBox_6">
-           <property name="title">
-            <string>Step 5:</string>
-           </property>
-           <layout class="QGridLayout" name="gridLayout_2">
-            <item row="0" column="0" colspan="2">
-             <widget class="QPushButton" name="pushButton_destroyEngine">
-              <property name="text">
-               <string>DestroyEngine</string>
               </property>
              </widget>
             </item>

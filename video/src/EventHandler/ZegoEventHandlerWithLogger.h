@@ -13,6 +13,9 @@ public:
     ~ZegoEventHandlerWithLogger() override;
 
     void onDebugError(int errorCode, const std::string& funcName, const std::string& info) override;
+
+    void onEngineStateUpdate(ZegoEngineState state) override;
+
     void onRoomStateUpdate(const std::string& roomID, ZegoRoomState state, int errorCode, const std::string &extendData) override;
     void onRoomUserUpdate(const std::string& roomID, ZegoUpdateType updateType, const std::vector<ZegoUser>& userList) override;
     void onRoomStreamUpdate(const std::string& roomID, ZegoUpdateType updateType, const std::vector<ZegoStream>& streamList) override;

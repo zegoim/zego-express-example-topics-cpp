@@ -44,7 +44,8 @@ private:
 
 private:
     Ui::ZegoPublishDemo *ui;
-    ZEGO::EXPRESS::IZegoExpressEngine *engine = nullptr;
+    IZegoExpressEngine *engine = nullptr;
+    std::string currentRoomID;
 };
 
 #endif // ZEGOPUBLISHDEMO_H

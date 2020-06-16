@@ -11,50 +11,41 @@ ZegoCustomVideoRenderDemo::ZegoCustomVideoRenderDemo(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    roomID = "CustomVideoRender-1";
+    currentRoomID = "CustomVideoRender-1";
     userID = ZegoUtilHelper::getRandomString();
-    ui->pushButton_roomID->setText(QString("RoomID: %1").arg(roomID.c_str()));
+    ui->pushButton_roomID->setText(QString("RoomID: %1").arg(currentRoomID.c_str()));
     ui->pushButton_userID->setText(QString("UserID: %1").arg(userID.c_str()));
+
+    engine = ZegoExpressSDK::getEngine();
+    bindEventHandler();
 }
 
 ZegoCustomVideoRenderDemo::~ZegoCustomVideoRenderDemo()
 {
-    if(engine){
-        ZegoExpressSDK::destroyEngine(engine);
-    }
+    engine->logoutRoom(currentRoomID);
+    engine->enableCustomVideoRender(false, nullptr);
+    engine->setEventHandler(nullptr);
     delete ui;
 }
 
-void ZegoCustomVideoRenderDemo::on_pushButton_setEngineConfig_clicked()
+void ZegoCustomVideoRenderDemo::on_pushButton_enableCustomVideoRender_clicked()
 {
-    ZegoExpressSDK::destroyEngine(engine);
+    // call enableCustomVideoRender outside room
+    engine->logoutRoom(currentRoomID);
 
     ZegoCustomVideoRenderConfig customVideoRenderConfig;
     customVideoRenderConfig.bufferType = ZEGO_VIDEO_BUFFER_TYPE_RAW_DATA;
     customVideoRenderConfig.frameFormatSeries = ZEGO_VIDEO_FRAME_FORMAT_SERIES_RGB;
     customVideoRenderConfig.enableEngineRender = ui->checkBox_enableEngineRender->isChecked();
-
-    ZegoEngineConfig engineConfig;
-    engineConfig.customVideoRenderConfig = &customVideoRenderConfig;
-    ZegoExpressSDK::setEngineConfig(engineConfig);
-
-    auto appID = ZegoConfigManager::instance()->getAppID();
-    auto appSign = ZegoConfigManager::instance()->getAppSign();
-    auto isTestEnv = ZegoConfigManager::instance()->isTestEnviroment();
-    engine = ZegoExpressSDK::createEngine(appID, appSign, isTestEnv, ZEGO_SCENARIO_GENERAL, nullptr);
-    bindEventHandler();
-
+    engine->enableCustomVideoRender(true, &customVideoRenderConfig);
     engine->setCustomVideoRenderHandler(std::make_shared<CustomVideoRenderer>(this));
+
     ZegoUser user(userID, userID);
-    engine->loginRoom(roomID, user);
+    engine->loginRoom(currentRoomID, user);
 }
 
 void ZegoCustomVideoRenderDemo::on_pushButton_startPublish_clicked()
 {
-    if(engine == nullptr){
-        return;
-    }
-
     std::string streamID = ui->lineEdit_streamID->text().toStdString();
     engine->startPublishingStream(streamID);
 
@@ -65,18 +56,12 @@ void ZegoCustomVideoRenderDemo::on_pushButton_startPublish_clicked()
 
 void ZegoCustomVideoRenderDemo::on_pushButton_stopPublish_clicked()
 {
-    if(engine == nullptr){
-        return;
-    }
     engine->stopPreview();
     engine->stopPublishingStream();
 }
 
 void ZegoCustomVideoRenderDemo::on_pushButton_startPlay_clicked()
 {
-    if(engine == nullptr){
-        return;
-    }
     std::string streamID = ui->lineEdit_streamID->text().toStdString();
     ZegoCanvas canvas(ZegoView(ui->frame_remote_internal_video->winId()));
     engine->startPlayingStream(streamID, &canvas);
@@ -84,9 +69,6 @@ void ZegoCustomVideoRenderDemo::on_pushButton_startPlay_clicked()
 
 void ZegoCustomVideoRenderDemo::on_pushButton_stopPlay_clicked()
 {
-    if(engine == nullptr){
-        return;
-    }
     std::string streamID = ui->lineEdit_streamID->text().toStdString();
     engine->stopPlayingStream(streamID);
 }

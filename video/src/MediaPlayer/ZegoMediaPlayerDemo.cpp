@@ -1,8 +1,8 @@
 #include "ZegoMediaPlayerDemo.h"
 #include "ui_ZegoMediaPlayerDemo.h"
 
-#include "AppSupport/ZegoConfigManager.h"
 #include "EventHandler/ZegoEventHandlerWithLogger.h"
+#include "AppSupport/ZegoUtilHelper.h"
 
 #include <QFileDialog>
 
@@ -10,29 +10,24 @@ ZegoMediaPlayerDemo::ZegoMediaPlayerDemo(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::ZegoMediaPlayerDemo)
 {
-
     ui->setupUi(this);
 
-    ZegoEngineConfig engineConfig;
-    ZegoExpressSDK::setEngineConfig(engineConfig);
-    
-    auto appID = ZegoConfigManager::instance()->getAppID();
-    auto appSign = ZegoConfigManager::instance()->getAppSign();
-    auto isTest = ZegoConfigManager::instance()->isTestEnviroment();
-
-    engine = ZegoExpressSDK::createEngine(appID, appSign, isTest, ZEGO_SCENARIO_GENERAL, nullptr);
+    engine = ZegoExpressSDK::getEngine();
     mediaPlayer1 = engine->createMediaPlayer();
     mediaPlayer2 = engine->createMediaPlayer();
 	bindEventHandler();
+
+    currentRoomID = "MediaPlayerRoom-1";
+    std::string userID = ZegoUtilHelper::getRandomString();
+    engine->loginRoom(currentRoomID, ZegoUser(userID, userID));
 }
 
 ZegoMediaPlayerDemo::~ZegoMediaPlayerDemo()
 {
     engine->destroyMediaPlayer(mediaPlayer1);
     engine->destroyMediaPlayer(mediaPlayer2);
-    if(engine){
-        ZegoExpressSDK::destroyEngine(engine);
-    }
+    engine->logoutRoom(currentRoomID);
+    engine->setEventHandler(nullptr);
     delete ui;
 }
 

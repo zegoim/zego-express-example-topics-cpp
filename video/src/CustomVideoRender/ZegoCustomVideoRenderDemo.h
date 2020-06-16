@@ -48,7 +48,7 @@ public:
     ~ZegoCustomVideoRenderDemo() override;
 
 private slots:
-    void on_pushButton_setEngineConfig_clicked();
+    void on_pushButton_enableCustomVideoRender_clicked();
     void on_pushButton_startPublish_clicked();
     void on_pushButton_stopPublish_clicked();
     void on_pushButton_startPlay_clicked();
@@ -62,8 +62,8 @@ private:
     void bindEventHandler();
 
     Ui::ZegoCustomVideoRenderDemo *ui;
-    ZEGO::EXPRESS::IZegoExpressEngine *engine = nullptr;
-    std::string roomID;
+    IZegoExpressEngine *engine = nullptr;
+    std::string currentRoomID;
     std::string userID;
 };
 

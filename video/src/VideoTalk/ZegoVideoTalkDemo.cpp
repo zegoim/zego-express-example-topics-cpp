@@ -1,7 +1,6 @@
 #include "ZegoVideoTalkDemo.h"
 #include "ui_ZegoVideoTalkDemo.h"
 
-#include "AppSupport/ZegoConfigManager.h"
 #include "AppSupport/ZegoUtilHelper.h"
 #include "EventHandler/ZegoEventHandlerWithLogger.h"
 
@@ -11,14 +10,7 @@ ZegoVideoTalkDemo::ZegoVideoTalkDemo(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    ZegoEngineConfig engineConfig;
-    ZegoExpressSDK::setEngineConfig(engineConfig);
-    
-    auto appID = ZegoConfigManager::instance()->getAppID();
-    auto appSign = ZegoConfigManager::instance()->getAppSign();
-    auto isTest = ZegoConfigManager::instance()->isTestEnviroment();
-
-    engine = ZegoExpressSDK::createEngine(appID, appSign, isTest, ZEGO_SCENARIO_GENERAL, nullptr);
+    engine = ZegoExpressSDK::getEngine();
     bindEventHandler();
 
     videoList = {
@@ -35,15 +27,16 @@ ZegoVideoTalkDemo::ZegoVideoTalkDemo(QWidget *parent) :
         ui->frame_video_11,
     };
 
-    roomID = "VideoTalkRoom-1";
+    currentRoomID = "VideoTalkRoom-1";
     userID = ZegoUtilHelper::getRandomString();
-    ui->pushButton_roomID->setText(QString("RoomID: %1").arg(roomID.c_str()));
+    ui->pushButton_roomID->setText(QString("RoomID: %1").arg(currentRoomID.c_str()));
     ui->pushButton_userID->setText(QString("UserID: %1").arg(userID.c_str()));
 }
 
 ZegoVideoTalkDemo::~ZegoVideoTalkDemo()
 {
-    ZegoExpressSDK::destroyEngine(engine);
+    engine->logoutRoom(currentRoomID);
+    engine->setEventHandler(nullptr);
     delete ui;
 }
 
@@ -96,7 +89,7 @@ void ZegoVideoTalkDemo::bindEventHandler()
 void ZegoVideoTalkDemo::on_pushButton_login_clicked()
 {
     ZegoUser user(userID, userID);
-    engine->loginRoom(roomID, user);
+    engine->loginRoom(currentRoomID, user);
 
     ZegoCanvas canvas(ZegoView(ui->frame_video_0->winId()));
     engine->startPreview(&canvas);
@@ -105,6 +98,6 @@ void ZegoVideoTalkDemo::on_pushButton_login_clicked()
 
 void ZegoVideoTalkDemo::on_pushButton_logout_clicked()
 {
-    engine->logoutRoom(roomID);
+    engine->logoutRoom(currentRoomID);
     zegoStreamList.clear();
 }

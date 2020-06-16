@@ -22,89 +22,63 @@ ZegoQuickStartDemo::ZegoQuickStartDemo(QWidget *parent) :
     ui->label_appSign->setText(appSign.c_str());
     ui->radioButton_isTestEnv->setChecked(isTestEnv);
 
-    ui->label_roomID->setText("QuickStartRoom-1");
+    currentRoomID = "QuickStartRoom-1";
+    ui->label_roomID->setText(currentRoomID.c_str());
 
     std::string userID = ZegoUtilHelper::getRandomString();
     ui->label_userID->setText(userID.c_str());
     ui->label_userName->setText(userID.c_str());
+
+    engine = ZegoExpressSDK::getEngine();
+    bindEventHandler();
 }
 
 ZegoQuickStartDemo::~ZegoQuickStartDemo()
 {
-    if(engine){
-        ZegoExpressSDK::destroyEngine(engine);
-    }
+    engine->logoutRoom(currentRoomID);
+    engine->setEventHandler(nullptr);
     delete ui;
-}
-
-
-void ZegoQuickStartDemo::on_pushButton_createEngine_clicked()
-{    
-    if(engine == nullptr){
-        ZegoEngineConfig engineConfig;
-        ZegoExpressSDK::setEngineConfig(engineConfig);
-
-        auto appID = ui->label_appID->text().toUInt();
-        auto appSign = ui->label_appSign->text().toStdString();
-        auto isTestEnv = ui->radioButton_isTestEnv->isChecked();
-		auto eventHandler = std::make_shared<ZegoEventHandlerWithLogger>(ui->textEdit_log);
-        engine = ZegoExpressSDK::createEngine(appID, appSign, isTestEnv, ZEGO_SCENARIO_GENERAL, eventHandler);
-
-        QString log = QString("do createEngine: testEnv=%1").arg(isTestEnv);
-        printLogToView(log);
-    }
 }
 
 void ZegoQuickStartDemo::on_pushButton_loginRoom_clicked()
 {
-    if(engine != nullptr){
-        std::string roomID = ui->label_roomID->text().toStdString();
+    ZegoUser user;
+    user.userID = ui->label_userID->text().toStdString();
+    user.userName = ui->label_userName->text().toStdString();
 
-        ZegoUser user;
-        user.userID = ui->label_userID->text().toStdString();
-        user.userName = ui->label_userName->text().toStdString();
-
-        engine->loginRoom(roomID, user);
-        QString log = QString("do loginRoom");
-        printLogToView(log);
-    }
+    engine->loginRoom(currentRoomID, user);
+    QString log = QString("do loginRoom");
+    printLogToView(log);
 }
 
 void ZegoQuickStartDemo::on_pushButton_PublishStream_clicked()
 {
-    if(engine != nullptr){
-        std::string streamID = ui->lineEdit_publish_streamID->text().toStdString();
 
-        engine->startPublishingStream(streamID);
+    std::string streamID = ui->lineEdit_publish_streamID->text().toStdString();
 
-        ZegoCanvas canvas((void*)ui->frame_local_video->winId(), ZEGO_VIEW_MODE_ASPECT_FIT);
-        engine->startPreview(&canvas);
+    engine->startPublishingStream(streamID);
 
-        QString log = QString("do publish stream");
-        printLogToView(log);
-    }
+    ZegoCanvas canvas((void*)ui->frame_local_video->winId(), ZEGO_VIEW_MODE_ASPECT_FIT);
+    engine->startPreview(&canvas);
+
+    QString log = QString("do publish stream");
+    printLogToView(log);
 }
 
 void ZegoQuickStartDemo::on_pushButton_PlayStream_clicked()
 {
-    if(engine != nullptr){
-        std::string streamID = ui->lineEdit_play_streamID->text().toStdString();
+    std::string streamID = ui->lineEdit_play_streamID->text().toStdString();
 
-        ZegoCanvas canvas((void*)ui->frame_remote_video->winId(), ZEGO_VIEW_MODE_ASPECT_FIT);
-        engine->startPlayingStream(streamID, &canvas);
+    ZegoCanvas canvas((void*)ui->frame_remote_video->winId(), ZEGO_VIEW_MODE_ASPECT_FIT);
+    engine->startPlayingStream(streamID, &canvas);
 
-        QString log = QString("do  play stream");
-        printLogToView(log);
-    }
+    QString log = QString("do  play stream");
+    printLogToView(log);
 }
 
-void ZegoQuickStartDemo::on_pushButton_destroyEngine_clicked()
+void ZegoQuickStartDemo::bindEventHandler()
 {
-    if(engine){
-        QString log = QString("do destroy engine");
-        printLogToView(log);
-        ZegoExpressSDK::destroyEngine(engine);
-    }
+    engine->setEventHandler(std::make_shared<ZegoEventHandlerWithLogger>(ui->textEdit_log));
 }
 
 void ZegoQuickStartDemo::printLogToView(QString log)

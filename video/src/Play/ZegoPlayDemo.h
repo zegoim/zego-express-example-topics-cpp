@@ -36,7 +36,8 @@ private:
 
 private:
     Ui::ZegoPlayDemo *ui;
-    ZEGO::EXPRESS::IZegoExpressEngine *engine = nullptr;
+    IZegoExpressEngine *engine = nullptr;
+    std::string currentRoomID;
 };
 
 #endif // ZEGOPLAYDEMO_H

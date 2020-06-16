@@ -36,8 +36,7 @@ public:
     ~ZegoCustomVideoCaptureDemo();
 
 private slots:
-    void createCustomCaptureEngine();
-    void on_pushButton_setEngineConfig_clicked();
+    void on_pushButton_enableCustomVideoCapture_clicked();
     void on_pushButton_startPublish_clicked();
     void on_pushButton_stopPublish_clicked();
     void on_pushButton_startPlay_clicked();
@@ -49,10 +48,10 @@ private:
     void bindEventHandler();
 
     Ui::ZegoCustomVideoCaptureDemo *ui;
-    ZEGO::EXPRESS::IZegoExpressEngine *engine = nullptr;
+    IZegoExpressEngine *engine = nullptr;
     std::shared_ptr<CustomVideoCapturer> mCustomVideoCapture = nullptr;
 
-    std::string roomID;
+    std::string currentRoomID;
     std::string userID;
 };
 

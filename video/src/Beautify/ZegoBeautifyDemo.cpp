@@ -1,7 +1,6 @@
 #include "ZegoBeautifyDemo.h"
 #include "ui_ZegoBeautifyDemo.h"
 
-#include "AppSupport/ZegoConfigManager.h"
 #include "AppSupport/ZegoUtilHelper.h"
 #include "EventHandler/ZegoEventHandlerWithLogger.h"
 
@@ -13,23 +12,16 @@ ZegoBeautifyDemo::ZegoBeautifyDemo(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    ZegoEngineConfig engineConfig;
-    ZegoExpressSDK::setEngineConfig(engineConfig);
-    
-    auto appID = ZegoConfigManager::instance()->getAppID();
-    auto appSign = ZegoConfigManager::instance()->getAppSign();
-    auto isTest = ZegoConfigManager::instance()->isTestEnviroment();
-
-    engine = ZegoExpressSDK::createEngine(appID, appSign, isTest, ZEGO_SCENARIO_GENERAL, nullptr);
+    engine = ZegoExpressSDK::getEngine();
     bindEventHandler();
 
-    roomID = "BeautifyRoom-1";
+    currentRoomID = "BeautifyRoom-1";
     userID = ZegoUtilHelper::getRandomString();
-    ui->pushButton_roomID->setText(QString("RoomID: %1").arg(roomID.c_str()));
+    ui->pushButton_roomID->setText(QString("RoomID: %1").arg(currentRoomID.c_str()));
     ui->pushButton_userID->setText(QString("UserID: %1").arg(userID.c_str()));
 
     ZegoUser user(userID, userID);
-    engine->loginRoom(roomID, user);
+    engine->loginRoom(currentRoomID, user);
 
     ZegoCanvas canvas((void*)ui->frame_local_video->winId());
     engine->startPreview(&canvas);
@@ -42,7 +34,8 @@ ZegoBeautifyDemo::ZegoBeautifyDemo(QWidget *parent) :
 
 ZegoBeautifyDemo::~ZegoBeautifyDemo()
 {
-    ZegoExpressSDK::destroyEngine(engine);
+    engine->logoutRoom(currentRoomID);
+    engine->setEventHandler(nullptr);
     delete ui;
 }
 

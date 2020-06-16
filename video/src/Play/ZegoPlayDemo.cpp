@@ -1,7 +1,6 @@
 #include "ZegoPlayDemo.h"
 #include "ui_ZegoPlayDemo.h"
 
-#include "AppSupport/ZegoConfigManager.h"
 #include "EventHandler/ZegoEventHandlerWithLogger.h"
 
 ZegoPlayDemo::ZegoPlayDemo(QWidget *parent) :
@@ -9,15 +8,8 @@ ZegoPlayDemo::ZegoPlayDemo(QWidget *parent) :
     ui(new Ui::ZegoPlayDemo)
 {
     ui->setupUi(this);
-
-    ZegoEngineConfig engineConfig;
-    ZegoExpressSDK::setEngineConfig(engineConfig);
     
-    auto appID = ZegoConfigManager::instance()->getAppID();
-    auto appSign = ZegoConfigManager::instance()->getAppSign();
-    auto isTest = ZegoConfigManager::instance()->isTestEnviroment();
-
-    engine = ZegoExpressSDK::createEngine(appID, appSign, isTest, ZEGO_SCENARIO_GENERAL, nullptr);
+    engine = ZegoExpressSDK::getEngine();
     bindEventHandler();
 
     ui->comboBox_audioOutputDevice->blockSignals(true);
@@ -43,7 +35,8 @@ ZegoPlayDemo::ZegoPlayDemo(QWidget *parent) :
 
 ZegoPlayDemo::~ZegoPlayDemo()
 {
-    ZegoExpressSDK::destroyEngine(engine);
+    engine->logoutRoom(currentRoomID);
+    engine->setEventHandler(nullptr);
     delete ui;
 }
 
@@ -56,7 +49,6 @@ void ZegoPlayDemo::onPlayerQualityUpdate(const std::string &streamID, const Zego
     ui->lineEdit_audioBPS->setText(QString::number(quality.audioKBPS) + "kbps");
     ui->lineEdit_audioFPS->setText(QString::number(quality.audioRecvFPS) + "fps");
 }
-
 
 void ZegoPlayDemo::onPlayerVideoSizeChanged(const std::string& streamID, int width, int height)
 {
@@ -113,13 +105,13 @@ void ZegoPlayDemo::on_checkBox_mutePlayStreamVideo_clicked(bool checked)
 void ZegoPlayDemo::on_pushButton_startPlay_clicked()
 {
     std::string userID = ui->lineEdit_userID->text().toStdString();
-    std::string roomID = ui->lineEdit_roomID->text().toStdString();
     std::string streamID = ui->lineEdit_streamID->text().toStdString();
+    currentRoomID = ui->lineEdit_roomID->text().toStdString();
 
     ZegoUser user;
     user.userID = userID;
     user.userName = userID;
-    engine->loginRoom(roomID, user);
+    engine->loginRoom(currentRoomID, user);
 
     ZegoCanvas canvas(ZegoView(ui->frame_remote_video->winId()));
     engine->startPlayingStream(streamID, &canvas);
@@ -129,13 +121,11 @@ void ZegoPlayDemo::on_pushButton_stopPlay_clicked()
 {
     std::string streamID = ui->lineEdit_streamID->text().toStdString();
     engine->stopPlayingStream(streamID);
+    engine->logoutRoom(currentRoomID);
 
     ui->slider_playVolume->setValue(100);
     ui->checkBox_mutePlayStreamAudio->setChecked(false);
     ui->checkBox_mutePlayStreamVideo->setChecked(false);
-
-    std::string roomID = ui->lineEdit_roomID->text().toStdString();
-    engine->logoutRoom(roomID);
 }
 
 void ZegoPlayDemo::on_slider_playVolume_valueChanged(int value)

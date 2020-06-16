@@ -35,8 +35,8 @@ private:
 
 private:
     Ui::ZegoCDNAboutDemo *ui;
-    ZEGO::EXPRESS::IZegoExpressEngine *engine = nullptr;
-    std::string roomID;
+    IZegoExpressEngine *engine = nullptr;
+    std::string currentRoomID;
     std::string userID;
 
 };

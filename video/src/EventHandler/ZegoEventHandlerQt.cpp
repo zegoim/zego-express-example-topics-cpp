@@ -16,6 +16,11 @@ void ZegoEventHandlerQt::onDebugError(int errorCode, const std::string &funcName
     emit sigDebugError(errorCode, funcName, info);
 }
 
+void ZegoEventHandlerQt::onEngineStateUpdate(ZegoEngineState state)
+{
+    emit sigEngineStateUpdate(state);
+}
+
 void ZegoEventHandlerQt::onRoomStateUpdate(const std::string &roomID, ZegoRoomState state, int errorCode, const std::string &extendData)
 {
     emit sigRoomStateUpdate(roomID, state, errorCode, extendData);

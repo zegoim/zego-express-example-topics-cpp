@@ -34,13 +34,13 @@ private:
 
 private:
     Ui::ZegoBeautifyDemo *ui;
-    ZEGO::EXPRESS::IZegoExpressEngine *engine = nullptr;
+    IZegoExpressEngine *engine = nullptr;
 
 #ifdef EnableBeautify
     int beautifyFeature = ZEGO_BEAUTIFY_FEATURE_NONE;
     ZegoBeautifyOption beatifyOption;
 #endif
-    std::string roomID;
+    std::string currentRoomID;
     std::string userID;
 };
 

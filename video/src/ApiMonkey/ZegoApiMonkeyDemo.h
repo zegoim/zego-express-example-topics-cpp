@@ -46,7 +46,7 @@ private:
 
 private:
     Ui::ZegoApiMonkeyDemo *ui;
-    ZEGO::EXPRESS::IZegoExpressEngine *engine = nullptr;
+    IZegoExpressEngine *engine = nullptr;
 };
 
 #endif // ZEGOAPIMONCKYDEMO_H

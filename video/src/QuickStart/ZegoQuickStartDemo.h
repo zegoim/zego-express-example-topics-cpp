@@ -20,18 +20,18 @@ public:
 public slots:
 
 private slots:
-    void on_pushButton_createEngine_clicked();
     void on_pushButton_loginRoom_clicked();
     void on_pushButton_PublishStream_clicked();
     void on_pushButton_PlayStream_clicked();
-    void on_pushButton_destroyEngine_clicked();
 
 private:
+    void bindEventHandler();
     void printLogToView(QString log);
 
 private:
     Ui::ZegoQuickStartDemo *ui;
-    ZEGO::EXPRESS::IZegoExpressEngine *engine = nullptr;
+    IZegoExpressEngine *engine = nullptr;
+    std::string currentRoomID;
 };
 
 #endif // ZEGOQUICKSTARTDEMO_H

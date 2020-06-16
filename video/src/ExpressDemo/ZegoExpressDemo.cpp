@@ -2,8 +2,7 @@
 #include "ui_ZegoExpressDemo.h"
 
 #include "ZegoExpressSDK.h"
-#include <string>
-#include <iostream>
+#include "AppSupport/ZegoConfigManager.h"
 
 #include "QuickStart/ZegoQuickStartDemo.h"
 #include "Publish/ZegoPublishDemo.h"
@@ -18,6 +17,7 @@
 #include "CustomVideoCapture/ZegoCustomVideoCaptureDemo.h"
 #include "CDNAbout/ZegoCDNAboutDemo.h"
 #include "AuxStream/ZegoAuxStreamDemo.h"
+#include "AudioMixing/ZegoAudioMixingDemo.h"
 #include "ApiMonkey/ZegoApiMonkeyDemo.h"
 
 
@@ -34,8 +34,10 @@ static QString ItemTextCustomVideoRender("CustomVideoRender");
 static QString ItemTextCustomVideoCapture("CustomVideoCapture");
 static QString ItemTextCDNAbout("CDNAbout");
 static QString ItemTextAuxStream("AuxStream");
+static QString ItemTextAudioMixing("AudioMixing");
 static QString ItemTextApiMonkey("ApiMonkey");
 
+using namespace ZEGO::EXPRESS;
 
 ZegoExpressDemo::ZegoExpressDemo(QWidget *parent) :
     QWidget(parent),
@@ -65,26 +67,39 @@ ZegoExpressDemo::ZegoExpressDemo(QWidget *parent) :
     advanceUseCaseItems.append(ItemTextCustomVideoCapture);
     advanceUseCaseItems.append(ItemTextCDNAbout);
     advanceUseCaseItems.append(ItemTextAuxStream);
-    // advanceUseCaseItems.append(ItemTextApiMonkey);
+    advanceUseCaseItems.append(ItemTextAudioMixing);
     ui->listWidget_advance_menu->addItems(advanceUseCaseItems);
 
     connect(ui->listWidget_basic_menu, &QListWidget::itemClicked, this, &ZegoExpressDemo::onBasicUseCaseItemChanged);
     connect(ui->listWidget_advance_menu, &QListWidget::itemClicked, this, &ZegoExpressDemo::onAdvanceUseCaseItemChanged);
+
+    // Create Engine
+    {
+        auto appID = ZegoConfigManager::instance()->getAppID();
+        auto appSign = ZegoConfigManager::instance()->getAppSign();
+        auto isTest = ZegoConfigManager::instance()->isTestEnviroment();
+        auto engine = ZegoExpressSDK::createEngine(appID, appSign, isTest, ZEGO_SCENARIO_GENERAL, nullptr);
+        Q_ASSERT(engine != nullptr);
+    }
 }
 
 ZegoExpressDemo::~ZegoExpressDemo()
 {
+    // Destroy current Topic
+    if(currentTopicWidget!= nullptr){
+        ui->stackedWidget_panel->removeWidget(currentTopicWidget);
+        delete currentTopicWidget;
+        currentTopicWidget = nullptr;
+    }
+
+    // Destroy Engine
+    {
+        auto engine = ZegoExpressSDK::getEngine();
+        if(engine){
+            ZegoExpressSDK::destroyEngine(engine);
+        }
+    }
     delete ui;
-}
-
-void ZegoExpressDemo::onBasicUseCaseItemChanged(QListWidgetItem *item)
-{
-    doChangeTopic(item->text());
-}
-
-void ZegoExpressDemo::onAdvanceUseCaseItemChanged(QListWidgetItem *item)
-{
-    doChangeTopic(item->text());
 }
 
 void ZegoExpressDemo::doChangeTopic(QString itemText)
@@ -92,6 +107,7 @@ void ZegoExpressDemo::doChangeTopic(QString itemText)
     if(currentItemText == itemText){
         return;
     }
+    currentItemText = itemText;
 
     // Destroy Old Topic
     if(currentTopicWidget!= nullptr){
@@ -100,9 +116,7 @@ void ZegoExpressDemo::doChangeTopic(QString itemText)
         currentTopicWidget = nullptr;
     }
 
-
     // Create New Topic
-    currentItemText = itemText;
     if(currentItemText==ItemTextQuickStart){
         currentTopicWidget = new ZegoQuickStartDemo;
     }
@@ -159,10 +173,25 @@ void ZegoExpressDemo::doChangeTopic(QString itemText)
         currentTopicWidget = new ZegoAuxStreamDemo;
     }
 
+    if(currentItemText == ItemTextAudioMixing){
+        currentTopicWidget = new ZegoAudioMixingDemo;
+    }
+
     if(currentTopicWidget != nullptr){
         ui->stackedWidget_panel->addWidget(currentTopicWidget);
         ui->stackedWidget_panel->setCurrentWidget(currentTopicWidget);
     }
 }
+
+void ZegoExpressDemo::onBasicUseCaseItemChanged(QListWidgetItem *item)
+{
+    doChangeTopic(item->text());
+}
+
+void ZegoExpressDemo::onAdvanceUseCaseItemChanged(QListWidgetItem *item)
+{
+    doChangeTopic(item->text());
+}
+
 
 

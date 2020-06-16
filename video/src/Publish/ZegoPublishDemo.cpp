@@ -1,7 +1,6 @@
 #include "ZegoPublishDemo.h"
 #include "ui_ZegoPublishDemo.h"
 
-#include "AppSupport/ZegoConfigManager.h"
 #include "EventHandler/ZegoEventHandlerWithLogger.h"
 
 ZegoPublishDemo::ZegoPublishDemo(QWidget *parent) :
@@ -10,14 +9,7 @@ ZegoPublishDemo::ZegoPublishDemo(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    ZegoEngineConfig engineConfig;
-    ZegoExpressSDK::setEngineConfig(engineConfig);
-
-    auto appID = ZegoConfigManager::instance()->getAppID();
-    auto appSign = ZegoConfigManager::instance()->getAppSign();
-    auto isTestEnv = ZegoConfigManager::instance()->isTestEnviroment();
-
-    engine = ZegoExpressSDK::createEngine(appID, appSign, isTestEnv, ZEGO_SCENARIO_GENERAL, nullptr);
+    engine = ZegoExpressSDK::getEngine();
     bindEventHandler();
 
     ui->comboBox_microphone->blockSignals(true);
@@ -97,7 +89,8 @@ ZegoPublishDemo::ZegoPublishDemo(QWidget *parent) :
 
 ZegoPublishDemo::~ZegoPublishDemo()
 {
-    ZegoExpressSDK::destroyEngine(engine);
+    engine->logoutRoom(currentRoomID);
+    engine->setEventHandler(nullptr);
     delete ui;
 }
 
@@ -142,7 +135,7 @@ void ZegoPublishDemo::onVideoDeviceStateChanged(ZegoUpdateType updateType, const
 }
 
 void ZegoPublishDemo::bindEventHandler()
-{
+{    
     auto eventHandler = std::make_shared<ZegoEventHandlerWithLogger>(ui->textEdit_log);
     connect(eventHandler.get(), &ZegoEventHandlerWithLogger::sigPublisherQualityUpdate, this, &ZegoPublishDemo::onPublisherQualityUpdate);
     connect(eventHandler.get(), &ZegoEventHandlerWithLogger::sigPublisherVideoSizeChanged, this, &ZegoPublishDemo::onPublisherVideoSizeChanged);
@@ -154,15 +147,14 @@ void ZegoPublishDemo::bindEventHandler()
 void ZegoPublishDemo::on_pushButton_startPublish_clicked()
 {
     std::string userID = ui->lineEdit_userID->text().toStdString();
-    std::string roomID = ui->lineEdit_roomID->text().toStdString();
     std::string streamID = ui->lineEdit_streamID->text().toStdString();
+    currentRoomID = ui->lineEdit_roomID->text().toStdString();
 
     ZegoUser user;
     user.userID = userID;
     user.userName = userID;
-    engine->loginRoom(roomID, user);
+    engine->loginRoom(currentRoomID, user);
     engine->startPublishingStream(streamID);
-
 
     ZegoCanvas canvas(ZegoView(ui->frame_local_video->winId()));
     engine->startPreview(&canvas);
@@ -172,8 +164,7 @@ void ZegoPublishDemo::on_pushButton_stopPublish_clicked()
 {
     engine->stopPreview();
     engine->stopPublishingStream();
-    std::string roomID = ui->lineEdit_roomID->text().toStdString();
-    engine->logoutRoom(roomID);
+    engine->logoutRoom(currentRoomID);
 }
 
 void ZegoPublishDemo::on_comboBox_camera_currentIndexChanged(const QString &arg1)
@@ -233,5 +224,4 @@ void ZegoPublishDemo::on_comboBox_audioConfig_currentIndexChanged(int index)
 {
     ZegoAudioConfig audioConfig = ZegoAudioConfig(ZegoAudioConfigPreset(index));
     engine->setAudioConfig(audioConfig);
-
 }

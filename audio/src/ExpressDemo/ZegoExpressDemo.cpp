@@ -1,8 +1,10 @@
 #include "ZegoExpressDemo.h"
 #include "ui_ZegoExpressDemo.h"
 #include "ZegoExpressSDK.h"
-#include <string>
-#include <iostream>
+
+#include "ZegoExpressSDK.h"
+#include "AppSupport/ZegoConfigManager.h"
+
 #include <QuickStart/ZegoQuickStartDemo.h>
 #include <SoundLevel/ZegoSoundLevelDemo.h>
 
@@ -31,21 +33,35 @@ ZegoExpressDemo::ZegoExpressDemo(QWidget *parent) :
 
     connect(ui->listWidget_advance_menu, &QListWidget::itemClicked, this, &ZegoExpressDemo::onAdvanceUseCaseItemChanged);
     connect(ui->listWidget_basicMenu, &QListWidget::itemClicked, this, &ZegoExpressDemo::onBasicUseCaseItemChanged);
+
+    // Create Engine
+    {
+        auto appID = ZegoConfigManager::instance()->getAppID();
+        auto appSign = ZegoConfigManager::instance()->getAppSign();
+        auto isTest = ZegoConfigManager::instance()->isTestEnviroment();
+        auto engine = ZegoExpressSDK::createEngine(appID, appSign, isTest, ZEGO_SCENARIO_GENERAL, nullptr);
+        Q_ASSERT(engine != nullptr);
+    }
 }
 
 ZegoExpressDemo::~ZegoExpressDemo()
 {
+    // Destroy current Topic
+    if(currentTopicWidget!= nullptr){
+        ui->stackedWidget_panel->removeWidget(currentTopicWidget);
+        delete currentTopicWidget;
+        currentTopicWidget = nullptr;
+    }
+
+    // Destroy Engine
+    {
+        auto engine = ZegoExpressSDK::getEngine();
+        if(engine){
+            ZegoExpressSDK::destroyEngine(engine);
+        }
+    }
+
     delete ui;
-}
-
-void ZegoExpressDemo::onAdvanceUseCaseItemChanged(QListWidgetItem *item)
-{
-    doChangeTopic(item->text());
-}
-
-void ZegoExpressDemo::onBasicUseCaseItemChanged(QListWidgetItem *item)
-{
-    doChangeTopic(item->text());
 }
 
 void ZegoExpressDemo::doChangeTopic(QString itemText)
@@ -53,6 +69,7 @@ void ZegoExpressDemo::doChangeTopic(QString itemText)
     if(currentItemText == itemText){
         return;
     }
+    currentItemText = itemText;
 
     // Destroy Old Topic
     if(currentTopicWidget!= nullptr){
@@ -61,9 +78,7 @@ void ZegoExpressDemo::doChangeTopic(QString itemText)
         currentTopicWidget = nullptr;
     }
 
-
     // Create New Topic
-    currentItemText = itemText;
     if(currentItemText==ItemTextQuickStart){
         currentTopicWidget = new ZegoQuickStartDemo;
     }
@@ -78,9 +93,12 @@ void ZegoExpressDemo::doChangeTopic(QString itemText)
     }
 }
 
-
-void ZegoExpressDemo::on_pushButton_ReadDocument_clicked()
+void ZegoExpressDemo::onAdvanceUseCaseItemChanged(QListWidgetItem *item)
 {
+    doChangeTopic(item->text());
+}
 
-
+void ZegoExpressDemo::onBasicUseCaseItemChanged(QListWidgetItem *item)
+{
+    doChangeTopic(item->text());
 }

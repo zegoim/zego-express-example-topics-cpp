@@ -103,13 +103,13 @@
          <item>
           <widget class="QGroupBox" name="groupBox_2">
            <property name="title">
-            <string>* Enable CustomCapture Before CreateEngine *</string>
+            <string/>
            </property>
            <layout class="QHBoxLayout" name="horizontalLayout_5">
             <item>
-             <widget class="QPushButton" name="pushButton_setEngineConfig">
+             <widget class="QPushButton" name="pushButton_enableCustomVideoCapture">
               <property name="text">
-               <string>SetEngineConfig</string>
+               <string>enableCustomVideoCapture</string>
               </property>
              </widget>
             </item>

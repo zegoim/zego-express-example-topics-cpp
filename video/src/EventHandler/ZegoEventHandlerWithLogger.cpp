@@ -55,6 +55,18 @@ void ZegoEventHandlerWithLogger::onDebugError(int errorCode, const std::string &
     ZegoEventHandlerQt::onDebugError(errorCode, funcName, info);
 }
 
+void ZegoEventHandlerWithLogger::onEngineStateUpdate(ZegoEngineState state)
+{
+    QStringList engineStateExplain = {
+        "ZEGO_ENGINE_STATE_START",
+        "ZEGO_ENGINE_STATE_STOP",
+    };
+    QString log = QString("onEngineStateUpdate: state=%1").arg(engineStateExplain.value(state));
+    printLogToView(log);
+
+    ZegoEventHandlerQt::onEngineStateUpdate(state);
+}
+
 void ZegoEventHandlerWithLogger::onRoomStateUpdate(const std::string &roomID, ZegoRoomState state, int errorCode, const std::string &extendData)
 {
     QStringList roomStateExplain = {

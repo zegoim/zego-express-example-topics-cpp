@@ -19,10 +19,10 @@ public:
 
 
 public slots:
-    void onRoomUserUpdate(const std::string& roomID, ZegoUpdateType updateType, const std::vector<ZegoUser>& userList);
-    void onIMRecvBroadcastMessage(const std::string& roomID, std::vector<ZegoBroadcastMessageInfo> messageList);
-    void onIMRecvBarrageMessage(const std::string& roomID, std::vector<ZegoBarrageMessageInfo> messageList);
-    void onIMRecvCustomCommand(const std::string& roomID, ZegoUser fromUser, const std::string& command);
+    void onRoomUserUpdate(const std::string& currentRoomID, ZegoUpdateType updateType, const std::vector<ZegoUser>& userList);
+    void onIMRecvBroadcastMessage(const std::string& currentRoomID, std::vector<ZegoBroadcastMessageInfo> messageList);
+    void onIMRecvBarrageMessage(const std::string& currentRoomID, std::vector<ZegoBarrageMessageInfo> messageList);
+    void onIMRecvCustomCommand(const std::string& currentRoomID, ZegoUser fromUser, const std::string& command);
 
 private slots:
     void on_pushButton_send_broadcast_message_clicked();
@@ -35,10 +35,10 @@ private:
 
 private:
     Ui::ZegoRoomMessageDemo *ui;
-    ZEGO::EXPRESS::IZegoExpressEngine *engine = nullptr;
+    IZegoExpressEngine *engine = nullptr;
 
     std::vector<ZegoUser> zegoUserList;
-    std::string roomID;
+    std::string currentRoomID;
     std::string userID;
 };
 

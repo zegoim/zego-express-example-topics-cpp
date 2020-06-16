@@ -19,7 +19,7 @@ public:
     ~ZegoMixerDemo();
 
 public slots:
-    void onRoomStreamUpdate(const std::string& roomID, ZegoUpdateType updateType, const std::vector<ZegoStream>& streamList);
+    void onRoomStreamUpdate(const std::string& currentRoomID, ZegoUpdateType updateType, const std::vector<ZegoStream>& streamList);
 
 private slots:
     void on_pushButton_start_mixer_task_clicked();
@@ -34,8 +34,8 @@ private:
 private:
     Ui::ZegoMixerDemo *ui;
     std::vector<ZegoStream> zegoStreamList;
-    ZEGO::EXPRESS::IZegoExpressEngine *engine = nullptr;
-    std::string roomID;
+    IZegoExpressEngine *engine = nullptr;
+    std::string currentRoomID;
     std::string userID;
     ZegoMixerTask currentTask;
     std::shared_ptr<ZegoWatermark> watermark;
