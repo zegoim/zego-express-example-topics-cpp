@@ -30,7 +30,7 @@ private slots:
     void on_pushButton_send_custom_command_clicked();
 
 private:
-    void printLogToView(QString log);
+    void printLogToView(const QString &log);
     void bindEventHandler();
 
 private:

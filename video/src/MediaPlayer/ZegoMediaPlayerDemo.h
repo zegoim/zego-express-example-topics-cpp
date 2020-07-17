@@ -118,7 +118,7 @@ private slots:
     void onAudioFrame(IZegoMediaPlayer* mediaPlayer, const unsigned char * data, unsigned int dataLength, ZegoAudioFrameParam param) override;
 
 private:
-    void printLogToView(QString log);
+    void printLogToView(const QString &log);
     void bindEventHandler();
 
 private:

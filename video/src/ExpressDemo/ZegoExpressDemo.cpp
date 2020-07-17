@@ -11,31 +11,36 @@
 #include "Mixer/ZegoMixerDemo.h"
 #include "RoomMessage/ZegoRoomMessageDemo.h"
 #include "SoundLevel/ZegoSoundLevelDemo.h"
+#include "SoundEffects/ZegoSoundEffectsDemo.h"
 #include "Beautify/ZegoBeautifyDemo.h"
 #include "MediaPlayer/ZegoMediaPlayerDemo.h"
 #include "CustomVideoRender/ZegoCustomVideoRenderDemo.h"
 #include "CustomVideoCapture/ZegoCustomVideoCaptureDemo.h"
+#include "CustomAudioIO/ZegoCustomAudioIODemo.h"
 #include "CDNAbout/ZegoCDNAboutDemo.h"
 #include "AuxStream/ZegoAuxStreamDemo.h"
 #include "AudioMixing/ZegoAudioMixingDemo.h"
-#include "ApiMonkey/ZegoApiMonkeyDemo.h"
+#include "DataRecord/ZegoDataRecordDemo.h"
 
 
 static QString ItemTextQuickStart("QuickStart");
 static QString ItemTextPublishStream("PublishStream");
 static QString ItemTextPlayStream("PlayStream");
+
 static QString ItemTextVideoTalk("VideoTalk");
-static QString ItemTextMixerStream("MixerStream");
 static QString ItemTextRoomMessage("RoomMessage");
+static QString ItemTextCDNAbout("CDNAbout");
+static QString ItemTextMixerStream("MixerStream");
 static QString ItemTextSoundLevel("SoundLevel");
+static QString ItemTextSoundEffects("SoundEffects");
 static QString ItemTextBeautify("Beautify");
 static QString ItemTextMediaPlayer("MediaPlayer");
 static QString ItemTextCustomVideoRender("CustomVideoRender");
 static QString ItemTextCustomVideoCapture("CustomVideoCapture");
-static QString ItemTextCDNAbout("CDNAbout");
+static QString ItemTextCustomAudioIO("CustomAudioIO");
 static QString ItemTextAuxStream("AuxStream");
 static QString ItemTextAudioMixing("AudioMixing");
-static QString ItemTextApiMonkey("ApiMonkey");
+static QString ItemTextDataRecord("DataRecord");
 
 using namespace ZEGO::EXPRESS;
 
@@ -58,16 +63,19 @@ ZegoExpressDemo::ZegoExpressDemo(QWidget *parent) :
     // ================================================Advance use case ==========================================
     QStringList advanceUseCaseItems;
     advanceUseCaseItems.append(ItemTextVideoTalk);
-    advanceUseCaseItems.append(ItemTextMixerStream);
     advanceUseCaseItems.append(ItemTextRoomMessage);
+    advanceUseCaseItems.append(ItemTextCDNAbout);
+    advanceUseCaseItems.append(ItemTextMixerStream);
     advanceUseCaseItems.append(ItemTextSoundLevel);
+    advanceUseCaseItems.append(ItemTextSoundEffects);
     advanceUseCaseItems.append(ItemTextBeautify);
     advanceUseCaseItems.append(ItemTextMediaPlayer);
     advanceUseCaseItems.append(ItemTextCustomVideoRender);
     advanceUseCaseItems.append(ItemTextCustomVideoCapture);
-    advanceUseCaseItems.append(ItemTextCDNAbout);
+    advanceUseCaseItems.append(ItemTextCustomAudioIO);
     advanceUseCaseItems.append(ItemTextAuxStream);
     advanceUseCaseItems.append(ItemTextAudioMixing);
+    advanceUseCaseItems.append(ItemTextDataRecord);
     ui->listWidget_advance_menu->addItems(advanceUseCaseItems);
 
     connect(ui->listWidget_basic_menu, &QListWidget::itemClicked, this, &ZegoExpressDemo::onBasicUseCaseItemChanged);
@@ -133,20 +141,24 @@ void ZegoExpressDemo::doChangeTopic(QString itemText)
         currentTopicWidget = new ZegoVideoTalkDemo;
     }
 
-    if(currentItemText==ItemTextMixerStream){
-        currentTopicWidget = new ZegoMixerDemo;
-    }
-
     if(currentItemText==ItemTextRoomMessage){
         currentTopicWidget = new ZegoRoomMessageDemo;
     }
 
-    if(currentItemText==ItemTextApiMonkey){
-        currentTopicWidget = new ZegoApiMonkeyDemo;
+    if(currentItemText == ItemTextCDNAbout){
+        currentTopicWidget = new ZegoCDNAboutDemo;
+    }
+
+    if(currentItemText==ItemTextMixerStream){
+        currentTopicWidget = new ZegoMixerDemo;
     }
 
     if(currentItemText == ItemTextSoundLevel){
         currentTopicWidget = new ZegoSoundLevelDemo;
+    }
+
+    if(currentItemText == ItemTextSoundEffects){
+        currentTopicWidget = new ZegoSoundEffectsDemo;
     }
 
     if(currentItemText == ItemTextBeautify) {
@@ -165,8 +177,8 @@ void ZegoExpressDemo::doChangeTopic(QString itemText)
         currentTopicWidget = new ZegoCustomVideoCaptureDemo;
     }
 
-    if(currentItemText == ItemTextCDNAbout){
-        currentTopicWidget = new ZegoCDNAboutDemo;
+    if(currentItemText == ItemTextCustomAudioIO){
+        currentTopicWidget = new ZegoCustomAudioIODemo;
     }
 
     if(currentItemText == ItemTextAuxStream){
@@ -175,6 +187,10 @@ void ZegoExpressDemo::doChangeTopic(QString itemText)
 
     if(currentItemText == ItemTextAudioMixing){
         currentTopicWidget = new ZegoAudioMixingDemo;
+    }
+
+    if(currentItemText == ItemTextDataRecord){
+        currentTopicWidget = new ZegoDataRecordDemo;
     }
 
     if(currentTopicWidget != nullptr){

@@ -134,9 +134,17 @@ void ZegoPublishDemo::onVideoDeviceStateChanged(ZegoUpdateType updateType, const
     ui->comboBox_camera->blockSignals(false);
 }
 
+void ZegoPublishDemo::printLogToView(const QString &log)
+{
+    QString time = QTime::currentTime().toString("hh:mm:ss.zzz");
+    ui->textEdit_log->append(QString("[ %1 ] %2").arg(time).arg(log));
+    ui->textEdit_log->verticalScrollBar()->setValue(ui->textEdit_log->verticalScrollBar()->maximum());
+}
+
 void ZegoPublishDemo::bindEventHandler()
 {    
-    auto eventHandler = std::make_shared<ZegoEventHandlerWithLogger>(ui->textEdit_log);
+    auto eventHandler = std::make_shared<ZegoEventHandlerWithLogger>();
+    connect(eventHandler.get(), &ZegoEventHandlerWithLogger::sigPrintLogToView, this, &ZegoPublishDemo::printLogToView);
     connect(eventHandler.get(), &ZegoEventHandlerWithLogger::sigPublisherQualityUpdate, this, &ZegoPublishDemo::onPublisherQualityUpdate);
     connect(eventHandler.get(), &ZegoEventHandlerWithLogger::sigPublisherVideoSizeChanged, this, &ZegoPublishDemo::onPublisherVideoSizeChanged);
     connect(eventHandler.get(), &ZegoEventHandlerWithLogger::sigVideoDeviceStateChanged, this, &ZegoPublishDemo::onVideoDeviceStateChanged);

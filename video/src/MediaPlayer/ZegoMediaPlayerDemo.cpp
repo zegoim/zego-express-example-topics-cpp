@@ -147,15 +147,18 @@ void ZegoMediaPlayerDemo::onAudioFrame(IZegoMediaPlayer *mediaPlayer, const unsi
     Q_UNUSED(param)
 }
 
-void ZegoMediaPlayerDemo::printLogToView(QString log)
+void ZegoMediaPlayerDemo::printLogToView(const QString &log)
 {
-    ui->textEdit_log->append(log);
+    QString time = QTime::currentTime().toString("hh:mm:ss.zzz");
+    ui->textEdit_log->append(QString("[ %1 ] %2").arg(time).arg(log));
+    ui->textEdit_log->verticalScrollBar()->setValue(ui->textEdit_log->verticalScrollBar()->maximum());
 }
 
 void ZegoMediaPlayerDemo::bindEventHandler()
 {
-    auto eventHandler = std::make_shared<ZegoEventHandlerWithLogger>(ui->textEdit_log);
+    auto eventHandler = std::make_shared<ZegoEventHandlerWithLogger>();
     engine->setEventHandler(eventHandler);
+    connect(eventHandler.get(), &ZegoEventHandlerWithLogger::sigPrintLogToView, this, &ZegoMediaPlayerDemo::printLogToView);
 
     auto mediaPlayerCallbackCenter = std::make_shared<ZegoExpressMediaPlayerCallbackCenter>();
     mediaPlayerCallbackCenter->setCallback(this);

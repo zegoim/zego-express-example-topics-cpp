@@ -30,7 +30,7 @@ private slots:
     void on_pushButton_stopPlayFromCDN_clicked();
 
 private:
-    void printLogToView(QString log);
+    void printLogToView(const QString &log);
     void bindEventHandler();
 
 private:

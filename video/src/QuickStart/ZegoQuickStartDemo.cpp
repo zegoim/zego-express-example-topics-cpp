@@ -42,47 +42,47 @@ ZegoQuickStartDemo::~ZegoQuickStartDemo()
 
 void ZegoQuickStartDemo::on_pushButton_loginRoom_clicked()
 {
+    QString log = QString("do loginRoom");
+    printLogToView(log);
+
     ZegoUser user;
     user.userID = ui->label_userID->text().toStdString();
     user.userName = ui->label_userName->text().toStdString();
-
     engine->loginRoom(currentRoomID, user);
-    QString log = QString("do loginRoom");
-    printLogToView(log);
 }
 
 void ZegoQuickStartDemo::on_pushButton_PublishStream_clicked()
 {
+    QString log = QString("do publish stream");
+    printLogToView(log);
 
     std::string streamID = ui->lineEdit_publish_streamID->text().toStdString();
-
     engine->startPublishingStream(streamID);
 
     ZegoCanvas canvas((void*)ui->frame_local_video->winId(), ZEGO_VIEW_MODE_ASPECT_FIT);
     engine->startPreview(&canvas);
-
-    QString log = QString("do publish stream");
-    printLogToView(log);
 }
 
 void ZegoQuickStartDemo::on_pushButton_PlayStream_clicked()
 {
-    std::string streamID = ui->lineEdit_play_streamID->text().toStdString();
-
-    ZegoCanvas canvas((void*)ui->frame_remote_video->winId(), ZEGO_VIEW_MODE_ASPECT_FIT);
-    engine->startPlayingStream(streamID, &canvas);
-
     QString log = QString("do  play stream");
     printLogToView(log);
+
+    std::string streamID = ui->lineEdit_play_streamID->text().toStdString();
+    ZegoCanvas canvas((void*)ui->frame_remote_video->winId(), ZEGO_VIEW_MODE_ASPECT_FIT);
+    engine->startPlayingStream(streamID, &canvas);
 }
 
 void ZegoQuickStartDemo::bindEventHandler()
 {
-    engine->setEventHandler(std::make_shared<ZegoEventHandlerWithLogger>(ui->textEdit_log));
+    auto eventHandler = std::make_shared<ZegoEventHandlerWithLogger>();
+    connect(eventHandler.get(), &ZegoEventHandlerWithLogger::sigPrintLogToView, this, &ZegoQuickStartDemo::printLogToView);
+    engine->setEventHandler(eventHandler);
 }
 
-void ZegoQuickStartDemo::printLogToView(QString log)
+void ZegoQuickStartDemo::printLogToView(const QString &log)
 {
-    ui->textEdit_log->append(log);
+    QString time = QTime::currentTime().toString("hh:mm:ss.zzz");
+    ui->textEdit_log->append(QString("[ %1 ] %2").arg(time).arg(log));
     ui->textEdit_log->verticalScrollBar()->setValue(ui->textEdit_log->verticalScrollBar()->maximum());
 }

@@ -31,6 +31,7 @@ private slots:
 
 private:
     void bindEventHandler();
+    void printLogToView(const QString &log);
 
 private:
     Ui::ZegoBeautifyDemo *ui;

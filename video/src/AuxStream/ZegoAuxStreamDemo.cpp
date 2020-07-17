@@ -85,14 +85,17 @@ void ZegoAuxStreamDemo::on_pushButton_stopPublish_2_clicked()
     engine->stopPublishingStream(ZEGO_PUBLISH_CHANNEL_AUX);
 }
 
-void ZegoAuxStreamDemo::printLogToView(QString log)
+void ZegoAuxStreamDemo::printLogToView(const QString &log)
 {
-    ui->textEdit_log->append(log);
+    QString time = QTime::currentTime().toString("hh:mm:ss.zzz");
+    ui->textEdit_log->append(QString("[ %1 ] %2").arg(time).arg(log));
+    ui->textEdit_log->verticalScrollBar()->setValue(ui->textEdit_log->verticalScrollBar()->maximum());
 }
 
 void ZegoAuxStreamDemo::bindEventHandler()
 {
-    auto eventHandler = std::make_shared<ZegoEventHandlerWithLogger>(ui->textEdit_log);
+    auto eventHandler = std::make_shared<ZegoEventHandlerWithLogger>();
+    connect(eventHandler.get(), &ZegoEventHandlerWithLogger::sigPrintLogToView, this, &ZegoAuxStreamDemo::printLogToView);
     engine->setEventHandler(eventHandler);
 }
 

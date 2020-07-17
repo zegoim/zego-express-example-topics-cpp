@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT       += core gui multimedia
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -50,7 +50,10 @@ SOURCES += \
     CustomVideoCapture/ZegoCustomVideoSourceContext.cpp \
     CDNAbout/ZegoCDNAboutDemo.cpp \
     AuxStream/ZegoAuxStreamDemo.cpp \
-    AudioMixing/ZegoAudioMixingDemo.cpp
+    AudioMixing/ZegoAudioMixingDemo.cpp \
+    DataRecord/ZegoDataRecordDemo.cpp \
+    SoundEffects/ZegoSoundEffectsDemo.cpp \
+    CustomAudioIO/ZegoCustomAudioIODemo.cpp
 
 HEADERS += \
     ExpressDemo/ZegoExpressDemo.h \
@@ -78,7 +81,10 @@ HEADERS += \
     CustomVideoCapture/ZegoCustomVideoSourceContext.h \
     CDNAbout/ZegoCDNAboutDemo.h \
     AuxStream/ZegoAuxStreamDemo.h \
-    AudioMixing/ZegoAudioMixingDemo.h
+    AudioMixing/ZegoAudioMixingDemo.h \
+    DataRecord/ZegoDataRecordDemo.h \
+    SoundEffects/ZegoSoundEffectsDemo.h \
+    CustomAudioIO/ZegoCustomAudioIODemo.h
 
 
 FORMS += \
@@ -97,7 +103,10 @@ FORMS += \
     CustomVideoCapture/ZegoCustomVideoCaptureDemo.ui \
     CDNAbout/ZegoCDNAboutDemo.ui \
     AuxStream/ZegoAuxStreamDemo.ui \
-    AudioMixing/ZegoAudioMixingDemo.ui
+    AudioMixing/ZegoAudioMixingDemo.ui \
+    DataRecord/ZegoDataRecordDemo.ui \
+    SoundEffects/ZegoSoundEffectsDemo.ui \
+    CustomAudioIO/ZegoCustomAudioIODemo.ui
 
 
 # Default rules for deployment.
@@ -150,4 +159,22 @@ macx {
 
     QMAKE_INFO_PLIST = Info.plist
 }
+
+unix{
+    MOC_DIR = $$PWD/../build-linux/qmake_temp
+    RCC_DIR = $$PWD/../build-linux/qmake_temp
+    UI_DIR = $$PWD/../build-linux/qmake_temp
+    OBJECTS_DIR = $$PWD/../build-linux/qmake_temp
+
+    INCLUDEPATH += $$PWD/../libs/ZegoExpress/linux/include
+    DEPENDPATH  += $$PWD/../libs/ZegoExpress/linux/include
+
+    contains(QT_ARCH, i386) {
+        LIBS += -L$$PWD/../libs/ZegoExpress/linux/lib/x86 -lZegoExpressEngine
+    } else {
+        LIBS += -L$$PWD/../libs/ZegoExpress/linux/lib/x86_64 -lZegoExpressEngine
+    }
+}
+
+
 

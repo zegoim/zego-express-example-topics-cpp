@@ -132,8 +132,16 @@ void ZegoAudioMixingDemo::onAudioMixingCopyData(ZegoAudioMixingData *data)
 
 void ZegoAudioMixingDemo::bindEventHandler()
 {
-    auto eventHandler = std::make_shared<ZegoEventHandlerWithLogger>(ui->textEdit_log);
+    auto eventHandler = std::make_shared<ZegoEventHandlerWithLogger>();
+    connect(eventHandler.get(), &ZegoEventHandlerWithLogger::sigPrintLogToView, this, &ZegoAudioMixingDemo::printLogToView);
     engine->setEventHandler(eventHandler);
+}
+
+void ZegoAudioMixingDemo::printLogToView(const QString &log)
+{
+    QString time = QTime::currentTime().toString("hh:mm:ss.zzz");
+    ui->textEdit_log->append(QString("[ %1 ] %2").arg(time).arg(log));
+    ui->textEdit_log->verticalScrollBar()->setValue(ui->textEdit_log->verticalScrollBar()->maximum());
 }
 
 void ZegoAudioMixingDemo::on_checkBox_muteLocalAudioMixing_clicked()

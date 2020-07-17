@@ -175,29 +175,6 @@
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_3">
          <item>
-          <widget class="QGroupBox" name="groupBox_2">
-           <property name="title">
-            <string/>
-           </property>
-           <layout class="QHBoxLayout" name="horizontalLayout">
-            <item>
-             <widget class="QCheckBox" name="checkBox_enableEngineRender">
-              <property name="text">
-               <string>enableEngineRender</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QPushButton" name="pushButton_enableCustomVideoRender">
-              <property name="text">
-               <string>enableCustomVideoRender</string>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </widget>
-         </item>
-         <item>
           <widget class="QPushButton" name="pushButton_roomID">
            <property name="enabled">
             <bool>false</bool>
@@ -218,12 +195,57 @@
           </widget>
          </item>
          <item>
-          <widget class="QFrame" name="frame_4">
-           <property name="frameShape">
-            <enum>QFrame::StyledPanel</enum>
+          <widget class="QGroupBox" name="groupBox_2">
+           <property name="title">
+            <string>Enable Custom Video Render </string>
            </property>
-           <property name="frameShadow">
-            <enum>QFrame::Raised</enum>
+           <layout class="QVBoxLayout" name="verticalLayout_5">
+            <item>
+             <widget class="QComboBox" name="comboBox_bufferType"/>
+            </item>
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_5">
+              <item>
+               <widget class="QCheckBox" name="checkBox_enableEngineRender">
+                <property name="text">
+                 <string>enableEngineRender</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <layout class="QHBoxLayout" name="horizontalLayout">
+                <item>
+                 <widget class="QRadioButton" name="radioButton_rgbSeries">
+                  <property name="text">
+                   <string>RGB</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QRadioButton" name="radioButton_yuvSeries">
+                  <property name="text">
+                   <string>YUV</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <widget class="QPushButton" name="pushButton_enableCustomVideoRender">
+              <property name="text">
+               <string>**enableCustomVideoRender**</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </item>
+         <item>
+          <widget class="QGroupBox" name="groupBox_4">
+           <property name="title">
+            <string>Publish and Play Stream</string>
            </property>
            <layout class="QFormLayout" name="formLayout_2">
             <item row="0" column="0">

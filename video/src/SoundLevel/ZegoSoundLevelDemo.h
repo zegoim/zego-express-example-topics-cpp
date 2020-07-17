@@ -35,6 +35,7 @@ private slots:
 
 private:
     void bindEventHandler();
+    void printLogToView(const QString &log);
 
 private:
     void addSoundFrame(std::string streamID);

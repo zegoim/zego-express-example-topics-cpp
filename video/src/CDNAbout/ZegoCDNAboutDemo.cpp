@@ -99,13 +99,19 @@ void ZegoCDNAboutDemo::on_pushButton_stopPlayFromCDN_clicked()
     engine->stopPlayingStream(streamID);
 }
 
-void ZegoCDNAboutDemo::printLogToView(QString log)
-{
-    ui->textEdit_log->append(log);
-}
-
 void ZegoCDNAboutDemo::bindEventHandler()
 {
-    auto eventHandler = std::make_shared<ZegoEventHandlerWithLogger>(ui->textEdit_log);
+    auto eventHandler = std::make_shared<ZegoEventHandlerWithLogger>();
+    connect(eventHandler.get(), &ZegoEventHandlerWithLogger::sigPrintLogToView, this, &ZegoCDNAboutDemo::printLogToView);
     engine->setEventHandler(eventHandler);
 }
+
+void ZegoCDNAboutDemo::printLogToView(const QString &log)
+{
+    QString time = QTime::currentTime().toString("hh:mm:ss.zzz");
+    ui->textEdit_log->append(QString("[ %1 ] %2").arg(time).arg(log));
+    ui->textEdit_log->verticalScrollBar()->setValue(ui->textEdit_log->verticalScrollBar()->maximum());
+}
+
+
+

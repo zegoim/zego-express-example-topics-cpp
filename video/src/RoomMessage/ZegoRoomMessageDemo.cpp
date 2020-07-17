@@ -135,20 +135,19 @@ void ZegoRoomMessageDemo::on_pushButton_send_custom_command_clicked()
     });
 }
 
-void ZegoRoomMessageDemo::printLogToView(QString log)
+void ZegoRoomMessageDemo::printLogToView(const QString &log)
 {
-    ui->textEdit_log->append(log);
+    QString time = QTime::currentTime().toString("hh:mm:ss.zzz");
+    ui->textEdit_log->append(QString("[ %1 ] %2").arg(time).arg(log));
+    ui->textEdit_log->verticalScrollBar()->setValue(ui->textEdit_log->verticalScrollBar()->maximum());
 }
-
 void ZegoRoomMessageDemo::bindEventHandler()
 {
-    auto eventHandler = std::make_shared<ZegoEventHandlerWithLogger>(ui->textEdit_log);
-
+    auto eventHandler = std::make_shared<ZegoEventHandlerWithLogger>();
+    connect(eventHandler.get(), &ZegoEventHandlerWithLogger::sigPrintLogToView, this, &ZegoRoomMessageDemo::printLogToView);
     connect(eventHandler.get(), &ZegoEventHandlerWithLogger::sigRoomUserUpdate, this, &ZegoRoomMessageDemo::onRoomUserUpdate);
     connect(eventHandler.get(), &ZegoEventHandlerWithLogger::sigIMRecvBroadcastMessage, this, &ZegoRoomMessageDemo::onIMRecvBroadcastMessage);
     connect(eventHandler.get(), &ZegoEventHandlerWithLogger::sigIMRecvBarrageMessage, this, &ZegoRoomMessageDemo::onIMRecvBarrageMessage);
     connect(eventHandler.get(), &ZegoEventHandlerWithLogger::sigIMRecvCustomCommand, this, &ZegoRoomMessageDemo::onIMRecvCustomCommand);
-
-
     engine->setEventHandler(eventHandler);
 }

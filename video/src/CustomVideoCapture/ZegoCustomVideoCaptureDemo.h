@@ -46,6 +46,7 @@ private slots:
 
 private:
     void bindEventHandler();
+    void printLogToView(const QString &log);
 
     Ui::ZegoCustomVideoCaptureDemo *ui;
     IZegoExpressEngine *engine = nullptr;

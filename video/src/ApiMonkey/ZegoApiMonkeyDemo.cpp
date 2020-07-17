@@ -264,7 +264,7 @@ void ZegoApiMonkeyDemo::printLogToView(QString log)
 void ZegoApiMonkeyDemo::bindEventHandler()
 {
     GuardEngineLoaded
-    auto eventHandler = std::make_shared<ZegoEventHandlerWithLogger>(ui->textEdit_log);
+    auto eventHandler = std::make_shared<ZegoEventHandlerWithLogger>();
     connect(eventHandler.get(), &ZegoEventHandlerWithLogger::sigPlayerRecvSEI, this, &ZegoApiMonkeyDemo::onPlayerRecvSEI);
     engine->setEventHandler(eventHandler);
 }

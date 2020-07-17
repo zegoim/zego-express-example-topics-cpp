@@ -168,15 +168,17 @@ void ZegoMixerDemo::on_pushButton_stop_play_clicked()
     engine->stopPlayingStream(streamID);
 }
 
-void ZegoMixerDemo::printLogToView(QString log)
+void ZegoMixerDemo::printLogToView(const QString &log)
 {
-    ui->textEdit_log->append(log);
+    QString time = QTime::currentTime().toString("hh:mm:ss.zzz");
+    ui->textEdit_log->append(QString("[ %1 ] %2").arg(time).arg(log));
     ui->textEdit_log->verticalScrollBar()->setValue(ui->textEdit_log->verticalScrollBar()->maximum());
 }
 
 void ZegoMixerDemo::bindEventHandler()
 {
-    auto eventHandler = std::make_shared<ZegoEventHandlerWithLogger>(ui->textEdit_log);
+    auto eventHandler = std::make_shared<ZegoEventHandlerWithLogger>();
+    connect(eventHandler.get(), &ZegoEventHandlerWithLogger::sigPrintLogToView, this, &ZegoMixerDemo::printLogToView);
     connect(eventHandler.get(), &ZegoEventHandlerWithLogger::sigRoomStreamUpdate, this, &ZegoMixerDemo::onRoomStreamUpdate);
     engine->setEventHandler(eventHandler);
 }

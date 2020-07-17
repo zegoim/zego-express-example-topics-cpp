@@ -28,7 +28,7 @@ private slots:
     void on_pushButton_stop_play_clicked();
 
 private:
-    void printLogToView(QString log);
+    void printLogToView(const QString &log);
     void bindEventHandler();
 
 private:

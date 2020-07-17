@@ -3,7 +3,29 @@
 
 ZegoEventHandlerQt::ZegoEventHandlerQt(QObject *parent) : QObject(parent)
 {
-    qRegisterMetaType<std::string>("std::string");
+    qRegisterMetaType<std::string>();
+    qRegisterMetaType<ZegoEngineState>();
+    qRegisterMetaType<ZegoRoomState>();
+    qRegisterMetaType<ZegoUpdateType>();
+    qRegisterMetaType<std::vector<ZegoUser>>();
+    qRegisterMetaType<std::vector<ZegoStream>>();
+    qRegisterMetaType<ZegoPublisherState>();
+    qRegisterMetaType<ZegoPublishStreamQuality>();
+    qRegisterMetaType<ZegoPublishChannel>();
+    qRegisterMetaType<std::vector<ZegoStreamRelayCDNInfo>>();
+    qRegisterMetaType<ZegoPlayerState>();
+    qRegisterMetaType<ZegoPlayStreamQuality>();
+    qRegisterMetaType<ZegoPlayerMediaEvent>();
+    qRegisterMetaType<ZegoAudioDeviceType>();
+    qRegisterMetaType<ZegoDeviceInfo>();
+    qRegisterMetaType<ZegoRemoteDeviceState>();
+    qRegisterMetaType<ZegoAudioSpectrum>();
+    qRegisterMetaType<std::vector<ZegoBroadcastMessageInfo>>();
+    qRegisterMetaType<std::vector<ZegoBarrageMessageInfo>>();
+    qRegisterMetaType<ZegoUser>();
+    qRegisterMetaType<UnorderedMapWithStringFloat>();
+    qRegisterMetaType<UnorderedMapWithStringZegoAudioSpectrum>();
+    qRegisterMetaType<UnorderedMapWithUnsignedIntFloat>();
 }
 
 ZegoEventHandlerQt::~ZegoEventHandlerQt()
@@ -156,6 +178,11 @@ void ZegoEventHandlerQt::onRemoteAudioSpectrumUpdate(const std::unordered_map<st
 void ZegoEventHandlerQt::onMixerRelayCDNStateUpdate(const std::string &taskID, const std::vector<ZegoStreamRelayCDNInfo> &infoList)
 {
     emit sigMixerRelayCDNStateUpdate(taskID, infoList);
+}
+
+void ZegoEventHandlerQt::onMixerSoundLevelUpdate(const std::unordered_map<unsigned int, float> &soundLevels)
+{
+    emit sigMixerSoundLevelUpdate(soundLevels);
 }
 
 void ZegoEventHandlerQt::onIMRecvBroadcastMessage(const std::string &roomID, std::vector<ZegoBroadcastMessageInfo> messageList)

@@ -74,14 +74,17 @@ void ZegoVideoTalkDemo::onRoomStreamUpdate(const std::string &roomID, ZegoUpdate
     }
 }
 
-void ZegoVideoTalkDemo::printLogToView(QString log)
+void ZegoVideoTalkDemo::printLogToView(const QString &log)
 {
-    ui->textEdit_log->append(log);
+    QString time = QTime::currentTime().toString("hh:mm:ss.zzz");
+    ui->textEdit_log->append(QString("[ %1 ] %2").arg(time).arg(log));
+    ui->textEdit_log->verticalScrollBar()->setValue(ui->textEdit_log->verticalScrollBar()->maximum());
 }
 
 void ZegoVideoTalkDemo::bindEventHandler()
 {
-    auto eventHandler = std::make_shared<ZegoEventHandlerWithLogger>(ui->textEdit_log);
+    auto eventHandler = std::make_shared<ZegoEventHandlerWithLogger>();
+    connect(eventHandler.get(), &ZegoEventHandlerWithLogger::sigPrintLogToView, this, &ZegoVideoTalkDemo::printLogToView);
     connect(eventHandler.get(), &ZegoEventHandlerWithLogger::sigRoomStreamUpdate, this, &ZegoVideoTalkDemo::onRoomStreamUpdate);
     engine->setEventHandler(eventHandler);
 }

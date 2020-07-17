@@ -110,16 +110,23 @@ void ZegoSoundLevelDemo::onRemoteAudioSpectrumUpdate(const std::unordered_map<st
 
 void ZegoSoundLevelDemo::bindEventHandler()
 {
-    auto eventHandler = std::make_shared<ZegoEventHandlerWithLogger>(ui->textEdit_log);
-
+    auto eventHandler = std::make_shared<ZegoEventHandlerWithLogger>();
+    connect(eventHandler.get(), &ZegoEventHandlerWithLogger::sigPrintLogToView, this, &ZegoSoundLevelDemo::printLogToView);
     connect(eventHandler.get(), &ZegoEventHandlerWithLogger::sigRoomStreamUpdate, this, &ZegoSoundLevelDemo::onRoomStreamUpdate);
     connect(eventHandler.get(), &ZegoEventHandlerWithLogger::sigCapturedSoundLevelUpdate, this, &ZegoSoundLevelDemo::onCapturedSoundLevelUpdate);
     connect(eventHandler.get(), &ZegoEventHandlerWithLogger::sigRemoteSoundLevelUpdate, this, &ZegoSoundLevelDemo::onPlayerSoundLevelUpdate);
     connect(eventHandler.get(), &ZegoEventHandlerWithLogger::sigCapturedAudioSpectrumUpdate, this, &ZegoSoundLevelDemo::onCapturedAudioSpectrumUpdate);
     connect(eventHandler.get(), &ZegoEventHandlerWithLogger::sigRemoteAudioSpectrumUpdate, this, &ZegoSoundLevelDemo::onRemoteAudioSpectrumUpdate);
-
     engine->setEventHandler(eventHandler);
 }
+
+void ZegoSoundLevelDemo::printLogToView(const QString &log)
+{
+    QString time = QTime::currentTime().toString("hh:mm:ss.zzz");
+    ui->textEdit_log->append(QString("[ %1 ] %2").arg(time).arg(log));
+    ui->textEdit_log->verticalScrollBar()->setValue(ui->textEdit_log->verticalScrollBar()->maximum());
+}
+
 
 void ZegoSoundLevelDemo::addSoundFrame(std::string streamID)
 {

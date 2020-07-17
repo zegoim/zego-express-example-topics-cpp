@@ -24,15 +24,12 @@ private slots:
     void on_pushButton_stopPublish_2_clicked();
 
     void on_comboBox_mirrormode_currentIndexChanged(int index);
-
     void on_comboBox_videoConfig_currentIndexChanged(int index);
-
     void on_checkBox_mutePublishStreamVideo_clicked(bool checked);
-
     void on_checkBox_mutePublishStreamAudio_clicked(bool checked);
 
 private:
-    void printLogToView(QString log);
+    void printLogToView(const QString &log);
     void bindEventHandler();
 
 private:

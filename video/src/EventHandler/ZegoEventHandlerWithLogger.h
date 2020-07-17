@@ -2,14 +2,15 @@
 #define ZEGOEVENTLOGGER_H
 
 #include "ZegoEventHandlerQt.h"
-#include <QTextEdit>
 #include <QDebug>
+#include <QTime>
+#include <QScrollBar>
 
 class ZegoEventHandlerWithLogger : public ZegoEventHandlerQt
 {
     Q_OBJECT
 public:
-    explicit ZegoEventHandlerWithLogger(QTextEdit *logView = nullptr);
+    explicit ZegoEventHandlerWithLogger();
     ~ZegoEventHandlerWithLogger() override;
 
     void onDebugError(int errorCode, const std::string& funcName, const std::string& info) override;
@@ -48,14 +49,14 @@ public:
     void onRemoteAudioSpectrumUpdate(const std::unordered_map<std::string, ZegoAudioSpectrum>& frequencySpectrums) override;
 
     void onMixerRelayCDNStateUpdate(const std::string &taskID, const std::vector<ZegoStreamRelayCDNInfo>& infoList) override;
+    void onMixerSoundLevelUpdate(const std::unordered_map<unsigned int, float>& soundLevels) override;
 
     void onIMRecvBroadcastMessage(const std::string& roomID, std::vector<ZegoBroadcastMessageInfo> messageList) override;
     void onIMRecvBarrageMessage(const std::string& roomID, std::vector<ZegoBarrageMessageInfo> messageList) override;
     void onIMRecvCustomCommand(const std::string& roomID, ZegoUser fromUser, const std::string& command) override;
 
-private:
-    void printLogToView(QString log);
-    QTextEdit *logView = nullptr;
+signals:
+    void sigPrintLogToView(const QString &log);
 };
 
 #endif // ZEGOEVENTLOGGER_H

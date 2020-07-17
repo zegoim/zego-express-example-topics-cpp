@@ -5,6 +5,35 @@
 #include "ZegoExpressSDK.h"
 using namespace ZEGO::EXPRESS;
 
+
+Q_DECLARE_METATYPE(std::string)
+Q_DECLARE_METATYPE(ZegoEngineState)
+Q_DECLARE_METATYPE(ZegoRoomState)
+Q_DECLARE_METATYPE(ZegoUpdateType)
+Q_DECLARE_METATYPE(std::vector<ZegoUser>)
+Q_DECLARE_METATYPE(std::vector<ZegoStream>)
+Q_DECLARE_METATYPE(ZegoPublisherState)
+Q_DECLARE_METATYPE(ZegoPublishStreamQuality)
+Q_DECLARE_METATYPE(ZegoPublishChannel)
+Q_DECLARE_METATYPE(std::vector<ZegoStreamRelayCDNInfo>)
+Q_DECLARE_METATYPE(ZegoPlayerState)
+Q_DECLARE_METATYPE(ZegoPlayStreamQuality)
+Q_DECLARE_METATYPE(ZegoPlayerMediaEvent)
+Q_DECLARE_METATYPE(ZegoAudioDeviceType)
+Q_DECLARE_METATYPE(ZegoDeviceInfo)
+Q_DECLARE_METATYPE(ZegoRemoteDeviceState)
+Q_DECLARE_METATYPE(ZegoAudioSpectrum)
+Q_DECLARE_METATYPE(std::vector<ZegoBroadcastMessageInfo>)
+Q_DECLARE_METATYPE(std::vector<ZegoBarrageMessageInfo>)
+Q_DECLARE_METATYPE(ZegoUser)
+
+using UnorderedMapWithStringFloat = std::unordered_map<std::string, float>;
+using UnorderedMapWithStringZegoAudioSpectrum = std::unordered_map<std::string, ZegoAudioSpectrum>;
+using UnorderedMapWithUnsignedIntFloat = std::unordered_map<unsigned int, float>;
+Q_DECLARE_METATYPE(UnorderedMapWithStringFloat)
+Q_DECLARE_METATYPE(UnorderedMapWithStringZegoAudioSpectrum)
+Q_DECLARE_METATYPE(UnorderedMapWithUnsignedIntFloat)
+
 class ZegoEventHandlerQt : public QObject, public IZegoEventHandler
 {
     Q_OBJECT
@@ -48,6 +77,7 @@ public:
     void onRemoteAudioSpectrumUpdate(const std::unordered_map<std::string, ZegoAudioSpectrum>& frequencySpectrums) override;
 
     void onMixerRelayCDNStateUpdate(const std::string& taskID, const std::vector<ZegoStreamRelayCDNInfo>& infoList) override;
+    void onMixerSoundLevelUpdate(const std::unordered_map<unsigned int, float>& soundLevels) override;
 
     void onIMRecvBroadcastMessage(const std::string& roomID, std::vector<ZegoBroadcastMessageInfo> messageList) override;
     void onIMRecvBarrageMessage(const std::string& roomID, std::vector<ZegoBarrageMessageInfo> messageList) override;
@@ -90,6 +120,7 @@ signals:
     void sigRemoteAudioSpectrumUpdate(const std::unordered_map<std::string, ZegoAudioSpectrum>& frequencySpectrums);
 
     void sigMixerRelayCDNStateUpdate(const std::string& taskID, const std::vector<ZegoStreamRelayCDNInfo>& infoList);
+    void sigMixerSoundLevelUpdate(const std::unordered_map<unsigned int, float>& soundLevels);
 
     void sigIMRecvBroadcastMessage(const std::string& roomID, std::vector<ZegoBroadcastMessageInfo> messageList);
     void sigIMRecvBarrageMessage(const std::string& roomID, std::vector<ZegoBarrageMessageInfo> messageList);
