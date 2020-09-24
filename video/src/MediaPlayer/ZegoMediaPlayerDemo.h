@@ -101,7 +101,8 @@ private slots:
     void on_pushButton_resumePlay_1_clicked();
     void on_pushButton_stopPlay_1_clicked();
     void on_horizontalSlider_progress_1_valueChanged(int value);
-    void on_horizontalSlider_volume_1_valueChanged(int value);
+    void on_horizontalSlider_playVolume_1_valueChanged(int value);
+    void on_horizontalSlider_publishVolume_1_valueChanged(int value);
 
     void on_pushButton_loadResource_2_clicked();
     void on_pushButton_startPlay_2_clicked();
@@ -109,13 +110,15 @@ private slots:
     void on_pushButton_resumePlay_2_clicked();
     void on_pushButton_stopPlay_2_clicked();
     void on_horizontalSlider_progress_2_valueChanged(int value);
-    void on_horizontalSlider_volume_2_valueChanged(int value);
+    void on_horizontalSlider_playVolume_2_valueChanged(int value);
+    void on_horizontalSlider_publishVolume_2_valueChanged(int value);
 
     void onMediaPlayerStateUpdate(IZegoMediaPlayer* mediaPlayer, ZegoMediaPlayerState state, int errorCode) override;
     void onMediaPlayerNetworkEvent(IZegoMediaPlayer* mediaPlayer, ZegoMediaPlayerNetworkEvent event) override;
     void onMediaPlayerPlayingProgress(IZegoMediaPlayer* mediaPlayer, unsigned long long process) override;
     void onVideoFrame(IZegoMediaPlayer* mediaPlayer, const unsigned char** data, unsigned int* dataLength, ZegoVideoFrameParam param) override;
     void onAudioFrame(IZegoMediaPlayer* mediaPlayer, const unsigned char * data, unsigned int dataLength, ZegoAudioFrameParam param) override;
+
 
 private:
     void printLogToView(const QString &log);

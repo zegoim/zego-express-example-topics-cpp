@@ -28,6 +28,9 @@ private slots:
     void on_checkBox_mutePublishStreamVideo_clicked(bool checked);
     void on_checkBox_mutePublishStreamAudio_clicked(bool checked);
 
+    void on_comboBox_camera_currentIndexChanged(const QString &arg1);
+    void onVideoDeviceStateChanged(ZegoUpdateType updateType, const ZegoDeviceInfo& deviceInfo);
+
 private:
     void printLogToView(const QString &log);
     void bindEventHandler();

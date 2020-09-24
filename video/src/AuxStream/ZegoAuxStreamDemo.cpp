@@ -35,9 +35,15 @@ ZegoAuxStreamDemo::ZegoAuxStreamDemo(QWidget *parent) :
     ui->comboBox_videoConfig->setCurrentIndex(ZEGO_VIDEO_CONFIG_PRESET_360P);
     ui->comboBox_videoConfig->blockSignals(false);
 
-
     engine = ZegoExpressSDK::getEngine();
     bindEventHandler();
+
+    ui->comboBox_camera->blockSignals(true);
+    auto cameraList = engine->getVideoDeviceList();
+    for(auto device : cameraList){
+        ui->comboBox_camera->addItem(QString::fromStdString(device.deviceID));
+    }
+    ui->comboBox_camera->blockSignals(false);
 
     currentRoomID = "AuxStreamRoom-1";
     userID = ZegoUtilHelper::getRandomString();
@@ -96,6 +102,7 @@ void ZegoAuxStreamDemo::bindEventHandler()
 {
     auto eventHandler = std::make_shared<ZegoEventHandlerWithLogger>();
     connect(eventHandler.get(), &ZegoEventHandlerWithLogger::sigPrintLogToView, this, &ZegoAuxStreamDemo::printLogToView);
+    connect(eventHandler.get(), &ZegoEventHandlerWithLogger::sigVideoDeviceStateChanged, this, &ZegoAuxStreamDemo::onVideoDeviceStateChanged);
     engine->setEventHandler(eventHandler);
 }
 
@@ -118,4 +125,22 @@ void ZegoAuxStreamDemo::on_checkBox_mutePublishStreamVideo_clicked(bool checked)
 void ZegoAuxStreamDemo::on_checkBox_mutePublishStreamAudio_clicked(bool checked)
 {
     engine->mutePublishStreamAudio(checked, ZEGO_PUBLISH_CHANNEL_AUX);
+}
+
+void ZegoAuxStreamDemo::on_comboBox_camera_currentIndexChanged(const QString &arg1)
+{
+    engine->useVideoDevice(arg1.toStdString(), ZEGO_PUBLISH_CHANNEL_AUX);
+}
+
+void ZegoAuxStreamDemo::onVideoDeviceStateChanged(ZegoUpdateType updateType, const ZegoDeviceInfo &deviceInfo)
+{
+    Q_UNUSED(updateType)
+    Q_UNUSED(deviceInfo)
+    ui->comboBox_camera->blockSignals(true);
+    ui->comboBox_camera->clear();
+    auto cameraList = engine->getVideoDeviceList();
+    for(auto device : cameraList){
+        ui->comboBox_camera->addItem(QString::fromStdString(device.deviceID));
+    }
+    ui->comboBox_camera->blockSignals(false);
 }

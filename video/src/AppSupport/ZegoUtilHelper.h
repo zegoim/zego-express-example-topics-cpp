@@ -14,6 +14,10 @@ public:
     static QJsonObject stringToJsonObject(QString json, bool &ok);
     static QString jsonObjectToString(QJsonObject object);
 
+#if defined(WIN32)
+    static bool convertUtf8ToANSI(const std::string& utf8, std::string& ansi);
+#endif
+
 public:
     ZegoUtilHelper();
 };

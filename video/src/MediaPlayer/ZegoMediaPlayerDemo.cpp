@@ -48,8 +48,11 @@ void ZegoMediaPlayerDemo::on_pushButton_loadResource_1_clicked()
         auto totalDuration = mediaPlayer1->getTotalDuration();
         ui->label_totalDuration_1->setText(QString::number(totalDuration/1000));
 
-        auto volume = mediaPlayer1->getVolume();
-        ui->horizontalSlider_volume_1->setValue(volume);
+        auto playVolume = mediaPlayer1->getPlayVolume();
+        ui->horizontalSlider_playVolume_1->setValue(playVolume);
+
+        auto publishVolume = mediaPlayer1->getPublishVolume();
+        ui->horizontalSlider_publishVolume_1->setValue(publishVolume);
     });
 }
 
@@ -88,10 +91,17 @@ void ZegoMediaPlayerDemo::on_horizontalSlider_progress_1_valueChanged(int value)
     }
 }
 
-void ZegoMediaPlayerDemo::on_horizontalSlider_volume_1_valueChanged(int value)
+void ZegoMediaPlayerDemo::on_horizontalSlider_playVolume_1_valueChanged(int value)
 {
     if(mediaPlayer1){
-        mediaPlayer1->setVolume(value);
+        mediaPlayer1->setPlayVolume(value);
+    }
+}
+
+void ZegoMediaPlayerDemo::on_horizontalSlider_publishVolume_1_valueChanged(int value)
+{
+    if(mediaPlayer1){
+        mediaPlayer1->setPublishVolume(value);
     }
 }
 
@@ -189,8 +199,11 @@ void ZegoMediaPlayerDemo::on_pushButton_loadResource_2_clicked()
         auto totalDuration = mediaPlayer2->getTotalDuration();
         ui->label_totalDuration_2->setText(QString::number(totalDuration/1000));
 
-        auto volume = mediaPlayer2->getVolume();
-        ui->horizontalSlider_volume_2->setValue(volume);
+        auto playVolume = mediaPlayer2->getPlayVolume();
+        ui->horizontalSlider_playVolume_2->setValue(playVolume);
+
+        auto publishVolume = mediaPlayer2->getPublishVolume();
+        ui->horizontalSlider_publishVolume_2->setValue(publishVolume);
     });
 }
 
@@ -229,9 +242,16 @@ void ZegoMediaPlayerDemo::on_horizontalSlider_progress_2_valueChanged(int value)
     }
 }
 
-void ZegoMediaPlayerDemo::on_horizontalSlider_volume_2_valueChanged(int value)
+void ZegoMediaPlayerDemo::on_horizontalSlider_playVolume_2_valueChanged(int value)
 {
     if(mediaPlayer2){
-        mediaPlayer2->setVolume(value);
+        mediaPlayer2->setPlayVolume(value);
+    }
+}
+
+void ZegoMediaPlayerDemo::on_horizontalSlider_publishVolume_2_valueChanged(int value)
+{
+    if(mediaPlayer2){
+        mediaPlayer2->setPublishVolume(value);
     }
 }

@@ -25,7 +25,9 @@ private slots:
 
     void on_pushButton_setReverbParam_clicked();
     void on_pushButton_setVoiceChangerParam_clicked();
-    void on_pushButton_virtualStereo_clicked();
+    void on_checkBox_enableVirtualStereo_clicked();
+
+    void on_horizontalSlider_virtualStereoAngle_valueChanged(int value);
 
 private:
     void printLogToView(const QString &log);

@@ -204,8 +204,8 @@ void ZegoCustomAudioIODemo::on_pushButton_enableAudioDataCallback_clicked()
     if (ui->checkBox_capturedAudioData->isChecked()) {
         bitmask |= ZEGO_AUDIO_DATA_CALLBACK_BIT_MASK_CAPTURED;
     }
-    if (ui->checkBox_remoteAudioData->isChecked()) {
-        bitmask |= ZEGO_AUDIO_DATA_CALLBACK_BIT_MASK_REMOTE;
+    if (ui->checkBox_playbackAudioData->isChecked()) {
+        bitmask |= ZEGO_AUDIO_DATA_CALLBACK_BIT_MASK_PLAYBACK;
     }
     if (ui->checkBox_mixedAudioData->isChecked()) {
         bitmask |= ZEGO_AUDIO_DATA_CALLBACK_BIT_MASK_MIXED;
@@ -219,7 +219,7 @@ void ZegoCustomAudioIODemo::onCapturedAudioData(const unsigned char *data, unsig
     Q_UNUSED(param)
 }
 
-void ZegoCustomAudioIODemo::onRemoteAudioData(const unsigned char *data, unsigned int dataLength, ZegoAudioFrameParam param){
+void ZegoCustomAudioIODemo::onPlaybackAudioData(const unsigned char *data, unsigned int dataLength, ZegoAudioFrameParam param){
     Q_UNUSED(data)
     Q_UNUSED(dataLength)
     Q_UNUSED(param)

@@ -1,6 +1,8 @@
 #include "ZegoExpressDemo.h"
 #include "ui_ZegoExpressDemo.h"
 
+#include <QDesktopServices>
+
 #include "ZegoExpressSDK.h"
 #include "AppSupport/ZegoConfigManager.h"
 
@@ -14,14 +16,19 @@
 #include "SoundEffects/ZegoSoundEffectsDemo.h"
 #include "Beautify/ZegoBeautifyDemo.h"
 #include "MediaPlayer/ZegoMediaPlayerDemo.h"
+#include "AudioEffectPlayer/ZegoAudioEffectPlayerDemo.h"
 #include "CustomVideoRender/ZegoCustomVideoRenderDemo.h"
 #include "CustomVideoCapture/ZegoCustomVideoCaptureDemo.h"
 #include "CustomAudioIO/ZegoCustomAudioIODemo.h"
 #include "CDNAbout/ZegoCDNAboutDemo.h"
 #include "AuxStream/ZegoAuxStreamDemo.h"
 #include "AudioMixing/ZegoAudioMixingDemo.h"
+#include "AudioProcess/ZegoAudioProcessDemo.h"
 #include "DataRecord/ZegoDataRecordDemo.h"
+#include "MultiLayer/ZegoMultiLayerDemo.h"
+#include "MultiRoom/ZegoMultiRoomDemo.h"
 
+#include "version.h"
 
 static QString ItemTextQuickStart("QuickStart");
 static QString ItemTextPublishStream("PublishStream");
@@ -35,12 +42,16 @@ static QString ItemTextSoundLevel("SoundLevel");
 static QString ItemTextSoundEffects("SoundEffects");
 static QString ItemTextBeautify("Beautify");
 static QString ItemTextMediaPlayer("MediaPlayer");
+static QString ItemTextAudioEffectPlayer("AudioEffectPlayer");
 static QString ItemTextCustomVideoRender("CustomVideoRender");
 static QString ItemTextCustomVideoCapture("CustomVideoCapture");
 static QString ItemTextCustomAudioIO("CustomAudioIO");
 static QString ItemTextAuxStream("AuxStream");
 static QString ItemTextAudioMixing("AudioMixing");
+static QString ItemTextAudioProcess("AudioProcess");
 static QString ItemTextDataRecord("DataRecord");
+static QString ItemTextMultiLayer("MultiLayer");
+static QString ItemTextMultiRoom("MultiRoom");
 
 using namespace ZEGO::EXPRESS;
 
@@ -51,6 +62,7 @@ ZegoExpressDemo::ZegoExpressDemo(QWidget *parent) :
     ui->setupUi(this);
 
     // show SDK version
+    ui->label_demo_version->setText(QString::fromStdString(DEMO_VERSION));
     ui->label_sdk_version->setText(QString::fromStdString(ZegoExpressSDK::getVersion()));
 
     // ================================================ Basic use case ==========================================
@@ -70,12 +82,16 @@ ZegoExpressDemo::ZegoExpressDemo(QWidget *parent) :
     advanceUseCaseItems.append(ItemTextSoundEffects);
     advanceUseCaseItems.append(ItemTextBeautify);
     advanceUseCaseItems.append(ItemTextMediaPlayer);
+    advanceUseCaseItems.append(ItemTextAudioEffectPlayer);
     advanceUseCaseItems.append(ItemTextCustomVideoRender);
     advanceUseCaseItems.append(ItemTextCustomVideoCapture);
     advanceUseCaseItems.append(ItemTextCustomAudioIO);
     advanceUseCaseItems.append(ItemTextAuxStream);
     advanceUseCaseItems.append(ItemTextAudioMixing);
+    advanceUseCaseItems.append(ItemTextAudioProcess);
     advanceUseCaseItems.append(ItemTextDataRecord);
+    advanceUseCaseItems.append(ItemTextMultiLayer);
+    advanceUseCaseItems.append(ItemTextMultiRoom);
     ui->listWidget_advance_menu->addItems(advanceUseCaseItems);
 
     connect(ui->listWidget_basic_menu, &QListWidget::itemClicked, this, &ZegoExpressDemo::onBasicUseCaseItemChanged);
@@ -169,6 +185,10 @@ void ZegoExpressDemo::doChangeTopic(QString itemText)
         currentTopicWidget = new ZegoMediaPlayerDemo;
     }
 
+    if(currentItemText == ItemTextAudioEffectPlayer){
+        currentTopicWidget = new ZegoAudioEffectPlayerDemo;
+    }
+
     if(currentItemText == ItemTextCustomVideoRender){
         currentTopicWidget = new ZegoCustomVideoRenderDemo;
     }
@@ -189,8 +209,20 @@ void ZegoExpressDemo::doChangeTopic(QString itemText)
         currentTopicWidget = new ZegoAudioMixingDemo;
     }
 
+    if(currentItemText == ItemTextAudioProcess){
+        currentTopicWidget = new ZegoAudioProcessDemo;
+    }
+
     if(currentItemText == ItemTextDataRecord){
         currentTopicWidget = new ZegoDataRecordDemo;
+    }
+
+    if(currentItemText == ItemTextMultiLayer){
+        currentTopicWidget = new ZegoMultiLayerDemo;
+    }
+
+    if(currentItemText == ItemTextMultiRoom) {
+        currentTopicWidget = new ZegoMultiRoomDemo;
     }
 
     if(currentTopicWidget != nullptr){
@@ -209,5 +241,13 @@ void ZegoExpressDemo::onAdvanceUseCaseItemChanged(QListWidgetItem *item)
     doChangeTopic(item->text());
 }
 
+void ZegoExpressDemo::on_pushButton_go_code_clicked()
+{
+    QDesktopServices::openUrl(QUrl("https://doc-zh.zego.im/zh/3128.html"));
+    QDesktopServices::openUrl(QUrl("https://storage.zego.im/express/example/cpp/ZegoExpressExample-CPP.zip"));
+}
 
-
+void ZegoExpressDemo::on_pushButton_go_document_clicked()
+{
+    QDesktopServices::openUrl(QUrl("https://doc-zh.zego.im/zh/693.html"));
+}

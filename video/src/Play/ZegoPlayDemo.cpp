@@ -90,6 +90,7 @@ void ZegoPlayDemo::bindEventHandler()
 void ZegoPlayDemo::on_comboBox_audioOutputDevice_currentIndexChanged(const QString &arg1)
 {
     engine->useAudioDevice(ZEGO_AUDIO_DEVICE_TYPE_OUTPUT, arg1.toStdString());
+    ui->slider_speakerVolume->setValue(engine->getAudioDeviceVolume(ZEGO_AUDIO_DEVICE_TYPE_OUTPUT, arg1.toStdString()));
 }
 
 void ZegoPlayDemo::on_comboBox_viewmode_currentIndexChanged(int index)
@@ -140,4 +141,9 @@ void ZegoPlayDemo::on_slider_playVolume_valueChanged(int value)
 {
     std::string streamID = ui->lineEdit_streamID->text().toStdString();
     engine->setPlayVolume(streamID, value);
+}
+
+void ZegoPlayDemo::on_slider_speakerVolume_valueChanged(int value)
+{
+    engine->setAudioDeviceVolume(ZEGO_AUDIO_DEVICE_TYPE_OUTPUT, ui->comboBox_audioOutputDevice->currentText().toStdString(), value);
 }

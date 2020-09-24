@@ -55,8 +55,15 @@ void ZegoAudioMixingDemo::on_pushButton_loadAudioFile_clicked()
     }
     ui->lineEdit_audioFile->setText(path);
 
+    // https://www.cnblogs.com/zhugaopeng/p/9090980.html
     std::lock_guard<std::mutex> locker(pcmBufferMutex);
+#ifdef WIN32
+    std::string ansiPath;
+    ZegoUtilHelper::convertUtf8ToANSI(path.toStdString(), ansiPath);
+    FILE* pcmFile = fopen(ansiPath.c_str(), "r");
+#else
     FILE* pcmFile = fopen(path.toStdString().c_str(), "r");
+#endif
     fseek(pcmFile, 0, SEEK_END);
     pcmDataLength = ftell(pcmFile);
     pcmData = std::unique_ptr<unsigned char[]>(new unsigned char[pcmDataLength]);

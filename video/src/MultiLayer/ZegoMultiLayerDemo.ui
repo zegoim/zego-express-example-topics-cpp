@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>ZegoAuxStreamDemo</class>
- <widget class="QWidget" name="ZegoAuxStreamDemo">
+ <class>ZegoMultiLayerDemo</class>
+ <widget class="QWidget" name="ZegoMultiLayerDemo">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>889</width>
-    <height>737</height>
+    <width>982</width>
+    <height>607</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -31,9 +31,9 @@
         <property name="frameShadow">
          <enum>QFrame::Raised</enum>
         </property>
-        <layout class="QHBoxLayout" name="horizontalLayout_4">
+        <layout class="QHBoxLayout" name="horizontalLayout_5">
          <item>
-          <widget class="QFrame" name="frame_local_preview_1">
+          <widget class="QFrame" name="frame_local_preview">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
              <horstretch>0</horstretch>
@@ -46,7 +46,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QFrame" name="frame_local_preview_2">
+          <widget class="QFrame" name="frame_remote_play">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
              <horstretch>0</horstretch>
@@ -75,7 +75,7 @@
         <property name="frameShadow">
          <enum>QFrame::Raised</enum>
         </property>
-        <layout class="QVBoxLayout" name="verticalLayout_4">
+        <layout class="QVBoxLayout" name="verticalLayout">
          <item>
           <widget class="QPushButton" name="pushButton_roomID">
            <property name="enabled">
@@ -99,35 +99,47 @@
          <item>
           <widget class="QGroupBox" name="groupBox">
            <property name="title">
-            <string>Publish-Main</string>
+            <string>Publish Stream</string>
            </property>
-           <layout class="QVBoxLayout" name="verticalLayout">
+           <layout class="QVBoxLayout" name="verticalLayout_4">
             <item>
-             <layout class="QHBoxLayout" name="horizontalLayout_2">
-              <item>
-               <widget class="QLabel" name="label_2">
-                <property name="text">
-                 <string>StreamID:</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QLineEdit" name="lineEdit_streamID_1"/>
-              </item>
-             </layout>
-            </item>
-            <item>
-             <widget class="QPushButton" name="pushButton_startPublish_1">
-              <property name="text">
-               <string>StartPublish</string>
+             <widget class="QFrame" name="frame_7">
+              <property name="frameShape">
+               <enum>QFrame::StyledPanel</enum>
               </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QPushButton" name="pushButton_stopPublish_1">
-              <property name="text">
-               <string>StopPublish</string>
+              <property name="frameShadow">
+               <enum>QFrame::Raised</enum>
               </property>
+              <layout class="QFormLayout" name="formLayout_5">
+               <item row="1" column="0">
+                <widget class="QLabel" name="label_13">
+                 <property name="text">
+                  <string>publish StreamID:</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="1">
+                <widget class="QLineEdit" name="lineEdit_streamID_to_publish">
+                 <property name="placeholderText">
+                  <string>streamID for publish</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="3" column="0" colspan="2">
+                <widget class="QPushButton" name="pushButton_stop_publish">
+                 <property name="text">
+                  <string>Stop Publish</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="2" column="0" colspan="2">
+                <widget class="QPushButton" name="pushButton_start_publish">
+                 <property name="text">
+                  <string>Start Publish(enable Multi-Layer)</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
              </widget>
             </item>
            </layout>
@@ -136,140 +148,115 @@
          <item>
           <widget class="QGroupBox" name="groupBox_2">
            <property name="title">
-            <string>Publish-Aux</string>
+            <string>Play stream</string>
            </property>
-           <layout class="QVBoxLayout" name="verticalLayout_6">
+           <layout class="QHBoxLayout" name="horizontalLayout_3">
             <item>
-             <layout class="QHBoxLayout" name="horizontalLayout_3">
-              <item>
-               <widget class="QLabel" name="label_3">
-                <property name="text">
-                 <string>StreamID:</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QLineEdit" name="lineEdit_streamID_2"/>
-              </item>
-             </layout>
-            </item>
-            <item>
-             <widget class="QPushButton" name="pushButton_startPublish_2">
-              <property name="text">
-               <string>StartPublish</string>
+             <widget class="QFrame" name="frame_4">
+              <property name="frameShape">
+               <enum>QFrame::StyledPanel</enum>
               </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QPushButton" name="pushButton_stopPublish_2">
-              <property name="text">
-               <string>StopPublish</string>
+              <property name="frameShadow">
+               <enum>QFrame::Raised</enum>
               </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QGroupBox" name="groupBox_3">
-              <property name="title">
-               <string>AuxParam</string>
-              </property>
-              <property name="alignment">
-               <set>Qt::AlignCenter</set>
-              </property>
-              <layout class="QFormLayout" name="formLayout_3">
-               <item row="3" column="0">
-                <widget class="QLabel" name="label_9">
+              <layout class="QFormLayout" name="formLayout_2">
+               <item row="2" column="0">
+                <widget class="QLabel" name="label_12">
                  <property name="text">
-                  <string>MirrorMode:</string>
+                  <string>Play StreamID:</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="2" column="1">
+                <widget class="QLineEdit" name="lineEdit_streamID_to_play">
+                 <property name="placeholderText">
+                  <string>streamID for play</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="3" column="0">
+                <widget class="QLabel" name="label_5">
+                 <property name="text">
+                  <string>Play Layer:</string>
                  </property>
                 </widget>
                </item>
                <item row="3" column="1">
-                <widget class="QComboBox" name="comboBox_mirrormode">
-                 <property name="sizePolicy">
-                  <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                   <horstretch>0</horstretch>
-                   <verstretch>0</verstretch>
-                  </sizepolicy>
-                 </property>
-                 <property name="maximumSize">
-                  <size>
-                   <width>16777215</width>
-                   <height>16777215</height>
-                  </size>
-                 </property>
-                </widget>
+                <widget class="QComboBox" name="comboBox_play_layer"/>
                </item>
-               <item row="4" column="0">
-                <widget class="QLabel" name="label_11">
+               <item row="6" column="0" colspan="2">
+                <widget class="QPushButton" name="pushButton_start_play">
                  <property name="text">
-                  <string>VideoConfig:</string>
+                  <string>Start Play(play selected layer)</string>
                  </property>
                 </widget>
                </item>
-               <item row="4" column="1">
-                <widget class="QComboBox" name="comboBox_videoConfig">
-                 <property name="enabled">
-                  <bool>true</bool>
-                 </property>
-                 <property name="sizePolicy">
-                  <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                   <horstretch>0</horstretch>
-                   <verstretch>0</verstretch>
-                  </sizepolicy>
-                 </property>
-                 <property name="maximumSize">
-                  <size>
-                   <width>16777215</width>
-                   <height>16777215</height>
-                  </size>
-                 </property>
-                </widget>
-               </item>
-               <item row="5" column="0">
-                <widget class="QLabel" name="label_10">
+               <item row="7" column="0" colspan="2">
+                <widget class="QPushButton" name="pushButton_stop_play">
                  <property name="text">
-                  <string>StreamControl:</string>
+                  <string>Stop Play</string>
                  </property>
                 </widget>
                </item>
                <item row="5" column="1">
-                <layout class="QVBoxLayout" name="verticalLayout_5">
-                 <item>
-                  <widget class="QCheckBox" name="checkBox_mutePublishStreamVideo">
+                <layout class="QFormLayout" name="formLayout_3">
+                 <item row="0" column="0">
+                  <widget class="QLabel" name="label_9">
                    <property name="text">
-                    <string>MutePublishVideoStream</string>
+                    <string>Video FPS:</string>
                    </property>
                   </widget>
                  </item>
-                 <item>
-                  <widget class="QCheckBox" name="checkBox_mutePublishStreamAudio">
+                 <item row="0" column="1">
+                  <widget class="QLineEdit" name="lineEdit_videoFPS">
+                   <property name="frame">
+                    <bool>false</bool>
+                   </property>
+                   <property name="readOnly">
+                    <bool>true</bool>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="0">
+                  <widget class="QLabel" name="label_11">
                    <property name="text">
-                    <string>MutePublishAudioStream</string>
+                    <string>Video BPS:</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="1">
+                  <widget class="QLineEdit" name="lineEdit_videoBPS">
+                   <property name="frame">
+                    <bool>false</bool>
+                   </property>
+                   <property name="readOnly">
+                    <bool>true</bool>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="2" column="0">
+                  <widget class="QLabel" name="label_14">
+                   <property name="text">
+                    <string>Resolution:</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="2" column="1">
+                  <widget class="QLineEdit" name="lineEdit_resolution">
+                   <property name="frame">
+                    <bool>false</bool>
+                   </property>
+                   <property name="readOnly">
+                    <bool>true</bool>
                    </property>
                   </widget>
                  </item>
                 </layout>
                </item>
-               <item row="1" column="0">
+               <item row="5" column="0">
                 <widget class="QLabel" name="label_4">
                  <property name="text">
-                  <string>Camera:</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="1" column="1">
-                <widget class="QComboBox" name="comboBox_camera">
-                 <property name="sizePolicy">
-                  <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                   <horstretch>0</horstretch>
-                   <verstretch>0</verstretch>
-                  </sizepolicy>
-                 </property>
-                 <property name="maximumSize">
-                  <size>
-                   <width>16777215</width>
-                   <height>16777215</height>
-                  </size>
+                  <string>PlayQuality:</string>
                  </property>
                 </widget>
                </item>

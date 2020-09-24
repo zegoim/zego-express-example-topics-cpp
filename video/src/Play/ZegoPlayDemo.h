@@ -31,6 +31,8 @@ private slots:
     void on_pushButton_stopPlay_clicked();
     void on_slider_playVolume_valueChanged(int value);
 
+    void on_slider_speakerVolume_valueChanged(int value);
+
 private:
     void printLogToView(const QString &log);
     void bindEventHandler();

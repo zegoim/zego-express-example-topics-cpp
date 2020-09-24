@@ -16,7 +16,7 @@ class IAudioDataCallback
 public:
     virtual ~IAudioDataCallback() {}
     virtual void onCapturedAudioData(const unsigned char* data, unsigned int dataLength, ZegoAudioFrameParam param) =0;
-    virtual void onRemoteAudioData(const unsigned char* data, unsigned int dataLength, ZegoAudioFrameParam param) =0;
+    virtual void onPlaybackAudioData(const unsigned char* data, unsigned int dataLength, ZegoAudioFrameParam param) =0;
     virtual void onMixedAudioData(const unsigned char* data, unsigned int dataLength, ZegoAudioFrameParam param) =0;
 };
 
@@ -28,8 +28,8 @@ public:
         callback->onCapturedAudioData(data, dataLength, param);
     }
 
-    void onRemoteAudioData(const unsigned char* data, unsigned int dataLength, ZegoAudioFrameParam param) override{
-        callback->onRemoteAudioData(data, dataLength, param);
+    void onPlaybackAudioData(const unsigned char* data, unsigned int dataLength, ZegoAudioFrameParam param) override{
+        callback->onPlaybackAudioData(data, dataLength, param);
     }
 
     void onMixedAudioData(const unsigned char* data, unsigned int dataLength, ZegoAudioFrameParam param) override{
@@ -69,7 +69,7 @@ private:
     void stopCustomAudioRender();
 
     void onCapturedAudioData(const unsigned char* data, unsigned int dataLength, ZegoAudioFrameParam param) override;
-    void onRemoteAudioData(const unsigned char* data, unsigned int dataLength, ZegoAudioFrameParam param) override;
+    void onPlaybackAudioData(const unsigned char* data, unsigned int dataLength, ZegoAudioFrameParam param) override;
     void onMixedAudioData(const unsigned char* data, unsigned int dataLength, ZegoAudioFrameParam param) override;
 
 private:

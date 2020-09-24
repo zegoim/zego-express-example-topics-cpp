@@ -26,6 +26,7 @@ ZegoEventHandlerQt::ZegoEventHandlerQt(QObject *parent) : QObject(parent)
     qRegisterMetaType<UnorderedMapWithStringFloat>();
     qRegisterMetaType<UnorderedMapWithStringZegoAudioSpectrum>();
     qRegisterMetaType<UnorderedMapWithUnsignedIntFloat>();
+    qRegisterMetaType<std::vector<ZegoRoomExtraInfo>>();
 }
 
 ZegoEventHandlerQt::~ZegoEventHandlerQt()
@@ -46,6 +47,11 @@ void ZegoEventHandlerQt::onEngineStateUpdate(ZegoEngineState state)
 void ZegoEventHandlerQt::onRoomStateUpdate(const std::string &roomID, ZegoRoomState state, int errorCode, const std::string &extendData)
 {
     emit sigRoomStateUpdate(roomID, state, errorCode, extendData);
+}
+
+void ZegoEventHandlerQt::onRoomExtraInfoUpdate(const std::string &roomID, const std::vector<ZegoRoomExtraInfo> &roomExtraInfoList)
+{
+    emit sigRoomExtraInfoUpdate(roomID, roomExtraInfoList);
 }
 
 void ZegoEventHandlerQt::onRoomUserUpdate(const std::string &roomID, ZegoUpdateType updateType, const std::vector<ZegoUser> &userList)

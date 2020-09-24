@@ -329,7 +329,7 @@ void ZegoApiMonkeyDemo::on_pushButton_sendCustomCommand_clicked()
 void ZegoApiMonkeyDemo::on_pushButton_sendSEI_clicked()
 {
     QString seiString = ui->lineEdit_sendSEI->text();
-    u_int seiLength = u_int(strlen(seiString.toStdString().c_str()) + 1);
+    auto seiLength = (unsigned int)(strlen(seiString.toStdString().c_str()) + 1);
     unsigned char* test2 = new u_char[seiLength];
     memcpy(test2, seiString.toStdString().c_str(), seiLength);
     engine->sendSEI(test2,  seiLength);

@@ -53,7 +53,7 @@ ZegoCustomVideoCaptureDemo::ZegoCustomVideoCaptureDemo(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    currentRoomID = "CustomVideoRender-1";
+    currentRoomID = "CustomVideoCapture-1";
     userID = ZegoUtilHelper::getRandomString();
     ui->pushButton_roomID->setText(QString("RoomID: %1").arg(currentRoomID.c_str()));
     ui->pushButton_userID->setText(QString("UserID: %1").arg(userID.c_str()));
@@ -82,7 +82,7 @@ ZegoCustomVideoCaptureDemo::~ZegoCustomVideoCaptureDemo()
 
 void ZegoCustomVideoCaptureDemo::on_pushButton_enableCustomVideoCapture_clicked()
 {
-    // call enableCustomVideoRender outside room
+    // call enableCustomVideoCapture outside room
     engine->logoutRoom(currentRoomID);
 
     ZegoCustomVideoCaptureConfig customVideoCaptureConfig;

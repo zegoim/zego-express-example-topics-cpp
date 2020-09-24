@@ -191,6 +191,13 @@
                   </widget>
                  </item>
                  <item>
+                  <widget class="QCheckBox" name="checkBox_enableAux_1">
+                   <property name="text">
+                    <string>EnableAux</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
                   <widget class="QPushButton" name="pushButton_startPlay_1">
                    <property name="sizePolicy">
                     <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
@@ -215,7 +222,7 @@
                <item row="6" column="0">
                 <widget class="QLabel" name="label_2">
                  <property name="text">
-                  <string>Volume:</string>
+                  <string>PlayVolume:</string>
                  </property>
                 </widget>
                </item>
@@ -227,12 +234,26 @@
                 </widget>
                </item>
                <item row="6" column="1">
-                <widget class="QSlider" name="horizontalSlider_volume_1">
+                <widget class="QSlider" name="horizontalSlider_playVolume_1">
                  <property name="tracking">
                   <bool>false</bool>
                  </property>
                  <property name="orientation">
                   <enum>Qt::Horizontal</enum>
+                 </property>
+                </widget>
+               </item>
+               <item row="7" column="1">
+                <widget class="QSlider" name="horizontalSlider_publishVolume_1">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                </widget>
+               </item>
+               <item row="7" column="0">
+                <widget class="QLabel" name="label_9">
+                 <property name="text">
+                  <string>PublishVolume:</string>
                  </property>
                 </widget>
                </item>
@@ -357,6 +378,13 @@
                   </widget>
                  </item>
                  <item>
+                  <widget class="QCheckBox" name="checkBox_enableAux_2">
+                   <property name="text">
+                    <string>EnableAux</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
                   <widget class="QPushButton" name="pushButton_startPlay_2">
                    <property name="sizePolicy">
                     <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
@@ -381,7 +409,7 @@
                <item row="6" column="0">
                 <widget class="QLabel" name="label_8">
                  <property name="text">
-                  <string>Volume:</string>
+                  <string>PlayVolume:</string>
                  </property>
                 </widget>
                </item>
@@ -393,10 +421,24 @@
                 </widget>
                </item>
                <item row="6" column="1">
-                <widget class="QSlider" name="horizontalSlider_volume_2">
+                <widget class="QSlider" name="horizontalSlider_playVolume_2">
                  <property name="tracking">
                   <bool>false</bool>
                  </property>
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                </widget>
+               </item>
+               <item row="7" column="0">
+                <widget class="QLabel" name="label_10">
+                 <property name="text">
+                  <string>PublishVolume:</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="7" column="1">
+                <widget class="QSlider" name="horizontalSlider_publishVolume_2">
                  <property name="orientation">
                   <enum>Qt::Horizontal</enum>
                  </property>

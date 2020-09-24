@@ -30,7 +30,7 @@ void ZegoCustomVideoSourceImage::getVideoFrame(std::shared_ptr<ZegoCustomVideoFr
 
     QImage image(imagePath.c_str());
     videoFrame = std::make_shared<ZegoCustomVideoFrame>();
-    videoFrame->dataLength = u_int(image.byteCount());
+    videoFrame->dataLength = (unsigned int)(image.byteCount());
     videoFrame->data = std::unique_ptr<unsigned char[]>(new unsigned char[videoFrame->dataLength]);
     memcpy(videoFrame->data.get(), image.constBits(), videoFrame->dataLength);
 
@@ -38,6 +38,7 @@ void ZegoCustomVideoSourceImage::getVideoFrame(std::shared_ptr<ZegoCustomVideoFr
     videoFrame->param.width = image.width();
     videoFrame->param.height = image.height();
     videoFrame->param.strides[0] = image.bytesPerLine();
+    videoFrame->param.rotation = 0;
 
     videoFrame->referenceTimeMillsecond = this->getCurrentTimestampMS();
 }

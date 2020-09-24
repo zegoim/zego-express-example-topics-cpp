@@ -21,6 +21,10 @@ public slots:
     void onAdvanceUseCaseItemChanged(QListWidgetItem *item);
     void doChangeTopic(QString itemText);
 
+private slots:
+    void on_pushButton_go_code_clicked();
+    void on_pushButton_go_document_clicked();
+
 private:
     Ui::ZegoExpressDemo *ui;
 

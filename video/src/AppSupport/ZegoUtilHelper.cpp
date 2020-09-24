@@ -1,6 +1,10 @@
 #include "ZegoUtilHelper.h"
 #include <QTime>
+#include <vector>
 
+#if defined (WIN32)
+#include <Windows.h>
+#endif
 std::string ZegoUtilHelper::getRandomString()
 {
     QTime time = QTime::currentTime();
@@ -40,6 +44,33 @@ QString ZegoUtilHelper::jsonObjectToString(QJsonObject object)
     QJsonDocument doc = QJsonDocument(object);
     return doc.toJson(QJsonDocument::Indented);
 }
+
+#if defined(WIN32)
+bool ZegoUtilHelper::convertUtf8ToANSI(const std::string& utf8, std::string& ansi)
+{
+    if (utf8.length() == 0)
+        return false;
+
+    //utf8 to unicode
+    int len = ::MultiByteToWideChar(CP_UTF8, 0, utf8.c_str(), -1, NULL, 0);
+    if (len == 0)
+        return false;
+
+    std::vector<wchar_t> unicode(len);
+    ::MultiByteToWideChar(CP_UTF8, 0, utf8.c_str(), -1, &unicode[0], len);
+
+    //unicode to ansi
+    len = ::WideCharToMultiByte(CP_ACP, 0, &unicode[0], -1, NULL, 0, NULL, NULL);
+    if (len == 0)
+        return false;
+
+    std::vector<char> dest(len);
+    ::WideCharToMultiByte(CP_ACP, 0, &unicode[0], -1, &dest[0], len, NULL, NULL);
+
+    ansi = &dest[0];
+    return true;
+}
+#endif
 
 ZegoUtilHelper::ZegoUtilHelper()
 {

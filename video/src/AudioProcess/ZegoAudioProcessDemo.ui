@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>ZegoCustomAudioIODemo</class>
- <widget class="QWidget" name="ZegoCustomAudioIODemo">
+ <class>ZegoAudioProcessDemo</class>
+ <widget class="QWidget" name="ZegoAudioProcessDemo">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1149</width>
-    <height>737</height>
+    <width>1033</width>
+    <height>646</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -97,22 +97,6 @@
           </widget>
          </item>
          <item>
-          <widget class="QGroupBox" name="groupBox">
-           <property name="title">
-            <string>Enable Custom AudioIO</string>
-           </property>
-           <layout class="QVBoxLayout" name="verticalLayout_4">
-            <item>
-             <widget class="QPushButton" name="pushButton_enableCustomAudioIO">
-              <property name="text">
-               <string>**EnableCustomAudioIO**</string>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </widget>
-         </item>
-         <item>
           <widget class="QGroupBox" name="groupBox_4">
            <property name="title">
             <string>Publish and Play Stream</string>
@@ -193,38 +177,49 @@
          <item>
           <widget class="QGroupBox" name="groupBox_2">
            <property name="title">
-            <string>Enable audio data callback</string>
+            <string>Audio Process</string>
            </property>
-           <layout class="QVBoxLayout" name="verticalLayout_3">
-            <item>
-             <layout class="QHBoxLayout" name="horizontalLayout">
-              <item>
-               <widget class="QCheckBox" name="checkBox_capturedAudioData">
-                <property name="text">
-                 <string>Captured</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QCheckBox" name="checkBox_playbackAudioData">
-                <property name="text">
-                 <string>Playback</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QCheckBox" name="checkBox_mixedAudioData">
-                <property name="text">
-                 <string>Mixed</string>
-                </property>
-               </widget>
-              </item>
-             </layout>
-            </item>
-            <item>
-             <widget class="QPushButton" name="pushButton_enableAudioDataCallback">
+           <layout class="QFormLayout" name="formLayout">
+            <item row="0" column="0">
+             <widget class="QLabel" name="label_2">
               <property name="text">
-               <string>EnableAudioDataCallback</string>
+               <string>Captured Data:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="1">
+             <widget class="QSlider" name="horizontalSlider_capturedData">
+              <property name="minimum">
+               <number>0</number>
+              </property>
+              <property name="maximum">
+               <number>200</number>
+              </property>
+              <property name="value">
+               <number>100</number>
+              </property>
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="0">
+             <widget class="QLabel" name="label">
+              <property name="text">
+               <string>Remote Data:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="1">
+             <widget class="QSlider" name="horizontalSlider_remoteData">
+              <property name="maximum">
+               <number>200</number>
+              </property>
+              <property name="value">
+               <number>100</number>
+              </property>
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
               </property>
              </widget>
             </item>

@@ -26,6 +26,7 @@ Q_DECLARE_METATYPE(ZegoAudioSpectrum)
 Q_DECLARE_METATYPE(std::vector<ZegoBroadcastMessageInfo>)
 Q_DECLARE_METATYPE(std::vector<ZegoBarrageMessageInfo>)
 Q_DECLARE_METATYPE(ZegoUser)
+Q_DECLARE_METATYPE(std::vector<ZegoRoomExtraInfo>)
 
 using UnorderedMapWithStringFloat = std::unordered_map<std::string, float>;
 using UnorderedMapWithStringZegoAudioSpectrum = std::unordered_map<std::string, ZegoAudioSpectrum>;
@@ -46,6 +47,7 @@ public:
     void onEngineStateUpdate(ZegoEngineState state) override;
 
     void onRoomStateUpdate(const std::string& roomID, ZegoRoomState state, int errorCode, const std::string &extendData) override;
+    void onRoomExtraInfoUpdate(const std::string& roomID, const std::vector<ZegoRoomExtraInfo>& roomExtraInfoList) override;
     void onRoomUserUpdate(const std::string& roomID, ZegoUpdateType updateType, const std::vector<ZegoUser>& userList) override;
     void onRoomStreamUpdate(const std::string& roomID, ZegoUpdateType updateType, const std::vector<ZegoStream>& streamList) override;
     void onRoomStreamExtraInfoUpdate(const std::string& roomID, const std::vector<ZegoStream>& streamList) override;
@@ -89,6 +91,7 @@ signals:
     void sigEngineStateUpdate(ZegoEngineState state);
 
     void sigRoomStateUpdate(const std::string& roomID, ZegoRoomState state, int errorCode, const std::string &extendData);
+    void sigRoomExtraInfoUpdate(const std::string& roomID, const std::vector<ZegoRoomExtraInfo>& roomExtraInfoList);
     void sigRoomUserUpdate(const std::string& roomID, ZegoUpdateType updateType, const std::vector<ZegoUser>& userList);
     void sigRoomStreamUpdate(const std::string& roomID, ZegoUpdateType updateType, const std::vector<ZegoStream>& streamList);
     void sigRoomStreamExtraInfoUpdate(const std::string& roomID, const std::vector<ZegoStream>& streamList);

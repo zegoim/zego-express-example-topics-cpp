@@ -36,10 +36,18 @@ ZegoSoundEffectsDemo::ZegoSoundEffectsDemo(QWidget *parent) :
         "ZEGO_VOICE_CHANGER_PRESET_WOMEN_TO_MEN"
     };
     ui->comboBox_voiceChangerPreset->addItems(ZegoVoiceChangerPresetList);
+
+    auto audioConfig = engine->getAudioConfig();
+    audioConfig.channel = ZEGO_AUDIO_CHANNEL_STEREO;
+    engine->setAudioConfig(audioConfig);
 }
 
 ZegoSoundEffectsDemo::~ZegoSoundEffectsDemo()
 {
+    auto audioConfig = engine->getAudioConfig();
+    audioConfig.channel = ZEGO_AUDIO_CHANNEL_MONO;
+    engine->setAudioConfig(audioConfig);
+
     engine->logoutRoom(currentRoomID);
     engine->setEventHandler(nullptr);
     delete ui;
@@ -99,7 +107,14 @@ void ZegoSoundEffectsDemo::on_pushButton_setVoiceChangerParam_clicked()
     engine->setVoiceChangerParam(param);
 }
 
-void ZegoSoundEffectsDemo::on_pushButton_virtualStereo_clicked()
+void ZegoSoundEffectsDemo::on_checkBox_enableVirtualStereo_clicked()
 {
-    engine->enableVirtualStereo(ui->checkBox_enableVirtualStereo->isChecked(), ui->horizontalSlider_virtualStereoAngle->value());
+    bool enableVirtualStereo = ui->checkBox_enableVirtualStereo->isChecked();
+    engine->enableVirtualStereo(enableVirtualStereo, ui->horizontalSlider_virtualStereoAngle->value());
+    ui->horizontalSlider_virtualStereoAngle->setEnabled(enableVirtualStereo);
+}
+
+void ZegoSoundEffectsDemo::on_horizontalSlider_virtualStereoAngle_valueChanged(int value)
+{
+    engine->enableVirtualStereo(ui->checkBox_enableVirtualStereo->isChecked(), value);
 }

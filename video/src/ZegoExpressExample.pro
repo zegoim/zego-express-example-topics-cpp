@@ -53,7 +53,11 @@ SOURCES += \
     AudioMixing/ZegoAudioMixingDemo.cpp \
     DataRecord/ZegoDataRecordDemo.cpp \
     SoundEffects/ZegoSoundEffectsDemo.cpp \
-    CustomAudioIO/ZegoCustomAudioIODemo.cpp
+    CustomAudioIO/ZegoCustomAudioIODemo.cpp \
+    MultiLayer/ZegoMultiLayerDemo.cpp \
+    MultiRoom/ZegoMultiRoomDemo.cpp \
+    AudioProcess/ZegoAudioProcessDemo.cpp \
+    AudioEffectPlayer/ZegoAudioEffectPlayerDemo.cpp
 
 HEADERS += \
     ExpressDemo/ZegoExpressDemo.h \
@@ -84,7 +88,12 @@ HEADERS += \
     AudioMixing/ZegoAudioMixingDemo.h \
     DataRecord/ZegoDataRecordDemo.h \
     SoundEffects/ZegoSoundEffectsDemo.h \
-    CustomAudioIO/ZegoCustomAudioIODemo.h
+    CustomAudioIO/ZegoCustomAudioIODemo.h \
+    MultiLayer/ZegoMultiLayerDemo.h \
+    MultiRoom/ZegoMultiRoomDemo.h \
+    AudioProcess/ZegoAudioProcessDemo.h \
+    version.h \
+    AudioEffectPlayer/ZegoAudioEffectPlayerDemo.h
 
 
 FORMS += \
@@ -106,7 +115,11 @@ FORMS += \
     AudioMixing/ZegoAudioMixingDemo.ui \
     DataRecord/ZegoDataRecordDemo.ui \
     SoundEffects/ZegoSoundEffectsDemo.ui \
-    CustomAudioIO/ZegoCustomAudioIODemo.ui
+    CustomAudioIO/ZegoCustomAudioIODemo.ui \
+    MultiLayer/ZegoMultiLayerDemo.ui \
+    MultiRoom/ZegoMultiRoomDemo.ui \
+    AudioProcess/ZegoAudioProcessDemo.ui \
+    AudioEffectPlayer/ZegoAudioEffectPlayerDemo.ui
 
 
 # Default rules for deployment.

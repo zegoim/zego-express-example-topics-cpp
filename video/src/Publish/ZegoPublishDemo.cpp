@@ -183,6 +183,7 @@ void ZegoPublishDemo::on_comboBox_camera_currentIndexChanged(const QString &arg1
 void ZegoPublishDemo::on_comboBox_microphone_currentIndexChanged(const QString &arg1)
 {
    engine->useAudioDevice(ZEGO_AUDIO_DEVICE_TYPE_INPUT, arg1.toStdString());
+   ui->slider_microphoneVolume->setValue(engine->getAudioDeviceVolume(ZEGO_AUDIO_DEVICE_TYPE_INPUT, arg1.toStdString()));
 }
 
 void ZegoPublishDemo::on_comboBox_viewmode_currentIndexChanged(int index)
@@ -232,4 +233,9 @@ void ZegoPublishDemo::on_comboBox_audioConfig_currentIndexChanged(int index)
 {
     ZegoAudioConfig audioConfig = ZegoAudioConfig(ZegoAudioConfigPreset(index));
     engine->setAudioConfig(audioConfig);
+}
+
+void ZegoPublishDemo::on_horizontalSlider_microphoneVolume_valueChanged(int value)
+{
+   engine->setAudioDeviceVolume(ZEGO_AUDIO_DEVICE_TYPE_INPUT, ui->comboBox_microphone->currentText().toStdString(), value);
 }

@@ -39,6 +39,8 @@ private slots:
 
     void on_comboBox_audioConfig_currentIndexChanged(int index);
 
+    void on_horizontalSlider_microphoneVolume_valueChanged(int value);
+
 private:
     void bindEventHandler();
     void printLogToView(const QString &log);

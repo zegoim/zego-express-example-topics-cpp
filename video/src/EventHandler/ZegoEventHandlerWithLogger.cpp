@@ -77,6 +77,15 @@ void ZegoEventHandlerWithLogger::onRoomStateUpdate(const std::string &roomID, Ze
     ZegoEventHandlerQt::onRoomStateUpdate(roomID, state, errorCode, extendData);
 }
 
+void ZegoEventHandlerWithLogger::onRoomExtraInfoUpdate(const std::string &roomID, const std::vector<ZegoRoomExtraInfo> &roomExtraInfoList)
+{
+    for(const ZegoRoomExtraInfo &extraInfo: roomExtraInfoList){
+        QString log = QString("onRoomExtraInfoUpdate: roomID=%1, key=%2, value=%3").arg(roomID.c_str()).arg(extraInfo.key.c_str()).arg(extraInfo.value.c_str());
+        emit sigPrintLogToView(log);
+    }
+    ZegoEventHandlerQt::onRoomExtraInfoUpdate(roomID, roomExtraInfoList);
+}
+
 void ZegoEventHandlerWithLogger::onRoomUserUpdate(const std::string &roomID, ZegoUpdateType updateType, const std::vector<ZegoUser> &userList)
 {
     QString updateTypeString = updateType == ZEGO_UPDATE_TYPE_ADD ? "Add" : "Remove";
