@@ -14,8 +14,9 @@ class ZegoCustomVideoCaptureDemo;
 
 
 class CustomVideoCapturer: public IZegoCustomVideoCaptureHandler, public ZegoCustomVideoSourceContext{
-
 public:
+    CustomVideoCapturer(ZegoVideoBufferType bufferType, ZegoPublishChannel channel = ZEGO_PUBLISH_CHANNEL_MAIN);
+    ~CustomVideoCapturer() override;
     void onStart(ZegoPublishChannel channel) override;
     void onStop(ZegoPublishChannel channel) override;
 
@@ -25,6 +26,8 @@ private:
 private:
     std::atomic<bool> mVideoCaptureRunning = {false};
     std::thread mVideoCaptureThread;
+    ZegoVideoBufferType mVideoBufferType;
+    ZegoPublishChannel mPublishChannel;
 };
 
 class ZegoCustomVideoCaptureDemo : public QWidget
@@ -42,7 +45,7 @@ private slots:
     void on_pushButton_startPlay_clicked();
     void on_pushButton_stopPlay_clicked();
     void on_pushButton_imageSource_clicked();
-    void on_pushButton_videoSource_clicked();
+    void on_pushButton_mediaSource_clicked();
 
 private:
     void bindEventHandler();

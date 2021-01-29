@@ -27,6 +27,7 @@ Q_DECLARE_METATYPE(std::vector<ZegoBroadcastMessageInfo>)
 Q_DECLARE_METATYPE(std::vector<ZegoBarrageMessageInfo>)
 Q_DECLARE_METATYPE(ZegoUser)
 Q_DECLARE_METATYPE(std::vector<ZegoRoomExtraInfo>)
+Q_DECLARE_METATYPE(ZegoPerformanceStatus)
 
 using UnorderedMapWithStringFloat = std::unordered_map<std::string, float>;
 using UnorderedMapWithStringZegoAudioSpectrum = std::unordered_map<std::string, ZegoAudioSpectrum>;
@@ -49,7 +50,7 @@ public:
     void onRoomStateUpdate(const std::string& roomID, ZegoRoomState state, int errorCode, const std::string &extendData) override;
     void onRoomExtraInfoUpdate(const std::string& roomID, const std::vector<ZegoRoomExtraInfo>& roomExtraInfoList) override;
     void onRoomUserUpdate(const std::string& roomID, ZegoUpdateType updateType, const std::vector<ZegoUser>& userList) override;
-    void onRoomStreamUpdate(const std::string& roomID, ZegoUpdateType updateType, const std::vector<ZegoStream>& streamList) override;
+    void onRoomStreamUpdate(const std::string& roomID, ZegoUpdateType updateType, const std::vector<ZegoStream>& streamList, const std::string& extendData) override;
     void onRoomStreamExtraInfoUpdate(const std::string& roomID, const std::vector<ZegoStream>& streamList) override;
 
     void onPublisherStateUpdate(const std::string& streamID, ZegoPublisherState state, int errorCode, const std::string &extendData) override;
@@ -85,6 +86,10 @@ public:
     void onIMRecvBarrageMessage(const std::string& roomID, std::vector<ZegoBarrageMessageInfo> messageList) override;
     void onIMRecvCustomCommand(const std::string& roomID, ZegoUser fromUser, const std::string& command) override;
 
+    void onPerformanceStatusUpdate(const ZegoPerformanceStatus& status) override;
+    void onNetworkSpeedTestError(int errorCode, ZegoNetworkSpeedTestType type) override;
+    void onNetworkSpeedTestQualityUpdate(const ZegoNetworkSpeedTestQuality& quality, ZegoNetworkSpeedTestType type) override;
+
 signals:
     void sigDebugError(int errorCode, const std::string& funcName, const std::string& info);
 
@@ -93,7 +98,7 @@ signals:
     void sigRoomStateUpdate(const std::string& roomID, ZegoRoomState state, int errorCode, const std::string &extendData);
     void sigRoomExtraInfoUpdate(const std::string& roomID, const std::vector<ZegoRoomExtraInfo>& roomExtraInfoList);
     void sigRoomUserUpdate(const std::string& roomID, ZegoUpdateType updateType, const std::vector<ZegoUser>& userList);
-    void sigRoomStreamUpdate(const std::string& roomID, ZegoUpdateType updateType, const std::vector<ZegoStream>& streamList);
+    void sigRoomStreamUpdate(const std::string& roomID, ZegoUpdateType updateType, const std::vector<ZegoStream>& streamList, const std::string& extendData);
     void sigRoomStreamExtraInfoUpdate(const std::string& roomID, const std::vector<ZegoStream>& streamList);
 
     void sigPublisherStateUpdate(const std::string& streamID, ZegoPublisherState state, int errorCode, const std::string &extendData);
@@ -129,7 +134,9 @@ signals:
     void sigIMRecvBarrageMessage(const std::string& roomID, std::vector<ZegoBarrageMessageInfo> messageList);
     void sigIMRecvCustomCommand(const std::string& roomID, ZegoUser fromUser, const std::string& command);
 
-
+    void sigPerformanceStatusUpdate(const ZegoPerformanceStatus& status);
+    void sigNetworkSpeedTestError(int errorCode, ZegoNetworkSpeedTestType type);
+    void sigNetworkSpeedTestQualityUpdate(const ZegoNetworkSpeedTestQuality& quality, ZegoNetworkSpeedTestType type);
 
 public slots:
 };

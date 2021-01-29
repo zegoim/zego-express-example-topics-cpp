@@ -27,6 +27,7 @@ ZegoEventHandlerQt::ZegoEventHandlerQt(QObject *parent) : QObject(parent)
     qRegisterMetaType<UnorderedMapWithStringZegoAudioSpectrum>();
     qRegisterMetaType<UnorderedMapWithUnsignedIntFloat>();
     qRegisterMetaType<std::vector<ZegoRoomExtraInfo>>();
+    qRegisterMetaType<ZegoPerformanceStatus>();
 }
 
 ZegoEventHandlerQt::~ZegoEventHandlerQt()
@@ -59,9 +60,9 @@ void ZegoEventHandlerQt::onRoomUserUpdate(const std::string &roomID, ZegoUpdateT
     emit sigRoomUserUpdate(roomID, updateType, userList);
 }
 
-void ZegoEventHandlerQt::onRoomStreamUpdate(const std::string &roomID, ZegoUpdateType updateType, const std::vector<ZegoStream> &streamList)
+void ZegoEventHandlerQt::onRoomStreamUpdate(const std::string &roomID, ZegoUpdateType updateType, const std::vector<ZegoStream> &streamList, const std::string& extendData)
 {
-    emit sigRoomStreamUpdate(roomID, updateType, streamList);
+    emit sigRoomStreamUpdate(roomID, updateType, streamList, extendData);
 }
 
 void ZegoEventHandlerQt::onRoomStreamExtraInfoUpdate(const std::string &roomID, const std::vector<ZegoStream> &streamList)
@@ -204,4 +205,19 @@ void ZegoEventHandlerQt::onIMRecvBarrageMessage(const std::string &roomID, std::
 void ZegoEventHandlerQt::onIMRecvCustomCommand(const std::string &roomID, ZegoUser fromUser, const std::string &command)
 {
     emit sigIMRecvCustomCommand(roomID, fromUser, command);
+}
+
+void ZegoEventHandlerQt::onPerformanceStatusUpdate(const ZegoPerformanceStatus &status)
+{
+    emit sigPerformanceStatusUpdate(status);
+}
+
+void ZegoEventHandlerQt::onNetworkSpeedTestError(int errorCode, ZegoNetworkSpeedTestType type)
+{
+    emit sigNetworkSpeedTestError(errorCode, type);
+}
+
+void ZegoEventHandlerQt::onNetworkSpeedTestQualityUpdate(const ZegoNetworkSpeedTestQuality &quality, ZegoNetworkSpeedTestType type)
+{
+    emit sigNetworkSpeedTestQualityUpdate(quality, type);
 }

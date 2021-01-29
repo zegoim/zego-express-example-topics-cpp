@@ -103,6 +103,8 @@ private slots:
     void on_horizontalSlider_progress_1_valueChanged(int value);
     void on_horizontalSlider_playVolume_1_valueChanged(int value);
     void on_horizontalSlider_publishVolume_1_valueChanged(int value);
+    void on_comboBox_voiceChanger_1_currentIndexChanged(int index);
+    void on_pushButton_setAudioTrackIndex_1_clicked();
 
     void on_pushButton_loadResource_2_clicked();
     void on_pushButton_startPlay_2_clicked();

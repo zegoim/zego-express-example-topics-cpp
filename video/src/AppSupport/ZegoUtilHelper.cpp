@@ -4,7 +4,12 @@
 
 #if defined (WIN32)
 #include <Windows.h>
+Q_GUI_EXPORT QPixmap qt_pixmapFromWinHBITMAP(HBITMAP bitmap, int hbitmapFormat);
+#elif TARGET_OS_OSX
+#import <Foundation/Foundation.h>
+#import <CoreGraphics/CGImage.h>
 #endif
+
 std::string ZegoUtilHelper::getRandomString()
 {
     QTime time = QTime::currentTime();
@@ -71,6 +76,34 @@ bool ZegoUtilHelper::convertUtf8ToANSI(const std::string& utf8, std::string& ans
     return true;
 }
 #endif
+
+QPixmap ZegoUtilHelper::QPixmapFromZegoSnapshot(void *snapshot)
+{
+    QPixmap pixmap;
+#if defined(WIN32)
+
+    pixmap = qt_pixmapFromWinHBITMAP(HBITMAP(snapshot), 0);
+
+#elif TARGET_OS_OSX
+
+    CGImageRef cgImage =  (CGImageRef)snapshot;
+
+    CFDataRef pixelData= CGDataProviderCopyData(CGImageGetDataProvider(cgImage));
+    unsigned char * ucBuffer = (unsigned char *)CFDataGetBytePtr(pixelData);
+
+    size_t width = CGImageGetWidth(cgImage);
+    size_t height = CGImageGetHeight(cgImage);
+    QImage qImage(ucBuffer ,width, height, QImage::Format_ARGB32);
+
+    pixmap = QPixmap::fromImage(qImage);
+
+#else
+
+   pixmap =QPixmap::fromImage(*(QImage*)snapshot);
+
+#endif
+    return  pixmap;
+}
 
 ZegoUtilHelper::ZegoUtilHelper()
 {

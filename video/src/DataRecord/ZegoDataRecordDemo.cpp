@@ -62,7 +62,7 @@ void ZegoDataRecordDemo::onCapturedDataRecordProgressUpdate(ZegoDataRecordProgre
 
 void ZegoDataRecordDemo::on_pushButton_startRecord_clicked()
 {
-    QString path = QFileDialog::getSaveFileName(this, "Select file to save", ".", "record file (*.mp4 *.flv)");
+    QString path = QFileDialog::getSaveFileName(this, "Select file to save", ".", "record file (*.mp4 *.flv *.aac)");
     if(path.isEmpty()){
         return;
     }

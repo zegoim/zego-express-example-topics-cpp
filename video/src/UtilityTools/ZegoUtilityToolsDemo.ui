@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>ZegoSoundEffectsDemo</class>
- <widget class="QWidget" name="ZegoSoundEffectsDemo">
+ <class>ZegoUtilityToolsDemo</class>
+ <widget class="QWidget" name="ZegoUtilityToolsDemo">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1111</width>
-    <height>773</height>
+    <width>1174</width>
+    <height>718</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -31,7 +31,7 @@
         <property name="frameShadow">
          <enum>QFrame::Raised</enum>
         </property>
-        <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="0,0">
+        <layout class="QHBoxLayout" name="horizontalLayout_2">
          <item>
           <widget class="QFrame" name="frame_local_preview">
            <property name="sizePolicy">
@@ -71,11 +71,11 @@
           <rect>
            <x>0</x>
            <y>0</y>
-           <width>348</width>
-           <height>553</height>
+           <width>369</width>
+           <height>628</height>
           </rect>
          </property>
-         <layout class="QVBoxLayout" name="verticalLayout_5">
+         <layout class="QVBoxLayout" name="verticalLayout_3">
           <item>
            <widget class="QPushButton" name="pushButton_roomID">
             <property name="enabled">
@@ -98,6 +98,12 @@
           </item>
           <item>
            <widget class="QGroupBox" name="groupBox_4">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
             <property name="title">
              <string>Publish and Play Stream</string>
             </property>
@@ -177,234 +183,119 @@
           <item>
            <widget class="QGroupBox" name="groupBox_2">
             <property name="title">
-             <string>Reverb</string>
+             <string>PerformanceMonitor</string>
             </property>
-            <layout class="QVBoxLayout" name="verticalLayout_4">
-             <item>
-              <widget class="QComboBox" name="comboBox_reverbPreset"/>
-             </item>
-             <item>
-              <widget class="QPushButton" name="pushButton_setReverbPreset">
-               <property name="text">
-                <string>setReverbPreset</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="Line" name="line">
-               <property name="orientation">
-                <enum>Qt::Horizontal</enum>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <layout class="QFormLayout" name="formLayout">
+            <layout class="QFormLayout" name="formLayout">
+             <item row="2" column="1">
+              <layout class="QFormLayout" name="formLayout_3">
                <item row="0" column="0">
-                <widget class="QLabel" name="label">
-                 <property name="text">
-                  <string>roomSize：</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="1" column="0">
-                <widget class="QLabel" name="label_2">
-                 <property name="text">
-                  <string>reverberance：</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="2" column="0">
-                <widget class="QLabel" name="label_5">
-                 <property name="text">
-                  <string>damping：</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="3" column="0">
-                <widget class="QLabel" name="label_6">
-                 <property name="text">
-                  <string>wetonly：</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="3" column="1">
-                <widget class="QCheckBox" name="checkBox_wetOnly">
-                 <property name="text">
-                  <string/>
-                 </property>
-                </widget>
-               </item>
-               <item row="4" column="0">
-                <widget class="QLabel" name="label_4">
-                 <property name="text">
-                  <string>wetGain：</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="5" column="0">
                 <widget class="QLabel" name="label_8">
                  <property name="text">
-                  <string>dryGain:</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="6" column="0">
-                <widget class="QLabel" name="label_7">
-                 <property name="text">
-                  <string>toneLow:</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="7" column="0">
-                <widget class="QLabel" name="label_9">
-                 <property name="text">
-                  <string>toneHigh:</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="8" column="0">
-                <widget class="QLabel" name="label_10">
-                 <property name="text">
-                  <string>preDelay:</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="9" column="0">
-                <widget class="QLabel" name="label_11">
-                 <property name="text">
-                  <string>stereoWidth:</string>
+                  <string>cpuUsageApp:</string>
                  </property>
                 </widget>
                </item>
                <item row="0" column="1">
-                <widget class="QSlider" name="horizontalSlider_roomSize">
-                 <property name="tracking">
+                <widget class="QLineEdit" name="lineEdit_cpuUsageApp">
+                 <property name="frame">
                   <bool>false</bool>
                  </property>
-                 <property name="orientation">
-                  <enum>Qt::Horizontal</enum>
+                 <property name="readOnly">
+                  <bool>true</bool>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="0">
+                <widget class="QLabel" name="label_6">
+                 <property name="text">
+                  <string>cpuUsageSystem:</string>
                  </property>
                 </widget>
                </item>
                <item row="1" column="1">
-                <widget class="QSlider" name="horizontalSlider_reverberance">
-                 <property name="tracking">
+                <widget class="QLineEdit" name="lineEdit_cpuUsageSystem">
+                 <property name="frame">
                   <bool>false</bool>
                  </property>
-                 <property name="orientation">
-                  <enum>Qt::Horizontal</enum>
+                 <property name="readOnly">
+                  <bool>true</bool>
+                 </property>
+                </widget>
+               </item>
+               <item row="2" column="0">
+                <widget class="QLabel" name="label_16">
+                 <property name="text">
+                  <string>memoryUsageApp:</string>
                  </property>
                 </widget>
                </item>
                <item row="2" column="1">
-                <widget class="QSlider" name="horizontalSlider_damping">
-                 <property name="tracking">
+                <widget class="QLineEdit" name="lineEdit_memoryUsageApp">
+                 <property name="frame">
                   <bool>false</bool>
                  </property>
-                 <property name="orientation">
-                  <enum>Qt::Horizontal</enum>
+                 <property name="readOnly">
+                  <bool>true</bool>
+                 </property>
+                </widget>
+               </item>
+               <item row="3" column="0">
+                <widget class="QLabel" name="label_17">
+                 <property name="text">
+                  <string>memoryUsageSystem:</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="3" column="1">
+                <widget class="QLineEdit" name="lineEdit_memoryUsageSystem">
+                 <property name="frame">
+                  <bool>false</bool>
+                 </property>
+                 <property name="readOnly">
+                  <bool>true</bool>
+                 </property>
+                </widget>
+               </item>
+               <item row="4" column="0">
+                <widget class="QLabel" name="label_7">
+                 <property name="text">
+                  <string>memoryUsedApp:</string>
                  </property>
                 </widget>
                </item>
                <item row="4" column="1">
-                <widget class="QSlider" name="horizontalSlider_wetGain">
-                 <property name="minimum">
-                  <number>-20</number>
+                <widget class="QLineEdit" name="lineEdit_memoryUsedApp">
+                 <property name="enabled">
+                  <bool>true</bool>
                  </property>
-                 <property name="maximum">
-                  <number>10</number>
-                 </property>
-                 <property name="tracking">
+                 <property name="frame">
                   <bool>false</bool>
                  </property>
-                 <property name="orientation">
-                  <enum>Qt::Horizontal</enum>
-                 </property>
-                </widget>
-               </item>
-               <item row="5" column="1">
-                <widget class="QSlider" name="horizontalSlider_dryGain">
-                 <property name="minimum">
-                  <number>-20</number>
-                 </property>
-                 <property name="maximum">
-                  <number>10</number>
-                 </property>
-                 <property name="tracking">
-                  <bool>false</bool>
-                 </property>
-                 <property name="orientation">
-                  <enum>Qt::Horizontal</enum>
-                 </property>
-                </widget>
-               </item>
-               <item row="6" column="1">
-                <widget class="QSlider" name="horizontalSlider_toneLow">
-                 <property name="value">
-                  <number>99</number>
-                 </property>
-                 <property name="tracking">
-                  <bool>false</bool>
-                 </property>
-                 <property name="orientation">
-                  <enum>Qt::Horizontal</enum>
-                 </property>
-                </widget>
-               </item>
-               <item row="7" column="1">
-                <widget class="QSlider" name="horizontalSlider_toneHigh">
-                 <property name="value">
-                  <number>99</number>
-                 </property>
-                 <property name="tracking">
-                  <bool>false</bool>
-                 </property>
-                 <property name="orientation">
-                  <enum>Qt::Horizontal</enum>
-                 </property>
-                </widget>
-               </item>
-               <item row="8" column="1">
-                <widget class="QSlider" name="horizontalSlider_preDelay">
-                 <property name="maximum">
-                  <number>199</number>
-                 </property>
-                 <property name="tracking">
-                  <bool>false</bool>
-                 </property>
-                 <property name="orientation">
-                  <enum>Qt::Horizontal</enum>
-                 </property>
-                </widget>
-               </item>
-               <item row="9" column="1">
-                <widget class="QSlider" name="horizontalSlider_stereoWidth">
-                 <property name="tracking">
-                  <bool>false</bool>
-                 </property>
-                 <property name="orientation">
-                  <enum>Qt::Horizontal</enum>
+                 <property name="readOnly">
+                  <bool>true</bool>
                  </property>
                 </widget>
                </item>
               </layout>
              </item>
-            </layout>
-           </widget>
-          </item>
-          <item>
-           <widget class="QGroupBox" name="groupBox">
-            <property name="title">
-             <string>Voice Changer</string>
-            </property>
-            <layout class="QVBoxLayout" name="verticalLayout_3">
-             <item>
-              <widget class="QComboBox" name="comboBox_voiceChangerPreset"/>
-             </item>
-             <item>
-              <widget class="QPushButton" name="pushButton_setVoiceChangerPreset">
+             <item row="2" column="0">
+              <widget class="QLabel" name="label_13">
                <property name="text">
-                <string>setVoiceChangerPreset</string>
+                <string>Performance:</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="0" colspan="2">
+              <widget class="QPushButton" name="pushButton_startPerformaceMonitor">
+               <property name="text">
+                <string>Start Performance Monitor</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="0" colspan="2">
+              <widget class="QPushButton" name="pushButton_stopPerformaceMonitor">
+               <property name="text">
+                <string>Stop Performance Monitor</string>
                </property>
               </widget>
              </item>
@@ -412,28 +303,158 @@
            </widget>
           </item>
           <item>
-           <widget class="QGroupBox" name="groupBox_3">
+           <widget class="QGroupBox" name="groupBox_networkspeed_test">
             <property name="title">
-             <string>Virutal Stereo</string>
+             <string>NetworkSpeedTest</string>
             </property>
-            <layout class="QVBoxLayout" name="verticalLayout_6">
-             <item>
-              <layout class="QHBoxLayout" name="horizontalLayout">
-               <item>
-                <widget class="QCheckBox" name="checkBox_enableVirtualStereo">
+            <layout class="QFormLayout" name="formLayout_4">
+             <item row="2" column="0" colspan="2">
+              <widget class="QPushButton" name="pushButton_startNetworkSpeedTest">
+               <property name="text">
+                <string>Start Network Speed Test</string>
+               </property>
+              </widget>
+             </item>
+             <item row="3" column="0" colspan="2">
+              <widget class="QPushButton" name="pushButton_stopNetworkSpeedTest">
+               <property name="text">
+                <string>Stop Network Speed Test</string>
+               </property>
+              </widget>
+             </item>
+             <item row="4" column="0">
+              <widget class="QLabel" name="label_14">
+               <property name="text">
+                <string>Uplink:</string>
+               </property>
+              </widget>
+             </item>
+             <item row="4" column="1">
+              <layout class="QFormLayout" name="formLayout_5">
+               <item row="0" column="0">
+                <widget class="QLabel" name="label_9">
                  <property name="text">
-                  <string>enable</string>
+                  <string>connetctCost:</string>
                  </property>
                 </widget>
                </item>
-               <item>
-                <widget class="QSlider" name="horizontalSlider_virtualStereoAngle">
-                 <property name="orientation">
-                  <enum>Qt::Horizontal</enum>
+               <item row="0" column="1">
+                <widget class="QLineEdit" name="lineEdit_connectCostUpdate_uplink">
+                 <property name="frame">
+                  <bool>false</bool>
+                 </property>
+                 <property name="readOnly">
+                  <bool>true</bool>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="0">
+                <widget class="QLabel" name="label_10">
+                 <property name="text">
+                  <string>rtt</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="1">
+                <widget class="QLineEdit" name="lineEdit_rtt_uplink">
+                 <property name="frame">
+                  <bool>false</bool>
+                 </property>
+                 <property name="readOnly">
+                  <bool>true</bool>
+                 </property>
+                </widget>
+               </item>
+               <item row="2" column="0">
+                <widget class="QLabel" name="label_18">
+                 <property name="text">
+                  <string>packageLostRate</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="2" column="1">
+                <widget class="QLineEdit" name="lineEdit_packageListRate_uplink">
+                 <property name="frame">
+                  <bool>false</bool>
+                 </property>
+                 <property name="readOnly">
+                  <bool>true</bool>
                  </property>
                 </widget>
                </item>
               </layout>
+             </item>
+             <item row="5" column="0">
+              <widget class="QLabel" name="label_15">
+               <property name="text">
+                <string>Downlink:</string>
+               </property>
+              </widget>
+             </item>
+             <item row="5" column="1">
+              <layout class="QFormLayout" name="formLayout_8">
+               <item row="0" column="0">
+                <widget class="QLabel" name="label_26">
+                 <property name="text">
+                  <string>connectCost:</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="0" column="1">
+                <widget class="QLineEdit" name="lineEdit_connectCostUpdate_downlink">
+                 <property name="frame">
+                  <bool>false</bool>
+                 </property>
+                 <property name="readOnly">
+                  <bool>true</bool>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="0">
+                <widget class="QLabel" name="label_27">
+                 <property name="text">
+                  <string>rtt</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="1">
+                <widget class="QLineEdit" name="lineEdit_rtt_downlink">
+                 <property name="frame">
+                  <bool>false</bool>
+                 </property>
+                 <property name="readOnly">
+                  <bool>true</bool>
+                 </property>
+                </widget>
+               </item>
+               <item row="2" column="0">
+                <widget class="QLabel" name="label_28">
+                 <property name="text">
+                  <string>packageLostRate:</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="2" column="1">
+                <widget class="QLineEdit" name="lineEdit_packageListRate_downlink">
+                 <property name="frame">
+                  <bool>false</bool>
+                 </property>
+                 <property name="readOnly">
+                  <bool>true</bool>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item row="1" column="0">
+              <widget class="QLabel" name="label">
+               <property name="text">
+                <string>expectedBitrate:</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="1">
+              <widget class="QComboBox" name="comboBox_expectedBitrate"/>
              </item>
             </layout>
            </widget>
@@ -446,7 +467,7 @@
             <property name="sizeHint" stdset="0">
              <size>
               <width>20</width>
-              <height>40</height>
+              <height>161</height>
              </size>
             </property>
            </spacer>

@@ -24,9 +24,11 @@
 #include "AuxStream/ZegoAuxStreamDemo.h"
 #include "AudioMixing/ZegoAudioMixingDemo.h"
 #include "AudioProcess/ZegoAudioProcessDemo.h"
+#include "AudioDataCallback/ZegoAudioDataCallbackDemo.h"
 #include "DataRecord/ZegoDataRecordDemo.h"
 #include "MultiLayer/ZegoMultiLayerDemo.h"
 #include "MultiRoom/ZegoMultiRoomDemo.h"
+#include "UtilityTools/ZegoUtilityToolsDemo.h"
 
 #include "version.h"
 
@@ -49,9 +51,11 @@ static QString ItemTextCustomAudioIO("CustomAudioIO");
 static QString ItemTextAuxStream("AuxStream");
 static QString ItemTextAudioMixing("AudioMixing");
 static QString ItemTextAudioProcess("AudioProcess");
+static QString ItemTextAudioDataCallback("AudioDataCallback");
 static QString ItemTextDataRecord("DataRecord");
 static QString ItemTextMultiLayer("MultiLayer");
 static QString ItemTextMultiRoom("MultiRoom");
+static QString ItemTextUtilityTools("UtilityTools");
 
 using namespace ZEGO::EXPRESS;
 
@@ -89,9 +93,11 @@ ZegoExpressDemo::ZegoExpressDemo(QWidget *parent) :
     advanceUseCaseItems.append(ItemTextAuxStream);
     advanceUseCaseItems.append(ItemTextAudioMixing);
     advanceUseCaseItems.append(ItemTextAudioProcess);
+    advanceUseCaseItems.append(ItemTextAudioDataCallback);
     advanceUseCaseItems.append(ItemTextDataRecord);
     advanceUseCaseItems.append(ItemTextMultiLayer);
     advanceUseCaseItems.append(ItemTextMultiRoom);
+    advanceUseCaseItems.append(ItemTextUtilityTools);
     ui->listWidget_advance_menu->addItems(advanceUseCaseItems);
 
     connect(ui->listWidget_basic_menu, &QListWidget::itemClicked, this, &ZegoExpressDemo::onBasicUseCaseItemChanged);
@@ -213,6 +219,10 @@ void ZegoExpressDemo::doChangeTopic(QString itemText)
         currentTopicWidget = new ZegoAudioProcessDemo;
     }
 
+    if(currentItemText == ItemTextAudioDataCallback){
+        currentTopicWidget = new ZegoAudioDataCallbackDemo;
+    }
+
     if(currentItemText == ItemTextDataRecord){
         currentTopicWidget = new ZegoDataRecordDemo;
     }
@@ -223,6 +233,10 @@ void ZegoExpressDemo::doChangeTopic(QString itemText)
 
     if(currentItemText == ItemTextMultiRoom) {
         currentTopicWidget = new ZegoMultiRoomDemo;
+    }
+
+    if(currentItemText == ItemTextUtilityTools){
+        currentTopicWidget = new ZegoUtilityToolsDemo;
     }
 
     if(currentTopicWidget != nullptr){

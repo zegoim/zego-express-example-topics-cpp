@@ -2,6 +2,7 @@
 #include "ui_ZegoPublishDemo.h"
 
 #include "EventHandler/ZegoEventHandlerWithLogger.h"
+#include "AppSupport/ZegoUtilHelper.h"
 
 ZegoPublishDemo::ZegoPublishDemo(QWidget *parent) :
     QWidget(parent),
@@ -73,6 +74,16 @@ ZegoPublishDemo::ZegoPublishDemo(QWidget *parent) :
     ui->comboBox_audioConfig->setCurrentIndex(ZEGO_AUDIO_CONFIG_PRESET_STANDARD_QUALITY);
     ui->comboBox_audioConfig->blockSignals(false);
 
+    ui->comboBox_videoCodecID->blockSignals(true);
+    QStringList ZegoVideoCodecIDList = {
+        "CODEC_ID_DEFAULT",
+        "CODEC_ID_SVC",
+        "CODEC_ID_VP8",
+        "CODEC_ID_H265"
+    };
+    ui->comboBox_videoCodecID->addItems(ZegoVideoCodecIDList);
+    ui->comboBox_videoCodecID->setCurrentIndex(ZEGO_VIDEO_CODEC_ID_DEFAULT);
+    ui->comboBox_videoCodecID->blockSignals(false);
 
     ui->slider_captureVolume->blockSignals(true);
     ui->slider_captureVolume->setValue(100);
@@ -96,10 +107,10 @@ ZegoPublishDemo::~ZegoPublishDemo()
 
 void ZegoPublishDemo::onPublisherQualityUpdate(const std::string& streamID, const ZegoPublishStreamQuality& quality) {
     Q_UNUSED(streamID)
-    ui->lineEdit_videoBPS->setText(QString::number(quality.videoKBPS) + "kbps");
-    ui->lineEdit_videoFPS->setText(QString::number(quality.videoSendFPS) + "fps");
-    ui->lineEdit_audioBPS->setText(QString::number(quality.audioKBPS) + "kbps");
-    ui->lineEdit_audioFPS->setText(QString::number(quality.audioSendFPS) + "fps");
+    ui->lineEdit_videoBPS->setText(QString::number(quality.videoKBPS, 'f', 2) + "kbps");
+    ui->lineEdit_videoFPS->setText(QString::number(quality.videoSendFPS, 'f', 2) + "fps");
+    ui->lineEdit_audioBPS->setText(QString::number(quality.audioKBPS, 'f', 2) + "kbps");
+    ui->lineEdit_audioFPS->setText(QString::number(quality.audioSendFPS, 'f', 2) + "fps");
 }
 
 void ZegoPublishDemo::onPublisherVideoSizeChanged(int width, int height)
@@ -162,6 +173,11 @@ void ZegoPublishDemo::on_pushButton_startPublish_clicked()
     user.userID = userID;
     user.userName = userID;
     engine->loginRoom(currentRoomID, user);
+
+    ZegoVideoConfig videoConfig = ZegoVideoConfig(ZegoVideoConfigPreset(ui->comboBox_videoConfig->currentIndex()));
+    videoConfig.codecID = ZegoVideoCodecID(ui->comboBox_videoCodecID->currentIndex());
+    engine->setVideoConfig(videoConfig);
+
     engine->startPublishingStream(streamID);
 
     ZegoCanvas canvas(ZegoView(ui->frame_local_video->winId()));
@@ -235,7 +251,22 @@ void ZegoPublishDemo::on_comboBox_audioConfig_currentIndexChanged(int index)
     engine->setAudioConfig(audioConfig);
 }
 
-void ZegoPublishDemo::on_horizontalSlider_microphoneVolume_valueChanged(int value)
+void ZegoPublishDemo::on_slider_microphoneVolume_valueChanged(int value)
 {
-   engine->setAudioDeviceVolume(ZEGO_AUDIO_DEVICE_TYPE_INPUT, ui->comboBox_microphone->currentText().toStdString(), value);
+    engine->setAudioDeviceVolume(ZEGO_AUDIO_DEVICE_TYPE_INPUT, ui->comboBox_microphone->currentText().toStdString(), value);
+}
+
+void ZegoPublishDemo::on_pushButton_takePublishStreamSnapshot_clicked()
+{
+    engine->takePublishStreamSnapshot([=](int errorCode, void* snapshot){
+        if(errorCode == 0){
+            printLogToView(QString("take snapshot succeed"));
+            QPixmap pixmap = ZegoUtilHelper::QPixmapFromZegoSnapshot(snapshot);
+            QString pixmapPath = QApplication::applicationDirPath() + "/0.jpg";
+            bool saveResult = pixmap.save(pixmapPath, "JPG");
+            printLogToView(QString("save snapshot. savePath=%1, result=%2").arg(pixmapPath).arg(saveResult));
+        }else{
+            printLogToView(QString("take snapshot failed. errorCode=%1").arg(errorCode));
+        }
+    });
 }

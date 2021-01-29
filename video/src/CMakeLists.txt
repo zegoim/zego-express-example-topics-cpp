@@ -33,19 +33,6 @@ file(GLOB_RECURSE All_SOURCES ${CMAKE_CURRENT_LIST_DIR}/*.mm
                               ${CMAKE_CURRENT_LIST_DIR}/*.ui
                               ${CMAKE_CURRENT_LIST_DIR}/*.rc)
 
-
-macro(source_group_by_dir source_files)       
-    set(sgbd_cur_dir ${CMAKE_CURRENT_SOURCE_DIR}/)
-    foreach(sgbd_file ${${source_files}})
-        string(REGEX REPLACE ${sgbd_cur_dir} "" sgbd_fpath ${sgbd_file})
-        string(REGEX REPLACE "[^/\\\\]+$" "" sgbd_group_name ${sgbd_fpath})
-        if(sgbd_group_name)
-            string(REPLACE "/"   "\\\\"  sgbd_group_name_normal ${sgbd_group_name})
-            source_group(${sgbd_group_name_normal} FILES ${sgbd_file})
-        endif(sgbd_group_name)	
-    endforeach(sgbd_file)
-endmacro(source_group_by_dir)
-
 source_group_by_dir(All_SOURCES)
 
 include_directories(${CMAKE_CURRENT_BINARY_DIR}
@@ -66,6 +53,8 @@ if(WIN32)
     set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /Zi")
     set(CMAKE_EXE_LINKER_FLAGS_RELEASE "${CMAKE_EXE_LINKER_FLAGS_RELEASE} /DEBUG /OPT:REF /OPT:ICF")
     add_definitions(-DUNICODE -D_UNICODE -D_SCL_SECURE_NO_WARNINGS -DWIN32)
+    
+    target_compile_options(${PROJECT_NAME} PRIVATE "/MP")
 
 endif(WIN32)
 
@@ -86,6 +75,8 @@ if(APPLE)
     set_target_properties(${PROJECT_NAME} PROPERTIES XCODE_ATTRIBUTE_SEPARATE_STRIP "YES")
     set_target_properties(${PROJECT_NAME} PROPERTIES XCODE_ATTRIBUTE_STRIP_STYLE "Non-Global Symbols")
     set_target_properties(${PROJECT_NAME} PROPERTIES MACOSX_BUNDLE_INFO_PLIST ${CMAKE_CURRENT_LIST_DIR}/Info.plist.in)
+
+    ADD_FRAMEWORK(CoreGraphics ${PROJECT_NAME})
 
 endif(APPLE)
 

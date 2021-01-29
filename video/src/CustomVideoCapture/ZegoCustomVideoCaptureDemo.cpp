@@ -7,9 +7,24 @@
 #include "EventHandler/ZegoEventHandlerWithLogger.h"
 #include "AppSupport/ZegoUtilHelper.h"
 
+CustomVideoCapturer::CustomVideoCapturer(ZegoVideoBufferType bufferType, ZegoPublishChannel channel)
+    : mVideoBufferType(bufferType), mPublishChannel(channel)
+{
+
+}
+
+CustomVideoCapturer::~CustomVideoCapturer()
+{
+    onStop(mPublishChannel);
+}
+
 void CustomVideoCapturer::onStart(ZegoPublishChannel channel)
 {
-    Q_UNUSED(channel)
+    if(mPublishChannel != channel)
+    {
+        return;
+    }
+
     if (!mVideoCaptureRunning)
     {
         mVideoCaptureRunning = true;
@@ -19,7 +34,11 @@ void CustomVideoCapturer::onStart(ZegoPublishChannel channel)
 
 void CustomVideoCapturer::onStop(ZegoPublishChannel channel)
 { 
-    Q_UNUSED(channel)
+    if(mPublishChannel != channel)
+    {
+        return;
+    }
+
     if (mVideoCaptureRunning)
     {
         mVideoCaptureRunning = false;
@@ -40,7 +59,7 @@ void CustomVideoCapturer::collectVideoFrameAndSendToEngine()
 
         if (videoFrame)
         {
-            ZegoExpressSDK::getEngine()->sendCustomVideoCaptureRawData(videoFrame->data.get(), videoFrame->dataLength, videoFrame->param, videoFrame->referenceTimeMillsecond);
+            ZegoExpressSDK::getEngine()->sendCustomVideoCaptureRawData(videoFrame->data.get(), videoFrame->dataLength, videoFrame->param, videoFrame->referenceTimeMillsecond, mPublishChannel);
         }
 
         std::this_thread::sleep_for(std::chrono::milliseconds(20));
@@ -64,30 +83,47 @@ ZegoCustomVideoCaptureDemo::ZegoCustomVideoCaptureDemo(QWidget *parent) :
     engine = ZegoExpressSDK::getEngine();
     bindEventHandler();
 
-    mCustomVideoCapture = std::make_shared<CustomVideoCapturer>();
+    ui->comboBox_customVideoCaptureType->blockSignals(true);
+    QStringList mirroModeList = {
+        "UNKNOWN",
+        "RAW_DATA",
+        //"ENCODED_DATA",
+    };
+    ui->comboBox_customVideoCaptureType->addItems(mirroModeList);
+    ui->comboBox_customVideoCaptureType->setCurrentIndex(1);
+    ui->comboBox_customVideoCaptureType->blockSignals(false);
 }
 
 ZegoCustomVideoCaptureDemo::~ZegoCustomVideoCaptureDemo()
 {
-    mCustomVideoCapture->onStop(ZEGO_PUBLISH_CHANNEL_MAIN);
-    mCustomVideoCapture = nullptr;
-
-    engine->logoutRoom(currentRoomID);
+    // Manual stop custom video capture and logoutroom
+    // make sure to call enableCustomVideoCapture outside room
+    {
+        engine->setCustomVideoCaptureHandler(nullptr);
+        mCustomVideoCapture = nullptr;
+        engine->logoutRoom(currentRoomID);
+    }
     engine->enableCustomVideoCapture(false, nullptr);
-    engine->setCustomVideoCaptureHandler(nullptr);
     engine->setEventHandler(nullptr);
-
     delete ui;
 }
 
 void ZegoCustomVideoCaptureDemo::on_pushButton_enableCustomVideoCapture_clicked()
 {
-    // call enableCustomVideoCapture outside room
-    engine->logoutRoom(currentRoomID);
+    // Manual stop custom video canpture and logoutroom
+    // make sure to call enableCustomVideoCapture outside room
+    {
+        engine->setCustomVideoCaptureHandler(nullptr);
+        mCustomVideoCapture = nullptr;
+        engine->logoutRoom(currentRoomID);
+    }
 
+    ZegoVideoBufferType bufferTypeSelected = ZegoVideoBufferType(ui->comboBox_customVideoCaptureType->currentIndex());
     ZegoCustomVideoCaptureConfig customVideoCaptureConfig;
-    customVideoCaptureConfig.bufferType = ZEGO_VIDEO_BUFFER_TYPE_RAW_DATA;
+    customVideoCaptureConfig.bufferType = bufferTypeSelected;
     engine->enableCustomVideoCapture(true, &customVideoCaptureConfig);
+
+    mCustomVideoCapture = std::make_shared<CustomVideoCapturer>(bufferTypeSelected);
     engine->setCustomVideoCaptureHandler(mCustomVideoCapture);
 
     ZegoUser user(userID, userID);
@@ -132,11 +168,11 @@ void ZegoCustomVideoCaptureDemo::on_pushButton_imageSource_clicked()
     }
 
     auto currentVideoSource = mCustomVideoCapture->getVideoSource(ZegoCustomVideoSourceType_Image);
-    auto theImageSource = (ZegoCustomVideoSourceImage*)currentVideoSource;
+    auto theImageSource =static_cast<ZegoCustomVideoSourceImage*>(currentVideoSource);
     theImageSource->setImagePath(path.toStdString());
 }
 
-void ZegoCustomVideoCaptureDemo::on_pushButton_videoSource_clicked()
+void ZegoCustomVideoCaptureDemo::on_pushButton_mediaSource_clicked()
 {
     QString path = QFileDialog::getOpenFileName(this, "Select file to play", ".", "Video (*.mp4)");
     if(path.isEmpty()){
@@ -144,7 +180,7 @@ void ZegoCustomVideoCaptureDemo::on_pushButton_videoSource_clicked()
     }
 
     auto currentVideoSource = mCustomVideoCapture->getVideoSource(ZegoCustomVideoSourceType_Media);
-    auto theMediaSource = (ZegoCustomVideoSourceMedia*)currentVideoSource;
+    auto theMediaSource = static_cast<ZegoCustomVideoSourceMedia*>(currentVideoSource);
     theMediaSource->stopPlayMedia();
     theMediaSource->startPlayMedia(path.toStdString());
 }
@@ -154,7 +190,6 @@ void ZegoCustomVideoCaptureDemo::bindEventHandler()
     auto eventHandler = std::make_shared<ZegoEventHandlerWithLogger>();
     connect(eventHandler.get(), &ZegoEventHandlerWithLogger::sigPrintLogToView, this, &ZegoCustomVideoCaptureDemo::printLogToView);
     engine->setEventHandler(eventHandler);
-
 }
 
 void ZegoCustomVideoCaptureDemo::printLogToView(const QString &log)

@@ -2,6 +2,7 @@
 #include "ui_ZegoPlayDemo.h"
 
 #include "EventHandler/ZegoEventHandlerWithLogger.h"
+#include "AppSupport/ZegoUtilHelper.h"
 
 ZegoPlayDemo::ZegoPlayDemo(QWidget *parent) :
     QWidget(parent),
@@ -28,6 +29,16 @@ ZegoPlayDemo::ZegoPlayDemo(QWidget *parent) :
     ui->comboBox_viewmode->addItems(viewModeList);
     ui->comboBox_viewmode->blockSignals(false);
 
+    ui->comboBox_resourceMode->blockSignals(true);
+    QStringList resourceModeList = {
+        "MODE_DEFAULT",
+        "MODE_ONLY_CDN",
+        "MODE_ONLY_L3",
+        "MODE_ONLY_RTC"
+    };
+    ui->comboBox_resourceMode->addItems(resourceModeList);
+    ui->comboBox_resourceMode->blockSignals(false);
+
     ui->slider_playVolume->blockSignals(true);
     ui->slider_playVolume->setValue(100);
     ui->slider_playVolume->blockSignals(false);
@@ -43,11 +54,20 @@ ZegoPlayDemo::~ZegoPlayDemo()
 void ZegoPlayDemo::onPlayerQualityUpdate(const std::string &streamID, const ZegoPlayStreamQuality &quality)
 {
     Q_UNUSED(streamID)
-    ui->lineEdit_videoBPS->setText(QString::number(quality.videoKBPS) + "kbps");
-    ui->lineEdit_videoFPS->setText(QString::number(quality.videoRecvFPS) + "fps");
+    ui->lineEdit_videoBPS->setText(QString::number(quality.videoKBPS, 'f', 2) + "kbps");
+    ui->lineEdit_videoRecvFPS->setText(QString::number(quality.videoRecvFPS, 'f', 2) + "fps");
+    ui->lineEdit_videoRenderFPS->setText(QString::number(quality.videoRenderFPS, 'f', 2) + "fps");
 
-    ui->lineEdit_audioBPS->setText(QString::number(quality.audioKBPS) + "kbps");
-    ui->lineEdit_audioFPS->setText(QString::number(quality.audioRecvFPS) + "fps");
+    ui->lineEdit_audioBPS->setText(QString::number(quality.audioKBPS, 'f', 2) + "kbps");
+    ui->lineEdit_audioRecvFPS->setText(QString::number(quality.audioRecvFPS, 'f', 2) + "fps");
+    ui->lineEdit_audioRenderFPS->setText(QString::number(quality.audioRenderFPS, 'f', 2) + "fps");
+
+    ui->lineEdit_avTimestampDiff->setText(QString::number(quality.avTimestampDiff));
+
+    ui->lineEdit_delay->setText(QString::number(quality.delay));
+    ui->lineEdit_peerToPeerDelay->setText(QString::number(quality.peerToPeerDelay));
+    ui->lineEdit_rtt->setText(QString::number(quality.rtt));
+    ui->lineEdit_level->setText(QString::number(quality.level));
 }
 
 void ZegoPlayDemo::onPlayerVideoSizeChanged(const std::string& streamID, int width, int height)
@@ -123,7 +143,9 @@ void ZegoPlayDemo::on_pushButton_startPlay_clicked()
     engine->loginRoom(currentRoomID, user);
 
     ZegoCanvas canvas(ZegoView(ui->frame_remote_video->winId()));
-    engine->startPlayingStream(streamID, &canvas);
+    ZegoPlayerConfig playerConfig;
+    playerConfig.resourceMode = ZegoStreamResourceMode(ui->comboBox_resourceMode->currentIndex());
+    engine->startPlayingStream(streamID, &canvas, playerConfig);
 }
 
 void ZegoPlayDemo::on_pushButton_stopPlay_clicked()
@@ -146,4 +168,20 @@ void ZegoPlayDemo::on_slider_playVolume_valueChanged(int value)
 void ZegoPlayDemo::on_slider_speakerVolume_valueChanged(int value)
 {
     engine->setAudioDeviceVolume(ZEGO_AUDIO_DEVICE_TYPE_OUTPUT, ui->comboBox_audioOutputDevice->currentText().toStdString(), value);
+}
+
+void ZegoPlayDemo::on_pushButton_takePlayStreamSnapshot_clicked()
+{
+    std::string streamID = ui->lineEdit_streamID->text().toStdString();
+    engine->takePlayStreamSnapshot(streamID, [=](int errorCode, void *snapshot){
+        if(errorCode == 0){
+            printLogToView(QString("take snapshot succeed"));
+            QPixmap pixmap = ZegoUtilHelper::QPixmapFromZegoSnapshot(snapshot);
+            QString pixmapPath = QApplication::applicationDirPath() + QString("/%1.jpg").arg(streamID.c_str());
+            bool saveResult = pixmap.save(pixmapPath, "JPG");
+            printLogToView(QString("save snapshot. savePath=%1, result=%2").arg(pixmapPath).arg(saveResult));
+        }else{
+            printLogToView(QString("take snapshot failed. errorCode=%1").arg(errorCode));
+        }
+    });
 }

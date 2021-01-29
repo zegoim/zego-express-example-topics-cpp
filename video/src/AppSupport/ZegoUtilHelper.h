@@ -5,6 +5,8 @@
 #include <QJsonArray>
 #include <QJsonObject>
 #include <QJsonDocument>
+#include <QImage>
+#include <QPixmap>
 
 class ZegoUtilHelper
 {
@@ -17,6 +19,8 @@ public:
 #if defined(WIN32)
     static bool convertUtf8ToANSI(const std::string& utf8, std::string& ansi);
 #endif
+
+    static QPixmap QPixmapFromZegoSnapshot(void* snapshot);
 
 public:
     ZegoUtilHelper();

@@ -22,7 +22,7 @@
      <property name="frameShadow">
       <enum>QFrame::Raised</enum>
      </property>
-     <layout class="QHBoxLayout" name="horizontalLayout_4" stretch="3,1">
+     <layout class="QHBoxLayout" name="horizontalLayout_4" stretch="2,1">
       <item>
        <widget class="QFrame" name="frame_2">
         <property name="frameShape">
@@ -31,7 +31,7 @@
         <property name="frameShadow">
          <enum>QFrame::Raised</enum>
         </property>
-        <layout class="QHBoxLayout" name="horizontalLayout_2">
+        <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="0,0">
          <item>
           <widget class="QFrame" name="frame_local_preview">
            <property name="sizePolicy">
@@ -71,7 +71,7 @@
           <rect>
            <x>0</x>
            <y>0</y>
-           <width>210</width>
+           <width>285</width>
            <height>595</height>
           </rect>
          </property>
@@ -280,7 +280,7 @@
            </widget>
           </item>
           <item>
-           <widget class="QGroupBox" name="groupBox_4">
+           <widget class="QGroupBox" name="groupBox_5">
             <property name="title">
              <string>BroadcastMessage</string>
             </property>

@@ -11,44 +11,17 @@ namespace Ui {
 class ZegoCustomAudioIODemo;
 }
 
-class IAudioDataCallback
-{
-public:
-    virtual ~IAudioDataCallback() {}
-    virtual void onCapturedAudioData(const unsigned char* data, unsigned int dataLength, ZegoAudioFrameParam param) =0;
-    virtual void onPlaybackAudioData(const unsigned char* data, unsigned int dataLength, ZegoAudioFrameParam param) =0;
-    virtual void onMixedAudioData(const unsigned char* data, unsigned int dataLength, ZegoAudioFrameParam param) =0;
-};
 
-class MyAudioDataHandler: public IZegoAudioDataHandler{
-public:
-    MyAudioDataHandler(IAudioDataCallback *callback): callback(callback){}
-
-    void onCapturedAudioData(const unsigned char* data, unsigned int dataLength, ZegoAudioFrameParam param) override{
-        callback->onCapturedAudioData(data, dataLength, param);
-    }
-
-    void onPlaybackAudioData(const unsigned char* data, unsigned int dataLength, ZegoAudioFrameParam param) override{
-        callback->onPlaybackAudioData(data, dataLength, param);
-    }
-
-    void onMixedAudioData(const unsigned char* data, unsigned int dataLength, ZegoAudioFrameParam param) override{
-        callback->onMixedAudioData(data, dataLength, param);
-    }
-
-private:
-    IAudioDataCallback *callback=nullptr;
-};
 
 class CustomAudioInputDevice;
 class CustomAudioOutputDevice;
-class ZegoCustomAudioIODemo : public QWidget,  public IAudioDataCallback
+class ZegoCustomAudioIODemo : public QWidget
 {
     Q_OBJECT
 
 public:
     explicit ZegoCustomAudioIODemo(QWidget *parent = nullptr);
-    ~ZegoCustomAudioIODemo() override;
+    ~ZegoCustomAudioIODemo();
 
 private slots:
     void on_pushButton_startPublish_clicked();
@@ -56,7 +29,6 @@ private slots:
     void on_pushButton_startPlay_clicked();
     void on_pushButton_stopPlay_clicked();
 
-    void on_pushButton_enableAudioDataCallback_clicked();
     void on_pushButton_enableCustomAudioIO_clicked();
 
 private:
@@ -67,10 +39,6 @@ private:
     void stopCustomAudioCapture();
     void startCustomAudioRender();
     void stopCustomAudioRender();
-
-    void onCapturedAudioData(const unsigned char* data, unsigned int dataLength, ZegoAudioFrameParam param) override;
-    void onPlaybackAudioData(const unsigned char* data, unsigned int dataLength, ZegoAudioFrameParam param) override;
-    void onMixedAudioData(const unsigned char* data, unsigned int dataLength, ZegoAudioFrameParam param) override;
 
 private:
     Ui::ZegoCustomAudioIODemo *ui;

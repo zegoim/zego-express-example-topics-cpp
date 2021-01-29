@@ -61,7 +61,6 @@ ZegoCustomAudioIODemo::~ZegoCustomAudioIODemo()
     engine->logoutRoom(currentRoomID);
     engine->enableCustomAudioIO(false, nullptr);
     engine->setEventHandler(nullptr);
-    engine->setAudioDataHandler(nullptr);
 
     delete ui;
 }
@@ -129,8 +128,6 @@ void ZegoCustomAudioIODemo::bindEventHandler()
     auto eventHandler = std::make_shared<ZegoEventHandlerWithLogger>();
     connect(eventHandler.get(), &ZegoEventHandlerWithLogger::sigPrintLogToView, this, &ZegoCustomAudioIODemo::printLogToView);
     engine->setEventHandler(eventHandler);
-
-    engine->setAudioDataHandler(std::make_shared<MyAudioDataHandler>(this));
 }
 
 void ZegoCustomAudioIODemo::startCustomAudioCapture()
@@ -195,41 +192,6 @@ void ZegoCustomAudioIODemo::stopCustomAudioRender()
     }
 }
 
-void ZegoCustomAudioIODemo::on_pushButton_enableAudioDataCallback_clicked()
-{
-    ZegoAudioFrameParam param;
-    param.channel = ZEGO_AUDIO_CHANNEL_STEREO;
-    param.sampleRate = ZEGO_AUDIO_SAMPLE_RATE_8K;
-    unsigned int bitmask = 0;
-    if (ui->checkBox_capturedAudioData->isChecked()) {
-        bitmask |= ZEGO_AUDIO_DATA_CALLBACK_BIT_MASK_CAPTURED;
-    }
-    if (ui->checkBox_playbackAudioData->isChecked()) {
-        bitmask |= ZEGO_AUDIO_DATA_CALLBACK_BIT_MASK_PLAYBACK;
-    }
-    if (ui->checkBox_mixedAudioData->isChecked()) {
-        bitmask |= ZEGO_AUDIO_DATA_CALLBACK_BIT_MASK_MIXED;
-    }
-    engine->enableAudioDataCallback(true, bitmask, param);
-}
-
-void ZegoCustomAudioIODemo::onCapturedAudioData(const unsigned char *data, unsigned int dataLength, ZegoAudioFrameParam param){
-    Q_UNUSED(data)
-    Q_UNUSED(dataLength)
-    Q_UNUSED(param)
-}
-
-void ZegoCustomAudioIODemo::onPlaybackAudioData(const unsigned char *data, unsigned int dataLength, ZegoAudioFrameParam param){
-    Q_UNUSED(data)
-    Q_UNUSED(dataLength)
-    Q_UNUSED(param)
-}
-
-void ZegoCustomAudioIODemo::onMixedAudioData(const unsigned char *data, unsigned int dataLength, ZegoAudioFrameParam param){
-    Q_UNUSED(data)
-    Q_UNUSED(dataLength)
-    Q_UNUSED(param)
-}
 
 
 

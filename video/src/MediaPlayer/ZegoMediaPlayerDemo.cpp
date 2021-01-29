@@ -20,6 +20,15 @@ ZegoMediaPlayerDemo::ZegoMediaPlayerDemo(QWidget *parent) :
     currentRoomID = "MediaPlayerRoom-1";
     std::string userID = ZegoUtilHelper::getRandomString();
     engine->loginRoom(currentRoomID, ZegoUser(userID, userID));
+
+    QStringList ZegoVoiceChangerPresetList = {
+        "PRESET_NONE",
+        "PRESET_MEN_TO_CHILD",
+        "PRESET_MEN_TO_WOMEN",
+        "PRESET_WOMEN_TO_CHILD",
+        "PRESET_WOMEN_TO_MEN"
+    };
+    ui->comboBox_voiceChanger_1->addItems(ZegoVoiceChangerPresetList);
 }
 
 ZegoMediaPlayerDemo::~ZegoMediaPlayerDemo()
@@ -53,6 +62,11 @@ void ZegoMediaPlayerDemo::on_pushButton_loadResource_1_clicked()
 
         auto publishVolume = mediaPlayer1->getPublishVolume();
         ui->horizontalSlider_publishVolume_1->setValue(publishVolume);
+
+        auto audioTrackCount = mediaPlayer1->getAudioTrackCount();
+        ui->spinBox_audioTrackIndex_1->setMaximum(audioTrackCount-1);
+        ui->spinBox_audioTrackIndex_1->setValue(0);
+        printLogToView(QString("getAudioTrackCount: count=%1").arg(audioTrackCount));
     });
 }
 
@@ -103,6 +117,17 @@ void ZegoMediaPlayerDemo::on_horizontalSlider_publishVolume_1_valueChanged(int v
     if(mediaPlayer1){
         mediaPlayer1->setPublishVolume(value);
     }
+}
+
+void ZegoMediaPlayerDemo::on_comboBox_voiceChanger_1_currentIndexChanged(int index)
+{
+   ZegoVoiceChangerParam param = ZegoVoiceChangerParam(ZegoVoiceChangerPreset(index));
+    mediaPlayer1->setVoiceChangerParam(ZEGO_MEDIA_PLAYER_AUDIO_CHANNEL_ALL, param);
+}
+
+void ZegoMediaPlayerDemo::on_pushButton_setAudioTrackIndex_1_clicked()
+{
+    mediaPlayer1->setAudioTrackIndex(ui->spinBox_audioTrackIndex_1->value());
 }
 
 void ZegoMediaPlayerDemo::onMediaPlayerStateUpdate(IZegoMediaPlayer *mediaPlayer, ZegoMediaPlayerState state, int errorCode){

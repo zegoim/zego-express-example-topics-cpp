@@ -36,10 +36,9 @@ private slots:
     void on_checkBox_muteMicrophone_clicked(bool checked);
     void on_checkBox_enableCamera_clicked(bool checked);
     void on_comboBox_videoConfig_currentIndexChanged(int index);
-
     void on_comboBox_audioConfig_currentIndexChanged(int index);
-
-    void on_horizontalSlider_microphoneVolume_valueChanged(int value);
+    void on_slider_microphoneVolume_valueChanged(int value);
+    void on_pushButton_takePublishStreamSnapshot_clicked();
 
 private:
     void bindEventHandler();

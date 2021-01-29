@@ -20,7 +20,7 @@ public:
     void onRoomStateUpdate(const std::string& roomID, ZegoRoomState state, int errorCode, const std::string &extendData) override;
     void onRoomExtraInfoUpdate(const std::string& roomID, const std::vector<ZegoRoomExtraInfo>& roomExtraInfoList) override;
     void onRoomUserUpdate(const std::string& roomID, ZegoUpdateType updateType, const std::vector<ZegoUser>& userList) override;
-    void onRoomStreamUpdate(const std::string& roomID, ZegoUpdateType updateType, const std::vector<ZegoStream>& streamList) override;
+    void onRoomStreamUpdate(const std::string& roomID, ZegoUpdateType updateType, const std::vector<ZegoStream>& streamList, const std::string& extendData) override;
     void onRoomStreamExtraInfoUpdate(const std::string& roomID, const std::vector<ZegoStream>& streamList) override;
 
     void onPublisherStateUpdate(const std::string& streamID, ZegoPublisherState state, int errorCode, const std::string &extendData) override;
@@ -55,6 +55,10 @@ public:
     void onIMRecvBroadcastMessage(const std::string& roomID, std::vector<ZegoBroadcastMessageInfo> messageList) override;
     void onIMRecvBarrageMessage(const std::string& roomID, std::vector<ZegoBarrageMessageInfo> messageList) override;
     void onIMRecvCustomCommand(const std::string& roomID, ZegoUser fromUser, const std::string& command) override;
+
+    void onPerformanceStatusUpdate(const ZegoPerformanceStatus &status) override;
+    void onNetworkSpeedTestError(int errorCode, ZegoNetworkSpeedTestType type) override;
+    void onNetworkSpeedTestQualityUpdate(const ZegoNetworkSpeedTestQuality& quality, ZegoNetworkSpeedTestType type) override;
 
 signals:
     void sigPrintLogToView(const QString &log);

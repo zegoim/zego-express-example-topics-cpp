@@ -57,7 +57,9 @@ SOURCES += \
     MultiLayer/ZegoMultiLayerDemo.cpp \
     MultiRoom/ZegoMultiRoomDemo.cpp \
     AudioProcess/ZegoAudioProcessDemo.cpp \
-    AudioEffectPlayer/ZegoAudioEffectPlayerDemo.cpp
+    AudioEffectPlayer/ZegoAudioEffectPlayerDemo.cpp \
+    AudioDataCallback/ZegoAudioDataCallbackDemo.cpp \
+    UtilityTools/ZegoUtilityToolsDemo.cpp
 
 HEADERS += \
     ExpressDemo/ZegoExpressDemo.h \
@@ -93,7 +95,9 @@ HEADERS += \
     MultiRoom/ZegoMultiRoomDemo.h \
     AudioProcess/ZegoAudioProcessDemo.h \
     version.h \
-    AudioEffectPlayer/ZegoAudioEffectPlayerDemo.h
+    AudioEffectPlayer/ZegoAudioEffectPlayerDemo.h \
+    AudioDataCallback/ZegoAudioDataCallbackDemo.h \
+    UtilityTools/ZegoUtilityToolsDemo.h
 
 
 FORMS += \
@@ -119,7 +123,9 @@ FORMS += \
     MultiLayer/ZegoMultiLayerDemo.ui \
     MultiRoom/ZegoMultiRoomDemo.ui \
     AudioProcess/ZegoAudioProcessDemo.ui \
-    AudioEffectPlayer/ZegoAudioEffectPlayerDemo.ui
+    AudioEffectPlayer/ZegoAudioEffectPlayerDemo.ui \
+    AudioDataCallback/ZegoAudioDataCallbackDemo.ui \
+    UtilityTools/ZegoUtilityToolsDemo.ui
 
 
 # Default rules for deployment.
@@ -135,8 +141,8 @@ release {
 }
 
 msvc {
-    # QMAKE_CFLAGS += /utf-8
-    # QMAKE_CXXFLAGS += /utf-8
+    #QMAKE_CFLAGS += /utf-8
+    #QMAKE_CXXFLAGS += /utf-8
 
     MOC_DIR = $$PWD/../build-win/qmake_temp
     RCC_DIR = $$PWD/../build-win/qmake_temp
@@ -167,7 +173,7 @@ macx {
     DEPENDPATH  += $$PWD/../libs/ZegoExpress/mac/include
 
     QMAKE_CXXFLAGS += -x objective-c++
-    LIBS += -framework Foundation
+    LIBS += -framework Foundation -framework CoreGraphics
     LIBS += -L$$PWD/../libs/ZegoExpress/mac/lib/ -lZegoExpressEngine
 
     QMAKE_INFO_PLIST = Info.plist

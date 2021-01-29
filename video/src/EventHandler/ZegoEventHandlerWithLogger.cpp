@@ -99,15 +99,19 @@ void ZegoEventHandlerWithLogger::onRoomUserUpdate(const std::string &roomID, Zeg
     ZegoEventHandlerQt::onRoomUserUpdate(roomID, updateType, userList);
 }
 
-void ZegoEventHandlerWithLogger::onRoomStreamUpdate(const std::string &roomID, ZegoUpdateType updateType, const std::vector<ZegoStream> &streamList)
+void ZegoEventHandlerWithLogger::onRoomStreamUpdate(const std::string &roomID, ZegoUpdateType updateType, const std::vector<ZegoStream> &streamList, const std::string& extendData)
 {
     QString updateTypeString = updateType == ZEGO_UPDATE_TYPE_ADD ? "Add" : "Remove";
     for(const ZegoStream &stream : streamList){
-        QString log = QString("onStreamUpdate: roomID=%1, updateType=%2, streamID=%3, extraInfo=%4").arg(roomID.c_str()).arg(updateTypeString).arg(stream.streamID.c_str()).arg(stream.extraInfo.c_str());
+        QString log = QString("onRoomStreamUpdate: roomID=%1, updateType=%2, streamID=%3, extraInfo=%4").arg(roomID.c_str()).arg(updateTypeString).arg(stream.streamID.c_str()).arg(stream.extraInfo.c_str());
         emit sigPrintLogToView(log);
     }
-
-    ZegoEventHandlerQt::onRoomStreamUpdate(roomID, updateType, streamList);
+	{
+		QString log = QString("onRoomStreamUpdate: extendData=%1").arg(extendData.c_str());
+		emit sigPrintLogToView(log);
+	}
+	
+    ZegoEventHandlerQt::onRoomStreamUpdate(roomID, updateType, streamList, extendData);
 }
 
 void ZegoEventHandlerWithLogger::onRoomStreamExtraInfoUpdate(const std::string &roomID, const std::vector<ZegoStream> &streamList)
@@ -387,4 +391,19 @@ void ZegoEventHandlerWithLogger::onIMRecvCustomCommand(const std::string &roomID
     emit sigPrintLogToView(log);
 
     ZegoEventHandlerQt::onIMRecvCustomCommand(roomID, fromUser, command);
+}
+
+void ZegoEventHandlerWithLogger::onPerformanceStatusUpdate(const ZegoPerformanceStatus &status)
+{
+    ZegoEventHandlerQt::onPerformanceStatusUpdate(status);
+}
+
+void ZegoEventHandlerWithLogger::onNetworkSpeedTestError(int errorCode, ZegoNetworkSpeedTestType type)
+{
+    ZegoEventHandlerQt::onNetworkSpeedTestError(errorCode, type);
+}
+
+void ZegoEventHandlerWithLogger::onNetworkSpeedTestQualityUpdate(const ZegoNetworkSpeedTestQuality &quality, ZegoNetworkSpeedTestType type)
+{
+    ZegoEventHandlerQt::onNetworkSpeedTestQualityUpdate(quality, type);
 }
