@@ -1,9 +1,7 @@
-# Zego Express Example Topics CPP (Windows/Mac)
+# Zego Express Example Topics CPP
 
-## Video
+This example demo has been migrated to:
 
-For using ZegoExpressVideo SDK, Please refer to the project in the **video** directory
+- English [https://docs.zegocloud.com/article/981](https://docs.zegocloud.com/article/981)
 
-## Audio
-
-For using ZegoExpressAudio SDK, Please refer to the project in the **audio** directory
+- 中文 [https://doc-zh.zego.im/article/3128](https://doc-zh.zego.im/article/3128)
